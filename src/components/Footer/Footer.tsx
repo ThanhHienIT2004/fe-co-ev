@@ -6,9 +6,9 @@ export default function Footer() {
         <footer className="bg-gray-200 text-gray-700">
             <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <h2 className="text-xl font-semibold text-blue-700 mb-3">Y Tế Thông Minh</h2>
+                    <h2 className="text-xl font-semibold text-blue-700 mb-3">ECarSharing</h2>
                     <p className="text-sm">
-                        Nền tảng quản lý sức khỏe, hỗ trợ đặt lịch khám và theo dõi bệnh án dễ dàng.
+                        Nền tảng quản lý đồng sở hữu và chia sẻ chi phí xe điện.
                     </p>
                 </div>
 
@@ -28,7 +28,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className="text-center text-sm py-4 border-t border-gray-200">
-                © 2025 Y Tế Thông Minh. All rights reserved.
+                © 2025 Hệ Thống Thông Minh. All rights reserved.
             </div>
         </footer>
     );

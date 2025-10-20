@@ -8,7 +8,7 @@ export default function HeroBanner() {
         <section className="relative w-full h-[100vh] overflow-hidden">
             {/* Background image */}
             <Image
-                src="/herobanner.png"
+                src="/images/herobanner.png"
                 alt="Vehicle Banner"
                 fill
                 className="object-cover brightness-75"

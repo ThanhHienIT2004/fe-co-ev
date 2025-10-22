@@ -1,5 +1,5 @@
 import React from "react";
-import HeroBanner from "@/components/Banner/HeroBanner";
+import HeroBanner from "@/components/banner/HeroBanner";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 

@@ -1,6 +1,6 @@
 import HeroBanner from "@/components/Banner/HeroBanner";
 import Footer from "@/components/Footer/Footer";
-import Header from "@/components/Header/Header";
+import { Header } from "@/components/Header/Header";
 import React from "react";
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {

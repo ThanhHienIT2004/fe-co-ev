@@ -11,8 +11,8 @@ import {
   Calendar,
   Home,
   UserCircle,
-  Construction,
-  SquareMenu
+  SquareMenu,
+  HandHelping
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -25,13 +25,13 @@ export const Header = () => {
     { href: "/vehicles", label: "Danh sách xe", icon: Car },
     { href: "/group", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
-    { href: "/maintains", label: "Bảo trì", icon: Construction },
-        { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
+    { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
+    { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
 
   ];
 
   return (
-    <div className="sticky top-0 z-20 w-full rounded-b-2xl bg-[#26272b] text-white">
+    <div className="sticky top-0 z-20 w-full bg-gradient-to-tr from-black via-gray-600 to-gray-900 transition-all duration-140 text-white">
       <div
         className="mx-auto max-w-7xl px-4"
         onMouseEnter={() => setOpen(true)}

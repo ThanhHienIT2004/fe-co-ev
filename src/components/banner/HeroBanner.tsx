@@ -17,7 +17,7 @@ export default function HeroBanner() {
 
             {/* Overlay content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 text-center">
-                <h1 className="text-4xl md:text-6xl font-bold mb-4">ECarSharing xin chào quý khách</h1>
+                <h1 className="text-4xl md:text-6xl font-bold mb-4">EVSharing xin chào quý khách</h1>
                 <p className="max-w-xl mb-6 text-lg">
                     EV Co-ownership & Cost-sharing System – nền tảng quản lý đồng sở hữu và chia sẻ chi phí xe điện, giúp các cộng đồng chủ xe tối ưu hoá việc sử dụng, bảo dưỡng và chi phí vận hành.
                 </p>

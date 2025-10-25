@@ -11,8 +11,8 @@ export default function Header() {
     // Nav links
     const navLinks = [
         { label: 'Trang Chủ', href: '/' },
-        { label: 'Xe', href: '/vehicles' },
-        { label: 'Đặt Lịch', href: '/booking' },
+        { label: 'Danh sách Xe', href: '/vehicles' },
+        { label: 'Đặt lịch', href: '/booking' },
         { label: 'Liên Hệ', href: '/contact' },
         { label: 'Giới thiệu', href: '/about' },
         { label: 'Blog', href: '/post' }
@@ -33,11 +33,11 @@ export default function Header() {
     };
 
     return (
-        <header className="fixed w-full top-0 z-50 bg-transparent backdrop-blur-md transition-all duration-300">
+        <header className="fixed w-full top-0 z-50 bg-gradient-to-tr from-black via-gray-700 to-gray-900 transition-all duration-140">
             <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
                 {/* Logo */}
-                <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
-                    <span className="text-white">🚗</span> ECarSharing
+                <Link href="/" className="text-white font-bold text-white flex items-center gap-2">
+                    <span className="text-white">🚗EVSharing</span>
                 </Link>
 
                 {/* Desktop Menu */}
@@ -46,7 +46,7 @@ export default function Header() {
                         <Link
                             key={`${link.label}-${link.href}`} // key duy nhất
                             href={link.href}
-                            className="text-black hover:text-white font-medium"
+                            className="text-white hover:text-gray-400 font-medium"
                         >
                             {link.label}
                         </Link>
@@ -56,7 +56,7 @@ export default function Header() {
                     {!user ? (
                         <Link
                             href="/login"
-                            className="text-teal-400 hover:text-white font-medium px-4 py-1 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md transition"
+                            className="text-white hover:text-gray-400 font-medium px-4 py-1 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md transition"
                         >
                             Đăng nhập
                         </Link>

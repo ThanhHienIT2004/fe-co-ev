@@ -62,7 +62,7 @@ export default function Sidebar() {
       {/* Header */} 
       <div className="p-4 flex items-center justify-center">
         <div className="text-2xl font-bold text-blue-600">
-          {open ? "EVSharing ADMIN" : "EV"}
+          {open ? "EVSharing CO-OWNER" : "EV"}
         </div>
       </div>
 

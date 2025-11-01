@@ -2,6 +2,7 @@
 
 import { MapPin } from "lucide-react";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 type Vehicle = {
   vehicle_id: string;
@@ -104,6 +105,12 @@ const vehicles: Vehicle[] = [
 ];
 
 export default function VehiclesPage() {
+  const router = useRouter(); // 👈 Hook điều hướng
+
+  const handleBookNow = (vehicleId: string) => {
+    // Có thể truyền id qua query nếu cần (ví dụ ?vehicle=V001)
+    router.push(`/booking?vehicle=${vehicleId}`);
+  };
   return (
     <main className="mx-auto mt-[64px] px-4 sm:px-6 lg:px-8">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -139,7 +146,8 @@ export default function VehiclesPage() {
                   <p className="text-2xl font-bold text-gray-900">990</p>
                   <p className="text-xs text-gray-500">CHF • Swiss Francs</p>
                 </div>
-                <button className="bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
+                <button onClick={() => handleBookNow(v.vehicle_id)} // 👈 Gọi điều hướng 
+                className="bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
                   Thuê ngay
                 </button>
               </div>

@@ -6,7 +6,7 @@ export default function Footer() {
         <footer className="bg-gray-200 text-gray-700">
             <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <h2 className="text-xl font-semibold text-blue-700 mb-3">ECarSharing</h2>
+                    <h2 className="text-xl font-semibold text-blue-700 mb-3">🚗EVSharing</h2>
                     <p className="text-sm">
                         Nền tảng quản lý đồng sở hữu và chia sẻ chi phí xe điện.
                     </p>

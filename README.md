@@ -1,3 +1,13 @@
+## 🧠 Backend
+
+Backend của hệ thống được xây dựng theo **kiến trúc Microservice**, kết hợp giữa **NestJS** và **Java Spring Boot**, đảm bảo khả năng mở rộng, bảo trì dễ dàng và hiệu năng cao.  
+Mỗi service phụ trách một domain độc lập, giao tiếp thông qua **API Gateway** và được quản lý thống nhất bằng **Docker Compose**.
+
+📦 **Link Backend (BE):** [https://github.com/VoTaDuy/EV-Co-ownership-Cost-sharing-System](https://github.com/VoTaDuy/EV-Co-ownership-Cost-sharing-System)
+---
+
+### ⚙️ Kiến trúc tổng quan
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

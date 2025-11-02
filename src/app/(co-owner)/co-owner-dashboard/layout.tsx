@@ -1,4 +1,4 @@
-import Topbar from "@/app/(admin)/admin-dashboard/_component/Topbar";
+import Topbar from "@/app/(admin)/_component/Topbar";
 import { Header } from "@/components/Header/Header";
 import React from "react";
 

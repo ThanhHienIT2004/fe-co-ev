@@ -36,19 +36,19 @@ export default function Sidebar() {
   }, [open]);
 
   const menuItems = [
-    { href: "/admin", label: "Dashboard", icon: Home },
-    { href: "/admin/users", label: "Người dùng", icon: User },
-    { href: "/admin/vehicles", label: "Xe điện", icon: Car },
-    { href: "/admin/groups", label: "Nhóm đồng sở hữu", icon: Users },
-    { href: "/admin/appointments", label: "Đặt lịch hẹn", icon: Calendar },
-    { href: "/admin/services", label: "Dịch vụ", icon: HandHelping },
-    { href: "/admin/contracts", label: "Hợp đồng", icon: ReceiptText },
-    { href: "/admin/conflicts", label: "Xung đột", icon: Flame },
-    { href: "/admin/fees", label: "Chi phí dịch vụ", icon: CircleDollarSign },
-    { href: "/admin/payments", label: "Thanh toán", icon: CreditCard },
-    { href: "/admin/votes", label: "Bỏ phiếu", icon: Vote },
-    { href: "/admin/reports", label: "Báo cáo", icon: BarChart },
-    { href: "/admin/settings", label: "Cài đặt", icon: Settings },
+    { href: "/admin-dashboard", label: "Dashboard", icon: Home },
+    { href: "/users", label: "Người dùng", icon: User },
+    { href: "/vehicles", label: "Xe điện", icon: Car },
+    { href: "/groups", label: "Nhóm đồng sở hữu", icon: Users },
+    { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },
+    { href: "/services", label: "Dịch vụ", icon: HandHelping },
+    { href: "/contracts", label: "Hợp đồng", icon: ReceiptText },
+    { href: "/conflicts", label: "Xung đột", icon: Flame },
+    { href: "/fees", label: "Chi phí dịch vụ", icon: CircleDollarSign },
+    { href: "/payments", label: "Thanh toán", icon: CreditCard },
+    { href: "/votes", label: "Bỏ phiếu", icon: Vote },
+    { href: "/reports", label: "Báo cáo", icon: BarChart },
+    { href: "/settings", label: "Cài đặt", icon: Settings },
   ];
 
   return (

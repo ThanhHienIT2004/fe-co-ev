@@ -4,9 +4,8 @@ import Topbar from "./Topbar";
 
 export default function AdminDashboard() {
   return (
+    
     <div className="min-h-screen bg-gray-50 font-sans">
-      <Sidebar />
-      <Topbar />
 
       <main className="ml-64 pt-20 px-6 grid grid-cols-12 gap-6">
         <section className="col-span-8 bg-white rounded-2xl shadow p-6">

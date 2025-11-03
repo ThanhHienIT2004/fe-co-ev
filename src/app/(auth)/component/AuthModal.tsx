@@ -28,7 +28,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose }) => {
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          exit={{ opacity: 0 }} 
         >
           <motion.div
             className="bg-white text-gray-900 rounded-2xl p-6 w-[400px] shadow-2xl border border-gray-300"
@@ -37,7 +37,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose }) => {
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", duration: 0.4 }}
           >
-            {view === "login" && <Login onSwitch={setView} />}
+            {view === "login" && <Login onSwitch={setView} onClose={onClose} />}
             {view === "register" && <Register onSwitch={setView} />}
             {view === "forgot" && <ForgotPassword onSwitch={setView} />}
           </motion.div>

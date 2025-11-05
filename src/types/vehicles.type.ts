@@ -1,4 +1,4 @@
-type Vehicle = {
+export interface Vehicle {
   vehicle_id: string;
   vehicle_name: string;
   license_plate: string;
@@ -8,4 +8,4 @@ type Vehicle = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
-};
+}

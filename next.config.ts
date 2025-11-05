@@ -1,10 +1,13 @@
-import type { NextConfig } from "next";
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   images: {
-    domains: ['localhost'], // nếu có ảnh từ localhost
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
+    ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

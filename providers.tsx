@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react"
 import { SnackbarProvider } from "notistack";
+import { SessionProvider } from "next-auth/react";
 
 type ProvidersProps = {
   children: ReactNode
@@ -9,14 +10,14 @@ type ProvidersProps = {
 
 const Providers = ({ children }: ProvidersProps) => {
   return (
-    // <SessionProvider>
+    <SessionProvider>
         <SnackbarProvider maxSnack={3} autoHideDuration={1000} anchorOrigin={{
           vertical: 'top',
           horizontal: 'right'
         }}>
           {children}
         </SnackbarProvider>
-    // </SessionProvider>
+    </SessionProvider>
   )
 }
 

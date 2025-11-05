@@ -9,9 +9,8 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
         <>
             <Header />
             <HeroBanner />
-            <main className="grow">{children}</main>
+            <main className="flex-grow">{children}</main>
             <Footer />
         </>
     );
 }
-

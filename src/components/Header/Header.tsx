@@ -15,9 +15,11 @@ import {
   HandHelping
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AuthModal } from "../../app/(auth)/component/AuthModal";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const pathname = usePathname();
 
   const navItems = [
@@ -27,7 +29,6 @@ export const Header = () => {
     { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
-
   ];
 
   return (
@@ -102,16 +103,21 @@ export const Header = () => {
               <Bell className="size-5" />
             </button>
 
-            {/* User section (tĩnh) */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 backdrop-blur-md text-sm font-medium text-white hover:bg-white/20 transition cursor-pointer">
+            {/* User section */}
+            <div
+              onClick={() => setAuthOpen(true)} //
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 backdrop-blur-md text-sm font-medium text-white hover:bg-white/20 transition cursor-pointer"
+            >
               <UserCircle className="w-5 h-5 text-white/90" />
               Đăng nhập
-
               <ChevronDown className="size-4" />
             </div>
           </div>
         </div>
       </div>
+
+      {/*Modal đăng nhập */}
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
   );
 };

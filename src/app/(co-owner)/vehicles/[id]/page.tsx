@@ -19,8 +19,8 @@ export default async function VehicleDetailPage({
   if (!vehicle) notFound();
 
   return (
-    <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <main>
+      <div className="bg-white shadow-xl overflow-hidden">
         <VehicleDetail vehicle={vehicle} />
       </div>
     </main>

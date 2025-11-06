@@ -17,28 +17,32 @@ import {
   HandHelping,
   Vote,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Sidebar() {
+interface SidebarProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export default function Sidebar({ open, setOpen }: SidebarProps) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   const [showText, setShowText] = useState(false);
 
-  // Khi open thay đổi, delay hiển thị text một chút cho mượt
+  // Đồng bộ hiển thị text khi sidebar mở
   useEffect(() => {
     if (open) {
-      const timer = setTimeout(() => setShowText(true), 200); // chờ sidebar mở xong
+      const timer = setTimeout(() => setShowText(true), 150);
       return () => clearTimeout(timer);
     } else {
-      setShowText(false); // ẩn ngay khi thu gọn
+      setShowText(false);
     }
   }, [open]);
 
   const menuItems = [
     { href: "/admin-dashboard", label: "Dashboard", icon: Home },
     { href: "/users", label: "Người dùng", icon: User },
-    { href: "/vehicles", label: "Xe điện", icon: Car },
+    { href: "/vehicles-manage", label: "Xe điện", icon: Car },
     { href: "/groups", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },
     { href: "/services", label: "Dịch vụ", icon: HandHelping },
@@ -54,20 +58,21 @@ export default function Sidebar() {
   return (
     <motion.aside
       animate={{ width: open ? 200 : 60 }}
-      transition={{ duration: 0.25, ease: "easeInOut" }}
-      className="fixed left-0 top-0 h-full bg-white border-r shadow-sm flex flex-col"
+      initial={{ width: 60 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="fixed left-0 top-0 h-full bg-white border-r shadow-lg flex flex-col z-50"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      {/* Header */} 
-      <div className="p-4 flex items-center justify-center">
-        <div className="text-2xl font-bold text-blue-600">
-          {open ? "EVSharing ADMIN" : "EV"}
+      {/* Logo */}
+      <div className="p-4 flex items-center justify-center border-b">
+        <div className="text-xl font-black text-teal-600 tracking-tight">
+          {open ? "EVSharing" : "EV"}
         </div>
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 px-2 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200">
+      <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -76,10 +81,10 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center p-2 rounded-lg transition-colors ${
+              className={`flex items-center p-2 rounded-xl transition-all duration-200 group ${
                 isActive
-                  ? "bg-blue-100 text-blue-600 font-medium"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-teal-100 text-teal-700 font-semibold shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-teal-600"
               }`}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
@@ -90,7 +95,7 @@ export default function Sidebar() {
                     animate={{ opacity: 1, width: "auto" }}
                     exit={{ opacity: 0, width: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="ml-3 whitespace-nowrap"
+                    className="ml-3 whitespace-nowrap text-sm font-medium"
                   >
                     {item.label}
                   </motion.span>

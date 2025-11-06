@@ -12,7 +12,7 @@ import {
   Home,
   UserCircle,
   SquareMenu,
-  HandHelping
+  HandHelping,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "../../app/(auth)/component/AuthModal";
@@ -32,7 +32,7 @@ export const Header = () => {
   ];
 
   return (
-    <div className="sticky top-0 z-20 w-full bg-gradient-to-tr from-black via-gray-600 to-gray-900 transition-all duration-140 text-white">
+    <div className="sticky top-0 z-50 w-full bg-white shadow-md border-b border-gray-100 transition-all duration-300">
       <div
         className="mx-auto max-w-7xl px-4"
         onMouseEnter={() => setOpen(true)}
@@ -43,53 +43,58 @@ export const Header = () => {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="flex items-center gap-2 text-white/90 hover:opacity-80 transition"
+              className="flex items-center gap-2 text-teal-600 hover:opacity-80 transition"
             >
               <div
-                className="size-8 rounded-xl grid place-items-center font-bold"
+                className="size-9 rounded-xl grid place-items-center font-black text-white shadow-lg"
                 style={{
-                  background:
-                    "linear-gradient(to right, #B8C2FF 0%, #6183FF 100%)",
+                  background: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
                 }}
               >
                 EV
               </div>
-              <span className="text-lg font-semibold">EVSharing</span>
+              <span className="text-xl font-bold tracking-tight">EVSharing</span>
             </Link>
 
             {/* Navigation */}
-            <nav className="ml-6 hidden md:flex items-center gap-2">
+            <nav className="ml-8 hidden md:flex items-center gap-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
+                const Icon = item.icon;
+
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`group relative inline-flex items-center rounded-full px-3 py-1 text-sm transition 
-                      ${isActive ? "text-white" : "text-white/90 hover:bg-indigo-500/20"}`}
-                    style={
-                      isActive
-                        ? {
-                            background:
-                              "linear-gradient(to right, #B8C2FF 0%, #6183FF 100%)",
-                          }
-                        : {}
-                    }
+                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300
+                      ${isActive 
+                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" 
+                        : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                      }`}
                   >
-                    <item.icon className="size-5 shrink-0" />
+                    <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-teal-600"}`} />
                     <AnimatePresence initial={false}>
                       {(isActive || open) && (
                         <motion.span
-                          initial={{ width: 0, opacity: 0 }}
-                          animate={{ width: "auto", opacity: 1 }}
-                          exit={{ width: 0, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="overflow-hidden ml-2 whitespace-nowrap"
+                          initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
+                          exit={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="overflow-hidden whitespace-nowrap"
                         >
                           {item.label}
                         </motion.span>
                       )}
                     </AnimatePresence>
+
+                    {/* Active indicator */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavPill"
+                        className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
                   </Link>
                 );
               })}
@@ -99,24 +104,25 @@ export const Header = () => {
           {/* Right side */}
           <div className="flex items-center gap-3">
             {/* Notifications */}
-            <button className="rounded-full bg-white/10 p-2 hover:bg-white/15">
-              <Bell className="size-5" />
+            <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+              <Bell className="w-5 h-5 text-gray-700" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             </button>
 
             {/* User section */}
-            <div
-              onClick={() => setAuthOpen(true)} //
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 backdrop-blur-md text-sm font-medium text-white hover:bg-white/20 transition cursor-pointer"
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
             >
-              <UserCircle className="w-5 h-5 text-white/90" />
-              Đăng nhập
-              <ChevronDown className="size-4" />
-            </div>
+              <UserCircle className="w-5 h-5" />
+              <span>Đăng nhập</span>
+              <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/*Modal đăng nhập */}
+      {/* Modal đăng nhập */}
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
   );

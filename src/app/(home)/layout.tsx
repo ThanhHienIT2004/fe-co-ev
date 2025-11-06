@@ -1,7 +1,7 @@
 import React from "react";
-import Footer from "@/components/Footer/Footer";
-import { Header } from "@/components/Header/Header";
 import HeroBanner from "@/components/banner/HeroBanner";
+import { Header } from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
 
 // src/app/(guest)/layout.tsx
 export default function HomeLayout({ children }: { children: React.ReactNode }) {

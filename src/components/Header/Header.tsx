@@ -32,13 +32,13 @@ export const Header = () => {
   ];
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-white shadow-md border-b border-gray-100 transition-all duration-300">
+    <div className="sticky top-0 z-50 w-full bg-teal-50 shadow-md border-b border-gray-100 transition-all duration-300">
       <div
         className="mx-auto max-w-7xl px-4"
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
       >
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           {/* Logo + Menu */}
           <div className="flex items-center gap-3">
             <Link

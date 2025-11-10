@@ -25,7 +25,7 @@ export const Header = () => {
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
     { href: "/vehicles", label: "Danh sách xe", icon: Car },
-    { href: "/group", label: "Nhóm đồng sở hữu", icon: Users },
+    { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
@@ -68,7 +68,7 @@ export const Header = () => {
                     href={item.href}
                     className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300
                       ${isActive 
-                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" 
+                        ? "bg-linear-to-r from-teal-500 to-cyan-500 text-white shadow-md" 
                         : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                       }`}
                   >
@@ -91,7 +91,7 @@ export const Header = () => {
                     {isActive && (
                       <motion.div
                         layoutId="activeNavPill"
-                        className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
+                        className="absolute inset-0 bg-linear-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -112,7 +112,7 @@ export const Header = () => {
             {/* User section */}
             <button
               onClick={() => setAuthOpen(true)}
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
             >
               <UserCircle className="w-5 h-5" />
               <span>Đăng nhập</span>

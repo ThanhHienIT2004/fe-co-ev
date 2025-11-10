@@ -43,7 +43,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     { href: "/admin-dashboard", label: "Dashboard", icon: Home },
     { href: "/users", label: "Người dùng", icon: User },
     { href: "/vehicles-manage", label: "Xe điện", icon: Car },
-    { href: "/groups", label: "Nhóm đồng sở hữu", icon: Users },
+    { href: "/ownership-groups-manage", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },
     { href: "/service-tasks-manage", label: "Dịch vụ", icon: HandHelping },
     { href: "/contracts", label: "Hợp đồng", icon: ReceiptText },

@@ -1,120 +1,95 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useOwnerUsage } from "@/libs/hooks/useOwnerUsage";
+import { useAdminUsage } from "@/libs/hooks/useAdminUsage";
 import { UsageRecord } from "@/types/usage.type";
 
-export default function UsageHistoryPage() {
+export default function AdminUsagePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  const { usages, fetchUsages, isLoading, updateUsage, deleteUsage } = useOwnerUsage();
+  const { usages, fetchUsages, isLoading, updateUsage, deleteUsage } = useAdminUsage();
 
-   // Modal state
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingUsage, setEditingUsage] = useState<UsageRecord | null>(null);
-  
-    // Form state
-    const [formCheckIn, setFormCheckIn] = useState("");
-    const [formCheckOut, setFormCheckOut] = useState("");
-    const [formCondition, setFormCondition] = useState("");
-    const [formDistance, setFormDistance] = useState<number | "">("");
-  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUsage, setEditingUsage] = useState<UsageRecord | null>(null);
+
+  // Form state
+  const [formCheckIn, setFormCheckIn] = useState("");
+  const [formCheckOut, setFormCheckOut] = useState("");
+  const [formCondition, setFormCondition] = useState("");
+  const [formDistance, setFormDistance] = useState<number | "">("");
 
   useEffect(() => {
     fetchUsages();
   }, []);
 
   const filteredHistory = usages?.filter(u => {
-      const matchesSearch = u.booking_id?.toLowerCase().includes(searchTerm.toLowerCase());
-      const recordDate = u.record_time ? new Date(u.record_time) : null;
-      const from = fromDate ? new Date(fromDate) : null;
-      const to = toDate ? new Date(toDate) : null;
-      const matchesDate = (!from || (recordDate && recordDate >= from)) &&
-                          (!to || (recordDate && recordDate <= to));
-      return matchesSearch && matchesDate;
-    }) || [];
-  
-    const uniqueHistory = Array.from(
-      new Map(filteredHistory.map(u => [u.usage_id, u])).values()
-    );
-  
-    const openEditModal = (usage: UsageRecord) => {
-      setEditingUsage(usage);
-      setFormCheckIn(usage.check_in_time || "");
-      setFormCheckOut(usage.check_out_time || "");
-      setFormCondition(usage.vehicle_condition || "");
-      setFormDistance(usage.distance || "");
-      setIsModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setIsModalOpen(false);
-      setEditingUsage(null);
-    };
-  
-    const handleUpdate = async () => {
-      if (!editingUsage) return;
-  
-      const updated = await updateUsage(editingUsage.usage_id, {
-          check_in_time: formCheckIn || undefined,
-          check_out_time: formCheckOut || undefined,
-          vehicle_condition: formCondition || undefined,
-          distance: formDistance !== "" ? Number(formDistance) : undefined,
-      });
-  
-      // updated đã merge trong hook, chỉ cần đóng modal
-      closeModal();
-    };
-    
+    const matchesSearch = u.booking_id?.toLowerCase().includes(searchTerm.toLowerCase());
+    const recordDate = u.record_time ? new Date(u.record_time) : null;
+    const from = fromDate ? new Date(fromDate) : null;
+    const to = toDate ? new Date(toDate) : null;
+    const matchesDate = (!from || (recordDate && recordDate >= from)) &&
+                        (!to || (recordDate && recordDate <= to));
+    return matchesSearch && matchesDate;
+  }) || [];
+
+  const uniqueHistory = Array.from(
+    new Map(filteredHistory.map(u => [u.usage_id, u])).values()
+  );
+
+  const openEditModal = (usage: UsageRecord) => {
+    setEditingUsage(usage);
+    setFormCheckIn(usage.check_in_time || "");
+    setFormCheckOut(usage.check_out_time || "");
+    setFormCondition(usage.vehicle_condition || "");
+    setFormDistance(usage.distance || "");
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingUsage(null);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingUsage) return;
+
+    const updated = await updateUsage(editingUsage.usage_id, {
+        check_in_time: formCheckIn || undefined,
+        check_out_time: formCheckOut || undefined,
+        vehicle_condition: formCondition || undefined,
+        distance: formDistance !== "" ? Number(formDistance) : undefined,
+    });
+
+    // updated đã merge trong hook, chỉ cần đóng modal
+    closeModal();
+  };
 
   return (
     <main className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-semibold mb-6 text-gray-800">
-        Lịch sử sử dụng xe
-      </h1>
+      <h1 className="text-2xl font-semibold mb-6 text-gray-800">Quản lý Usage</h1>
 
       {/* Filters */}
       <div className="bg-white shadow-md rounded-xl p-6 mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Từ ngày
-            </label>
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-            />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Từ ngày</label>
+            <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300 focus:outline-none"/>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Đến ngày
-            </label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-            />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Đến ngày</label>
+            <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300 focus:outline-none"/>
           </div>
         </div>
         <div className="flex flex-col">
-          <label className="block text-sm font-medium text-gray-600 mb-1">
-            Tìm kiếm Booking ID
-          </label>
-          <input
-            type="text"
-            placeholder="Nhập Booking ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-          />
+          <label className="block text-sm font-medium text-gray-600 mb-1">Tìm kiếm Booking ID</label>
+          <input type="text" placeholder="Nhập Booking ID..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-300 focus:outline-none"/>
         </div>
       </div>
-    {/* Table */}
+
+      {/* Table */}
       <div className="bg-white shadow-md rounded-xl p-6 overflow-x-auto">
         {isLoading ? (
           <p className="text-center py-6 text-gray-500">Đang tải dữ liệu...</p>
@@ -164,7 +139,8 @@ export default function UsageHistoryPage() {
           </table>
         )}
       </div>
-     {/* Modal */}
+
+      {/* Modal */}
       {isModalOpen && editingUsage && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-96">

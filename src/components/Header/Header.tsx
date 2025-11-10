@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 import {
   Bell,
   Users,
@@ -13,6 +14,9 @@ import {
   UserCircle,
   SquareMenu,
   HandHelping,
+  Settings,
+  User,
+  LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "../../app/(auth)/component/AuthModal";
@@ -20,7 +24,11 @@ import { AuthModal } from "../../app/(auth)/component/AuthModal";
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const { data: session } = useSession();
+  const userName = session?.user?.name || null;
 
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
@@ -67,8 +75,8 @@ export const Header = () => {
                     key={item.href}
                     href={item.href}
                     className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300
-                      ${isActive 
-                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" 
+                      ${isActive
+                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
                         : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                       }`}
                   >
@@ -110,14 +118,64 @@ export const Header = () => {
             </button>
 
             {/* User section */}
-            <button
-              onClick={() => setAuthOpen(true)}
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
-            >
-              <UserCircle className="w-5 h-5" />
-              <span>Đăng nhập</span>
-              <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
-            </button>
+            {userName ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <UserCircle className="w-5 h-5" />
+                  <span>{userName}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${userMenuOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {/* Dropdown menu */}
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50"
+                    >
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-teal-50 transition"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <User className="w-4 h-4 text-teal-600" />
+                        Hồ sơ
+                      </Link>
+                      <Link
+                        href="/settings"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-teal-50 transition"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <Settings className="w-4 h-4 text-teal-600" />
+                        Cài đặt
+                      </Link>
+                      <button
+                        onClick={() => signOut({ callbackUrl: "/" })}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-teal-50 transition w-full text-left"
+                      >
+                        <LogOut className="w-4 h-4 text-teal-600" />
+                        Đăng xuất
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+              >
+                <UserCircle className="w-5 h-5" />
+                <span>Đăng nhập</span>
+                <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              </button>
+            )}
           </div>
         </div>
       </div>

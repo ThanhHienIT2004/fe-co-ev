@@ -42,6 +42,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const menuItems = [
     { href: "/admin-dashboard", label: "Dashboard", icon: Home },
     { href: "/users", label: "Người dùng", icon: User },
+    { href: "/profiles", label: "Profile", icon: User },
     { href: "/vehicles-manage", label: "Xe điện", icon: Car },
     { href: "/ownership-groups-manage", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },

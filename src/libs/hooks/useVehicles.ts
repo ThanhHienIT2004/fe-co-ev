@@ -11,7 +11,7 @@ export const useVehicles = () => {
   const { data, error, isLoading, mutate } = useSWR<Vehicle[]>('/vehicles', fetcher);
   return { data, error, isLoading, mutate };
 };
-
+ 
 // === GET ONE ===
 export const useVehicle = (id: string | null) => {
   const { data, error, isLoading } = useSWR<Vehicle>(

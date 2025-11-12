@@ -75,13 +75,8 @@ export const Header = () => {
                     key={item.href}
                     href={item.href}
                     className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300
-<<<<<<< HEAD
                       ${isActive 
                         ? "bg-linear-to-r from-teal-500 to-cyan-500 text-white shadow-md" 
-=======
-                      ${isActive
-                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
->>>>>>> 0eeb9bd25753c3cf3d59e5d243dd2a8c0c6269c7
                         : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                       }`}
                   >
@@ -123,16 +118,6 @@ export const Header = () => {
             </button>
 
             {/* User section */}
-<<<<<<< HEAD
-            <button
-              onClick={() => setAuthOpen(true)}
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
-            >
-              <UserCircle className="w-5 h-5" />
-              <span>Đăng nhập</span>
-              <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
-            </button>
-=======
             {userName ? (
               <div className="relative">
                 <button
@@ -191,7 +176,6 @@ export const Header = () => {
                 <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
               </button>
             )}
->>>>>>> 0eeb9bd25753c3cf3d59e5d243dd2a8c0c6269c7
           </div>
         </div>
       </div>

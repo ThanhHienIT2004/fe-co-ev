@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function HeroBanner() {
     return (
-        <section className="relative w-full h-[100vh] overflow-hidden">
+        <section className="relative w-full h-screen overflow-hidden">
             {/* Background image */}
             <Image
                 src="/images/herobanner.png"

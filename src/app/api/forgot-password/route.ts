@@ -4,7 +4,7 @@ export async function POST(request: Request) {
   try {
     const { email } = await request.json();
     const javaApiRes = await fetch(
-      "http://localhost:8080/api/login/forgot-password",
+      "http://localhost:8080/user/forgot-password",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

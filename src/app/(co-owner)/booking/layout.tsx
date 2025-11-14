@@ -1,6 +1,6 @@
-import HeroBanner from "@/components/banner/HeroBanner";
-import Footer from "@/components/footer/Footer";
-import { Header } from "@/components/header/Header";
+import HeroBanner from "@/components/Banner/HeroBanner";
+import Footer from "@/components/Footer/Footer";
+import { Header } from "@/components/Header/Header";
 import React from "react";
 
 export default function BookNowLayout({

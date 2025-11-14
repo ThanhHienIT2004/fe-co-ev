@@ -9,7 +9,7 @@ import {
   Edit,
   Trash2,
   Loader2,
-  Crown,
+  Crown,  
   Percent,
   AlertCircle,
 } from "lucide-react";

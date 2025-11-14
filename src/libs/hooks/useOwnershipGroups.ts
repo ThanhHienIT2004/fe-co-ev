@@ -1,7 +1,7 @@
 // hooks/useOwnershipGroups.ts
 import useSWR, { useSWRConfig } from 'swr';
 import { OwnershipGroupResponseDto, CreateOwnershipGroupDto } from '@/types/ownership-group';
-import api from '@/libs/apis/api'; // ba tạo file này ở dưới
+import api from '../apis/admin-and-staff';
 
 const fetcher = (url: string) => api.get(url).then(res => res.data);
 

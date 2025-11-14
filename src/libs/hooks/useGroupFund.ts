@@ -1,12 +1,12 @@
 // src/libs/hooks/useGroupFund.ts
 import { useState, useEffect, useCallback } from 'react';
-import api from '@/libs/apis/api';
 import type {
   GroupFund,
   CreateFundRequest,
   DepositRequest,
   MomoPaymentResponse,
 } from '@/types/groupfund.type';
+import api from '../apis/payment';
 
 export const useGroupFund = (groupId?: string) => {
   const [funds, setFunds] = useState<GroupFund[]>([]);

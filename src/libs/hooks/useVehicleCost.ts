@@ -1,12 +1,12 @@
 // src/libs/hooks/useVehicleCost.ts
 import { useState, useEffect, useCallback } from 'react';
-import api from '@/libs/apis/api';
 import type {
   VehicleCost,
   CreateCostRequest,
   UpdateStatusRequest,
   MomoPaymentResponse,
 } from '@/types/vehiclecost.type';
+import api from '../apis/payment';
 
 export const useVehicleCost = (groupId?: string) => {
   const [costs, setCosts] = useState<VehicleCost[]>([]);

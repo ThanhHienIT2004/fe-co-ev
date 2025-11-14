@@ -18,9 +18,9 @@ export default function VehiclesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50">
+    <main className="min-h-screen bg-linear-to-br from-slate-50 via-white to-cyan-50">
       {/* HERO HEADER */}
-      <div className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white">
+      <div className="bg-linear-to-r from-teal-600 to-cyan-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
             <div className="max-w-2xl">
@@ -43,7 +43,7 @@ export default function VehiclesPage() {
             </div>
 
             <Link
-              href="/vehicles/create"
+              href="/ownership-groups/create"
               className="group flex items-center gap-3 bg-white text-teal-600 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-cyan-300 transition-all duration-300 hover:scale-105 hover:-translate-y-1"
             >
               <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
@@ -95,7 +95,7 @@ export default function VehiclesPage() {
             <div className="flex flex-col justify-center items-center gap-4">
               <Link
                 href="/group/invite"
-                className="w-full max-w-xs bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transition-all hover:scale-105"
+                className="w-full max-w-xs bg-linear-to-r from-teal-500 to-cyan-500 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transition-all hover:scale-105"
               >
                 Mời thành viên mới
               </Link>

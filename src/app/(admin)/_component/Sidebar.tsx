@@ -42,8 +42,9 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const menuItems = [
     { href: "/admin-dashboard", label: "Dashboard", icon: Home },
     { href: "/users", label: "Người dùng", icon: User },
+    { href: "/profiles", label: "Hồ sơ", icon: User },
     { href: "/vehicles-manage", label: "Xe điện", icon: Car },
-    { href: "/groups", label: "Nhóm đồng sở hữu", icon: Users },
+    { href: "/ownership-groups-manage", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },
     { href: "/service-tasks-manage", label: "Dịch vụ", icon: HandHelping },
     { href: "/contracts", label: "Hợp đồng", icon: ReceiptText },
@@ -87,7 +88,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   : "text-gray-600 hover:bg-gray-100 hover:text-teal-600"
               }`}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="w-5 h-5 shrink-0" />
               <AnimatePresence>
                 {showText && (
                   <motion.span

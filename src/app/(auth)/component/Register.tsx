@@ -25,7 +25,7 @@ export const Register = ({
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch("http://localhost:8080/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -35,32 +35,29 @@ export const Register = ({
 
       if (!res.ok) {
         setError(data.message || "Đăng ký thất bại.");
-      } 
-      
-      else {
+      } else {
         alert("Đăng ký thành công! Vui lòng đăng nhập.");
         onSwitch("login");
       }
-    } 
-
-      catch (err) {
-      setError("Không thể kết nối đến máy chủ. Vui lòng thử lại.");
-    } 
-
-      finally {
+    } catch (err) {
+      setError("Không thể kết nối đến máy chủ.");
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <h2 className="text-xl font-semibold mb-4 text-center">Đăng ký</h2>
-      {}
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-teal-700">Tạo tài khoản</h2>
+        <p className="text-sm text-gray-600 mt-1">Tham gia EVSharing ngay hôm nay</p>
+      </div>
+
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Họ và tên"
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={isLoading}
@@ -69,7 +66,7 @@ export const Register = ({
         <input
           type="email"
           placeholder="Email"
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading}
@@ -78,7 +75,7 @@ export const Register = ({
         <input
           type="password"
           placeholder="Mật khẩu"
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={isLoading}
@@ -87,35 +84,36 @@ export const Register = ({
         <input
           type="password"
           placeholder="Xác nhận mật khẩu"
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           disabled={isLoading}
           required
         />
 
-        {}
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+        )}
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md transition"
+          disabled={isLoading}
+          className="w-full py-3 rounded-xl text-white font-semibold shadow-md bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+        </button>
+      </form>
+
+      <div className="text-center text-sm">
+        <button
+          type="button"
+          onClick={() => onSwitch("login")}
+          className="text-teal-600 hover:underline font-medium"
           disabled={isLoading}
         >
-          {isLoading ? "Đang xử lý..." : "Tạo tài khoản"}
+          Đã có tài khoản? Đăng nhập
         </button>
-
-        <div className="text-center text-sm text-gray-600 mt-2">
-          <button
-            type="button"
-            onClick={() => onSwitch("login")}
-            className="text-indigo-600 hover:underline"
-            disabled={isLoading}
-          >
-            Đã có tài khoản? Đăng nhập
-          </button>
-        </div>
-      </form>
-    </>
+      </div>
+    </div>
   );
 };

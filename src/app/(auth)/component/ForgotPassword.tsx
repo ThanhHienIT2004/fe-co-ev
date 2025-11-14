@@ -11,28 +11,24 @@ export const ForgotPassword = ({
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const [isCooldown, setIsCooldown] = useState(false); 
+  const [isCooldown, setIsCooldown] = useState(false);
 
   useEffect(() => {
     if (isCooldown && countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-    } 
-    else if (countdown === 0) {
-      setIsCooldown(false); 
+    } else if (countdown === 0) {
+      setIsCooldown(false);
     }
   }, [countdown, isCooldown]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setError("");
     setMessage("");
 
-    if (email.trim() === "") {
-      setError("Vui lòng nhập email của bạn.");
+    if (!email.trim()) {
+      setError("Vui lòng nhập email.");
       return;
     }
 
@@ -48,65 +44,64 @@ export const ForgotPassword = ({
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Đã xảy ra lỗi.");
+        setError(data.message || "Gửi thất bại.");
       } else {
-        setMessage(data.message);
-        
-
+        setMessage(data.message || "Liên kết đã được gửi đến email của bạn.");
         setIsCooldown(true);
         setCountdown(60);
       }
     } catch (err) {
-      setError("Không thể kết nối đến máy chủ. Vui lòng thử lại.");
+      setError("Không thể kết nối đến máy chủ.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-center">Quên mật khẩu</h2>
-      <p className="text-sm text-center text-gray-600">
-        Nhập email của bạn, chúng tôi sẽ gửi một liên kết để đặt lại mật khẩu.
-      </p>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-teal-700">Khôi phục mật khẩu</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Nhập email để nhận liên kết đặt lại mật khẩu
+        </p>
+      </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           type="email"
-          placeholder="Nhập email khôi phục"
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+          placeholder="Email khôi phục"
+          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          disabled={isLoading || isCooldown} 
+          disabled={isLoading || isCooldown}
           required
         />
 
-        {message && <p className="text-green-600 text-sm text-center">{message}</p>}
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        {message && (
+          <p className="text-green-600 text-sm text-center font-medium">{message}</p>
+        )}
+        {error && (
+          <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+        )}
 
         <button
           type="submit"
-          className={`w-full text-white py-2 rounded-md transition ${
-            (isLoading || isCooldown)
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700'
-          }`}
-          disabled={isLoading || isCooldown} 
-                  >
-          {}
+          disabled={isLoading || isCooldown}
+          className="w-full py-3 rounded-xl text-white font-semibold shadow-md bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+        >
           {isLoading
             ? "Đang gửi..."
             : isCooldown
-              ? `Gửi lại sau (${countdown}s)`
-              : "Gửi liên kết khôi phục"}
+            ? `Gửi lại sau ${countdown}s`
+            : "Gửi liên kết"}
         </button>
       </form>
 
-      <div className="text-center text-sm text-gray-600 mt-2">
+      <div className="text-center text-sm">
         <button
           type="button"
           onClick={() => onSwitch("login")}
-          className="text-indigo-600 hover:underline"
+          className="text-teal-600 hover:underline font-medium"
           disabled={isLoading}
         >
           Quay lại đăng nhập

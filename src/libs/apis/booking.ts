@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 export const bookingApi = {
   create: async (data: CreateBookingDto): Promise<Booking> => {
-    const res = await fetch(`${API_URL}/booking/create-booking`, {
+    const res = await fetch(`${API_URL}/booking/create`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -14,7 +14,7 @@ export const bookingApi = {
   },
 
   getAll: async (): Promise<Booking[]> => {
-    const res = await fetch(`${API_URL}/booking/get-all-bookings`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/booking`, { cache: 'no-store' });
     return res.json();
   },
 

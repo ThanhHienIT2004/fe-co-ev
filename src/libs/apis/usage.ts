@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 export const usageApi = {
   create: async (data: CreateUsageDto): Promise<UsageRecord> => {
-    const res = await fetch(`${API_URL}/booking/usage/create-usage`, {
+    const res = await fetch(`${API_URL}/booking/usage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -19,7 +19,7 @@ export const usageApi = {
 
   getAll: async (params?: { user_id?: string; booking_id?: string }): Promise<UsageRecord[]> => {
     const query = new URLSearchParams(params as any).toString();
-    const res = await fetch(`${API_URL}/booking/usage/get-all-usage${query ? `?${query}` : ''}`, {
+    const res = await fetch(`${API_URL}/booking/usage${query ? `?${query}` : ''}`, {
       cache: 'no-store',
     });
     if (!res.ok) {

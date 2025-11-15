@@ -1,9 +1,9 @@
 export interface User {
-  user_id: string;
-  email: string;
+  userId: number;
   role_id: number;
+  email: string;
   password: string;
   is_verified: boolean;
   isDeleted: boolean;
-  created_at: string;
+  createdAt: string;
 }

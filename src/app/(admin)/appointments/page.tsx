@@ -29,13 +29,13 @@ export default function AdminBookingListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [formData, setFormData] = useState<UpdateBookingDto>({});
-  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
   const filteredBookings = useMemo(() => {
     return (Array.isArray(bookings) ? bookings : []).filter((b) =>
-      [b.booking_id, b.user_id, b.vehicle_id].some((field) => field?.toLowerCase().includes(searchTerm.toLowerCase()))
+      [b.booking_id, b.user_id, b.vehicle_id].some((field) => field?.toString().includes(searchTerm))
     );
   }, [bookings, searchTerm]);
 
@@ -46,13 +46,13 @@ export default function AdminBookingListPage() {
 
   const totalPages = Math.ceil(filteredBookings.length / pageSize);
 
-  const handleUpdateStatus = async (id: string, status: BookingStatus) => {
+  const handleUpdateStatus = async (id: number, status: BookingStatus) => {
     setLoadingId(id);
     try { await updateBooking(id, { booking_status: status }); }
     finally { setLoadingId(null); }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (!confirm("Xác nhận xóa booking này?")) return;
     setLoadingId(id);
     try { await deleteBooking(id); }
@@ -154,7 +154,7 @@ export default function AdminBookingListPage() {
                 <tbody className="divide-y divide-slate-100">
                   {paginatedBookings.map((b) => (
                     <tr key={b.booking_id} className="hover:bg-slate-50/50 transition-colors duration-150">
-                      <td className="px-5 py-4 font-mono text-xs text-slate-600">#{b.booking_id?.slice(0, 8)}</td>
+                      <td className="px-5 py-4 font-mono text-xs text-slate-600">#{b.booking_id}</td>
                       <td className="px-5 py-4 text-sm font-medium text-slate-800">{b.user_id}</td>
                       <td className="px-5 py-4 text-sm text-slate-700">{b.vehicle_id}</td>
                       <td className="px-5 py-4 text-center"><StatusBadge status={b.booking_status} /></td>

@@ -18,4 +18,4 @@ const PromptInput: React.FC<PromptInputProps> = ({ value, onChange }) => {
   );
 };
 
-export default PromptInput;   // BẮT BUỘC PHẢI CÓ DÒNG NÀY!!!
+export default PromptInput;   

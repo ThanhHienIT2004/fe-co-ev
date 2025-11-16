@@ -28,11 +28,7 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
     setLoading(true);
 
     try {
-<<<<<<< HEAD
-      const res = await fetch("http://localhost:8080/user/register", {
-=======
       const response = await fetch("http://localhost:8080/user/register", {
->>>>>>> main
         method: "POST",
         headers: {
           "Content-Type": "application/json", // Quan trọng: backend nhận JSON
@@ -46,18 +42,6 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
 
       const data = await response.json();
 
-<<<<<<< HEAD
-      if (!res.ok) {
-        setError(data.message || "Đăng ký thất bại.");
-      } else {
-        alert("Đăng ký thành công! Vui lòng đăng nhập.");
-        onSwitch("login");
-      }
-    } catch (err) {
-      setError("Không thể kết nối đến máy chủ.");
-    } finally {
-      setIsLoading(false);
-=======
       if (response.ok && data.success) {
         setSuccess(true);
         setTimeout(() => {
@@ -71,81 +55,10 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
       setError("Không thể kết nối đến server. Vui lòng thử lại.");
     } finally {
       setLoading(false);
->>>>>>> main
     }
   };
 
   return (
-<<<<<<< HEAD
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-teal-700">Tạo tài khoản</h2>
-        <p className="text-sm text-gray-600 mt-1">Tham gia EVSharing ngay hôm nay</p>
-      </div>
-
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Họ và tên"
-          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          disabled={isLoading}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isLoading}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Mật khẩu"
-          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={isLoading}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Xác nhận mật khẩu"
-          className="w-full px-4 py-3 rounded-xl border border-teal-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-gray-900 placeholder-gray-500"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          disabled={isLoading}
-          required
-        />
-
-        {error && (
-          <p className="text-red-500 text-sm text-center font-medium">{error}</p>
-        )}
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full py-3 rounded-xl text-white font-semibold shadow-md bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-        >
-          {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
-        </button>
-      </form>
-
-      <div className="text-center text-sm">
-        <button
-          type="button"
-          onClick={() => onSwitch("login")}
-          className="text-teal-600 hover:underline font-medium"
-          disabled={isLoading}
-        >
-          Đã có tài khoản? Đăng nhập
-        </button>
-      </div>
-    </div>
-=======
     <>
       <h2 className="text-2xl font-bold text-center mb-2 text-teal-600">
         {success ? "Đăng Ký Thành Công!" : "Tạo Tài Khoản Mới"}
@@ -226,6 +139,5 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
         </div>
       )}
     </>
->>>>>>> main
   );
 };

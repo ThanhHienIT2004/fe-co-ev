@@ -1,7 +1,7 @@
 import React from "react";
-import HeroBanner from "@/components/banner/HeroBanner";
-import Footer from "@/components/footer/Footer";
-import { Header } from "@/components/header/Header";
+import HeroBanner from "@/components/Banner/HeroBanner";
+import { Header } from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
 
 // src/app/(guest)/layout.tsx
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
@@ -9,7 +9,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
         <>
             <Header />
             <HeroBanner />
-            <main className="flex-grow">{children}</main>
+            <main className="grow">{children}</main>
             <Footer />
         </>
     );

@@ -1,7 +1,7 @@
 // hooks/useVehicles.ts
 import useSWR, { useSWRConfig } from 'swr';
 import { Vehicle, CreateVehicleFormData, UpdateVehicleFormData } from '@/types/vehicles.type';
-import api from '../apis/api';
+import api from '../apis/admin-and-staff';
 
 // === FETCHER ===
 const fetcher = (url: string) => api.get(url).then(res => res.data);
@@ -11,7 +11,7 @@ export const useVehicles = () => {
   const { data, error, isLoading, mutate } = useSWR<Vehicle[]>('/vehicles', fetcher);
   return { data, error, isLoading, mutate };
 };
-
+ 
 // === GET ONE ===
 export const useVehicle = (id: string | null) => {
   const { data, error, isLoading } = useSWR<Vehicle>(

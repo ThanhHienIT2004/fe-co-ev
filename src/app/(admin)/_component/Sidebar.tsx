@@ -89,7 +89,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   : "text-gray-600 hover:bg-gray-100 hover:text-teal-600"
               }`}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="w-5 h-5 shrink-0" />
               <AnimatePresence>
                 {showText && (
                   <motion.span

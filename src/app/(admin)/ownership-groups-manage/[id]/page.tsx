@@ -1,19 +1,33 @@
-// app/ownership-groups-manage/[id]/page.tsx
 "use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowLeft, Users, UserPlus, Edit, Trash2, Loader2, Crown, Percent } from 'lucide-react';
-import { useOwnershipGroup } from '@/libs/hooks/useOwnershipGroups';
-import { useGroupMembers, useDeleteGroupMember } from '@/libs/hooks/useGroupMembers';
-import { useParams, useRouter } from 'next/navigation';
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  Users,
+  UserPlus,
+  Edit,
+  Trash2,
+  Loader2,
+  Crown,  
+  Percent,
+  AlertCircle,
+} from "lucide-react";
+import { useOwnershipGroup } from "@/libs/hooks/useOwnershipGroups";
+import {
+  useGroupMembers,
+  useDeleteGroupMember,
+} from "@/libs/hooks/useGroupMembers";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 
 export default function GroupDetailPage() {
   const { id } = useParams();
-  const router = useRouter();
   const { group, isLoading: loadingGroup } = useOwnershipGroup(id as string);
-  const { members, isLoading: loadingMembers } = useGroupMembers(id as string);
+  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(id as string);
   const { deleteMember } = useDeleteGroupMember();
+
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   if (loadingGroup || loadingMembers) {
     return <LoadingSkeleton />;
@@ -25,10 +39,21 @@ export default function GroupDetailPage() {
 
   const vehicle = group.vehicle;
 
+  const handleDelete = async (memberId: string) => {
+    if (!confirm("Bạn có chắc muốn xoá thành viên này?")) return;
+    try {
+      setDeleting(memberId);
+      await deleteMember(memberId, id as string);
+      await mutate(); // refetch lại danh sách thành viên
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-white to-cyan-50">
       {/* HERO + QUAY LẠI */}
-      <div className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white">
+      <div className="bg-linear-to-br from-teal-600 to-cyan-600 text-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="flex items-center gap-6 mb-8">
             <Link
@@ -76,7 +101,7 @@ export default function GroupDetailPage() {
         <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/50">
           <div className="relative h-80">
             <Image
-              src={vehicle?.image_url || '/images-default.jpg'}
+              src={vehicle?.image_url || "/images-default.jpg"}
               alt={vehicle?.vehicle_name}
               fill
               className="object-cover"
@@ -84,7 +109,9 @@ export default function GroupDetailPage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute bottom-8 left-8 text-white">
-              <h2 className="text-4xl font-black drop-shadow-2xl">{vehicle?.vehicle_name}</h2>
+              <h2 className="text-4xl font-black drop-shadow-2xl">
+                {vehicle?.vehicle_name}
+              </h2>
               <p className="text-2xl font-bold mt-2">{vehicle?.license_plate}</p>
               <p className="text-lg mt-2 opacity-90">{vehicle?.description}</p>
             </div>
@@ -121,11 +148,11 @@ export default function GroupDetailPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-black text-xl">
-                      {member.member_name?.[0] || 'U'}
+                      {member.member_name?.[0] || "U"}
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
-                        {member.member_name || 'Thành viên'}
+                        {member.member_name || "Thành viên"}
                       </h3>
                       <p className="text-gray-600 font-mono text-sm">
                         ID: {member.member_id.slice(0, 12)}...
@@ -134,12 +161,14 @@ export default function GroupDetailPage() {
                   </div>
 
                   <div className="flex items-center gap-6">
-                    {/* Role */}
+                    {/* Vai trò */}
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Vai trò</p>
                       <p className="font-bold text-teal-600 flex items-center gap-2">
-                        {member.group_role === 'OWNER' && <Crown className="w-5 h-5 text-yellow-500" />}
-                        {member.group_role || 'Thành viên'}
+                        {member.group_role === "OWNER" && (
+                          <Crown className="w-5 h-5 text-yellow-500" />
+                        )}
+                        {member.group_role || "Thành viên"}
                       </p>
                     </div>
 
@@ -147,7 +176,6 @@ export default function GroupDetailPage() {
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Tỷ lệ sở hữu</p>
                       <p className="font-black text-2xl text-teal-600 flex items-center gap-1">
-                        <Percent className="w-5 h-5" />
                         {member.ownership_ratio || 0}%
                       </p>
                     </div>
@@ -158,10 +186,15 @@ export default function GroupDetailPage() {
                         <Edit className="w-5 h-5" />
                       </button>
                       <button
-                        onClick={() => confirm('Xóa thành viên này?') && deleteMember(member.member_id)}
-                        className="p-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition"
+                        onClick={() => handleDelete(member.member_id)}
+                        disabled={deleting === member.member_id}
+                        className="p-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition disabled:opacity-50"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        {deleting === member.member_id ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-5 h-5" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -175,6 +208,29 @@ export default function GroupDetailPage() {
   );
 }
 
-// Loading & Error giữ nguyên như trước
-function LoadingSkeleton() { /* ... */ }
-function ErrorState({ message }: { message: string }) { /* ... */ }
+// Loading
+function LoadingSkeleton() {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-teal-600 text-xl font-bold">
+      Đang tải dữ liệu...
+    </div>
+  );
+}
+
+// Error
+function ErrorState({ message }: { message: string }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white p-10 rounded-2xl shadow-xl text-center max-w-md">
+        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+        <p className="text-xl font-bold text-red-600">{message}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition font-bold"
+        >
+          Thử lại
+        </button>
+      </div>
+    </div>
+  );
+}

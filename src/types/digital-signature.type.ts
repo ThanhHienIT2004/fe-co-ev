@@ -16,6 +16,7 @@ export interface DigitalSignature {
   usage_id: number;
   type: SignatureType;
   signature_data?: string;
+  qr_token?: string;
   signed_at: string; // ISO string
 }
 
@@ -24,4 +25,5 @@ export interface CreateSignatureDto {
   usage_id: number;
   type: SignatureType;
   signature_data: string;
+  qr_token?: string;
 }

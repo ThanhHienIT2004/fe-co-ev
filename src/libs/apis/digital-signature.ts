@@ -14,7 +14,7 @@ export const digitalSignatureApi = {
   },
 
   getAll: async (): Promise<DigitalSignature[]> => {
-    const res = await fetch(`${API_URL}`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/get-all`, { cache: 'no-store' });
     return res.json();
   },
 

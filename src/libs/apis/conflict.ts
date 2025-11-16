@@ -22,19 +22,19 @@ export const conflictApi = {
   },
 
   // Lấy conflict theo ID
-  getById: async (conflict_id: string): Promise<ConflictLog> => {
+  getById: async (conflict_id: number): Promise<ConflictLog> => {
     const res = await fetch(`${API_URL}/booking/conflict-log/${conflict_id}`);
     return res.json();
   },
 
   // Lấy conflict theo user ID
-  getByBooking: async (user_id: string): Promise<ConflictLog[]> => {
+  getByBooking: async (user_id: number): Promise<ConflictLog[]> => {
     const res = await fetch(`${API_URL}/booking/conflict-log/${user_id}`);
     return res.json();
   },
 
   // Cập nhật trạng thái conflict
-  updateStatus: async (conflict_id: string, data: UpdateConflictStatusDto): Promise<ConflictLog> => {
+  updateStatus: async (conflict_id: number, data: UpdateConflictStatusDto): Promise<ConflictLog> => {
     const res = await fetch(`${API_URL}/booking/conflict-log/${conflict_id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

@@ -17,9 +17,9 @@ export const usageApi = {
     return res.json();
   },
 
-  getAll: async (params?: { user_id?: string; booking_id?: string }): Promise<UsageRecord[]> => {
+  getAll: async (params?: { user_id?: number; booking_id?: number }): Promise<UsageRecord[]> => {
     const query = new URLSearchParams(params as any).toString();
-    const res = await fetch(`${API_URL}/booking/usage${query ? `?${query}` : ''}`, {
+    const res = await fetch(`${API_URL}/booking/usage/get-all${query ? `?${query}` : ''}`, {
       cache: 'no-store',
     });
     if (!res.ok) {
@@ -29,13 +29,13 @@ export const usageApi = {
     return res.json();
   },
 
-  getById: async (id: string): Promise<UsageRecord> => {
+  getById: async (id: number): Promise<UsageRecord> => {
     const res = await fetch(`${API_URL}/booking/usage/${id}`);
     if (!res.ok) throw new Error(`Fetch by ID failed: ${res.status}`);
     return res.json();
   },
 
-  update: async (id: string, data: UpdateUsageDto): Promise<UsageRecord> => {
+  update: async (id: number, data: UpdateUsageDto): Promise<UsageRecord> => {
     const res = await fetch(`${API_URL}/booking/usage/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -45,7 +45,7 @@ export const usageApi = {
     return res.json();
   },
 
-  delete: async (id: string): Promise<void> => {
+  delete: async (id: number): Promise<void> => {
     const res = await fetch(`${API_URL}/booking/usage/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error(`Delete usage failed: ${res.status}`);
   },

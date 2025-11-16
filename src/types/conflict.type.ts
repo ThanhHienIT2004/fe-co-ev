@@ -9,24 +9,24 @@ export enum ResolutionStatus {
 
 // Dữ liệu 1 conflict log
 export interface ConflictLog {
-  conflict_id: string;
-  booking_id: string;
+  conflict_id: number;
+  booking_id: number;
   resolved_by?: string | null;
   resolution_status: ResolutionStatus;
   description?: string | null;
   created_at: string; // dạng ISO string khi nhận từ API
-  resolved_at?: string | null;
+  resolved_at?: number | null;
 }
 
 // Dùng để tạo conflict mới
 export interface CreateConflictDto {
-  conflict_id?: string; // có thể để BE tự tạo
-  booking_id: string;
+  conflict_id?: number; // có thể để BE tự tạo
+  booking_id: number;
   description?: string;
 }
 
 // Dùng để cập nhật trạng thái conflict
 export interface UpdateConflictStatusDto {
   resolution_status: ResolutionStatus;
-  resolved_by?: string;
+  resolved_by?: number;
 }

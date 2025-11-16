@@ -1,6 +1,6 @@
 // src/libs/hooks/useGroupFund.ts
 import { useState, useEffect, useCallback } from 'react';
-import api from '@/libs/apis/api';
+import api from '../apis/payment';
 import type {
   GroupFund,
   CreateFundRequest,

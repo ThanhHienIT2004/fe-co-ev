@@ -15,7 +15,7 @@ export function useConflictAdmin() {
   };
 
   // Cập nhật trạng thái conflict
-  const updateConflictStatus = async (conflict_id: string, data: UpdateConflictStatusDto) => {
+  const updateConflictStatus = async (conflict_id: number, data: UpdateConflictStatusDto) => {
     await conflictApi.updateStatus(conflict_id, data);
     mutate('/api/proxy/conflicts');
   };

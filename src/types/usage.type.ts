@@ -3,10 +3,10 @@
 // types/usage.type.ts
 
 export interface UsageRecord {
-  usage_id: string;
-  booking_id: string;
-  user_id: string;
-  vehicle_id: string;
+  usage_id: number;
+  booking_id: number;
+  user_id: number;
+  vehicle_id: number;
   start_date: string;       // ISO date string
   end_date: string;         // ISO date string
   check_in_time?: string | null;
@@ -17,9 +17,9 @@ export interface UsageRecord {
 }
 
 export interface CreateUsageDto {
-  booking_id: string;
-  user_id: string;
-  vehicle_id: string;
+  booking_id: number;
+  user_id: number;
+  vehicle_id: number;
   start_date: string;
   end_date: string;
   check_in_time?: string;

@@ -18,12 +18,12 @@ export const bookingApi = {
     return res.json();
   },
 
-  getById: async (id: string): Promise<Booking> => {
+  getById: async (id: number): Promise<Booking> => {
     const res = await fetch(`${API_URL}/booking/${id}`);
     return res.json();
   },
 
-  update: async (id: string, data: UpdateBookingDto): Promise<Booking> => {
+  update: async (id: number, data: UpdateBookingDto): Promise<Booking> => {
     try {
       const res = await fetch(`${API_URL}/booking/${id}`, {
         method: 'PUT',
@@ -43,7 +43,7 @@ export const bookingApi = {
     }
   },
 
-  delete: async (id: string): Promise<void> => {
+  delete: async (id: number): Promise<void> => {
     await fetch(`${API_URL}/booking/${id}`, { method: 'DELETE' });
   },
 };

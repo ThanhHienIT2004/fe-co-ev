@@ -8,9 +8,9 @@ export enum BookingStatus {
 }
 
 export type Booking = {
-  booking_id: string;
-  user_id: string;
-  vehicle_id: string;
+  booking_id: number;
+  user_id: number;
+  vehicle_id: number;
   start_date: string; // ISO string
   end_date: string;
   check_in_time: string;
@@ -22,8 +22,8 @@ export type Booking = {
 };
 
 export type CreateBookingDto = {
-  user_id: string;
-  vehicle_id: string;
+  user_id: number;
+  vehicle_id: number;
   start_date: string;
   end_date: string;
   check_in_time: string;

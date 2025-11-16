@@ -1,9 +1,12 @@
+// libs/hooks/useGroupMembers.ts
+
 import useSWR, { useSWRConfig } from 'swr';
-import api from '@/libs/apis/api';
+import api from '../apis/admin-and-staff';
 
 const fetcher = (url: string) => api.get(url).then(res => res.data);
 
-export const useGroupMembers = (groupId: string) => {
+// === LẤY DANH SÁCH THÀNH VIÊN ===
+export const useGroupMembers = (groupId: number) => {
   const { data, error, isLoading, mutate } = useSWR<any[]>(
     groupId ? `/group-members/group/${groupId}` : null,
     fetcher,
@@ -18,24 +21,29 @@ export const useGroupMembers = (groupId: string) => {
   };
 };
 
-// ĐÃ SỬA: DÙNG user_id THAY member_id
+// === TẠO MỚI + UPLOAD FILE (FormData) ===
 export const useCreateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
-  const createMember = async (data: {
-    group_id: string;
-    user_id: string;           // ĐÃ ĐỔI TỪ member_id → user_id
-    group_role?: string;
-    ownership_ratio?: number;
-  }) => {
-    const res = await api.post(`/group-members/${data.group_id}/add`, {
-      user_id: data.user_id,                    // GỬI user_id
-      group_role: data.group_role,
-      ownership_ratio: data.ownership_ratio,
-      // KHÔNG GỬI member_id NỮA → TRÁNH LỖI "should not exist"
+  const createMember = async (
+    group_id: number,
+    data: {
+      user_id: number;
+      group_role?: string;
+      ownership_ratio?: number;
+    }
+  ) => {
+    if (!group_id || !data.user_id) {
+      throw new Error("Thiếu group_id hoặc user_id");
+    }
+
+    const res = await api.post(`/group-members/${group_id}/add`, {
+      ...data,
     });
 
-    mutate(`/group-members/group/${data.group_id}`);
+    // Cập nhật cache SWR
+    mutate(`/group-members/group/${group_id}`);
+
     return res.data;
   };
 
@@ -43,10 +51,7 @@ export const useCreateGroupMember = () => {
 };
 
 
-/**
- * 🔹 Cập nhật thành viên
- * Backend: PUT /group-members/:id
- */
+// === CẬP NHẬT THÀNH VIÊN ===
 export const useUpdateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
@@ -55,36 +60,32 @@ export const useUpdateGroupMember = () => {
     groupId,
     data,
   }: {
-    memberId: string;
-    groupId: string;
-    data: any;
+    memberId: number;
+    groupId: number;
+    data: { group_role?: string; ownership_ratio?: number };
   }) => {
     const res = await api.put(`/group-members/${memberId}`, data);
-    mutate(`/group-members?group_id=${groupId}`);
+    mutate(`/group-members/group/${groupId}`);
     return res.data;
   };
 
   return { updateMember };
 };
 
-/**
- * 🔹 Xóa thành viên
- * Backend: DELETE /group-members/:id
- */
+// === XÓA THÀNH VIÊN ===
 export const useDeleteGroupMember = () => {
   const { mutate } = useSWRConfig();
 
-  const deleteMember = async (memberId: string, groupId: string) => {
+  const deleteMember = async (memberId: number, groupId: number) => {
     await api.delete(`/group-members/${memberId}`);
-    mutate(`/group-members?group_id=${groupId}`);
+    mutate(`/group-members/group/${groupId}`);
   };
 
   return { deleteMember };
 };
-/**
- * 🔹 Lấy số lượng thành viên của nhóm (count)
- */
-export const useGroupMemberCount = (groupId: string) => {
+
+// === ĐẾM SỐ LƯỢNG ===
+export const useGroupMemberCount = (groupId: number) => {
   const { data, error, isLoading } = useSWR<any[]>(
     groupId ? `/group-members/group/${groupId}` : null,
     fetcher

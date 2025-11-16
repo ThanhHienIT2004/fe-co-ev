@@ -25,7 +25,7 @@ export const useOwnershipGroups = () => {
 };
 
 // GET ONE - Chi tiết nhóm
-export const useOwnershipGroup = (groupId: string | null) => {
+export const useOwnershipGroup = (groupId: number | null) => {
   const { data, error, isLoading } = useSWR<OwnershipGroupResponseDto>(
     groupId ? `/ownership-groups/${groupId}` : null,
     fetcher
@@ -58,7 +58,7 @@ export const useCreateOwnershipGroup = () => {
 export const useUpdateOwnershipGroup = () => {
   const { mutate } = useSWRConfig();
 
-  const updateGroup = async ({ groupId, data }: { groupId: string; data: Partial<CreateOwnershipGroupDto> }) => {
+  const updateGroup = async ({ groupId, data }: { groupId: number; data: Partial<CreateOwnershipGroupDto> }) => {
     const res = await api.patch(`/ownership-groups/${groupId}`, data);
 
     // Cập nhật cả danh sách + chi tiết
@@ -75,7 +75,7 @@ export const useUpdateOwnershipGroup = () => {
 export const useDeleteOwnershipGroup = () => {
   const { mutate } = useSWRConfig();
 
-  const deleteGroup = async (groupId: string) => {
+  const deleteGroup = async (groupId: number) => {
     await api.delete(`/ownership-groups/${groupId}`);
 
     // Xóa ngay lập tức khỏi UI (optimistic)

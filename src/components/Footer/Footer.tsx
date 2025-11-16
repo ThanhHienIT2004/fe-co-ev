@@ -68,7 +68,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-teal-600 transition flex items-center gap-1">
+                <Link href="/services-task" className="hover:text-teal-600 transition flex items-center gap-1">
                   Dịch vụ
                 </Link>
               </li>

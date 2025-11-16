@@ -23,11 +23,12 @@ import { useState } from "react";
 
 export default function GroupDetailPage() {
   const { id } = useParams();
-  const { group, isLoading: loadingGroup } = useOwnershipGroup(id as string);
-  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(id as string);
+  const groupId = Number(id); // 🔥 CHUYỂN STRING -> NUMBER
+  const { group, isLoading: loadingGroup } = useOwnershipGroup(groupId);
+  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(groupId);
   const { deleteMember } = useDeleteGroupMember();
 
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   if (loadingGroup || loadingMembers) {
     return <LoadingSkeleton />;
@@ -39,11 +40,11 @@ export default function GroupDetailPage() {
 
   const vehicle = group.vehicle;
 
-  const handleDelete = async (memberId: string) => {
+  const handleDelete = async (memberId: number) => {
     if (!confirm("Bạn có chắc muốn xoá thành viên này?")) return;
     try {
       setDeleting(memberId);
-      await deleteMember(memberId, id as string);
+      await deleteMember(memberId, groupId);
       await mutate(); // refetch lại danh sách thành viên
     } finally {
       setDeleting(null);
@@ -102,12 +103,12 @@ export default function GroupDetailPage() {
           <div className="relative h-80">
             <Image
               src={vehicle?.image_url || "/images-default.jpg"}
-              alt={vehicle?.vehicle_name}
+              alt={vehicle?.vehicle_name || "/images-default.jpg"}
               fill
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute bottom-8 left-8 text-white">
               <h2 className="text-4xl font-black drop-shadow-2xl">
                 {vehicle?.vehicle_name}
@@ -147,7 +148,7 @@ export default function GroupDetailPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-black text-xl">
+                    <div className="w-16 h-16 bg-linear-to-br from-teal-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-black text-xl">
                       {member.member_name?.[0] || "U"}
                     </div>
                     <div>
@@ -155,7 +156,7 @@ export default function GroupDetailPage() {
                         {member.member_name || "Thành viên"}
                       </h3>
                       <p className="text-gray-600 font-mono text-sm">
-                        ID: {member.member_id.slice(0, 12)}...
+                        ID: {member.member_id}
                       </p>
                     </div>
                   </div>

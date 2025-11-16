@@ -41,14 +41,6 @@ export default function VehiclesPage() {
                 </div>
               </div>
             </div>
-
-            <Link
-              href="/ownership-groups/create"
-              className="group flex items-center gap-3 bg-white text-teal-600 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-cyan-300 transition-all duration-300 hover:scale-105 hover:-translate-y-1"
-            >
-              <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
-              Tạo nhóm xe mới
-            </Link>
           </div>
         </div>
       </div>

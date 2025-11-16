@@ -1,4 +1,3 @@
-// app/ownership-groups-manage/create/page.tsx
 "use client";
 
 import { useState } from 'react';
@@ -11,17 +10,38 @@ export default function CreateGroupPage() {
   const { createGroup } = useCreateOwnershipGroup();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [vehicleIdError, setVehicleIdError] = useState<string | null>(null);
+
+  const validateVehicleId = (value: string): boolean => {
+    const num = Number(value);
+    if (!value) return false;
+    if (!/^\d+$/.test(value)) return false;
+    if (num <= 0) return false;
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setVehicleIdError(null);
 
     const formData = new FormData(e.currentTarget);
+    const vehicleIdStr = formData.get('vehicle_id') as string;
+
+    // Validate vehicle_id là số nguyên dương
+    if (!validateVehicleId(vehicleIdStr)) {
+      setVehicleIdError('ID xe phải là số nguyên dương (VD: 123)');
+      setIsSubmitting(false);
+      return;
+    }
+
+    const vehicle_id = parseInt(vehicleIdStr, 10);
+
     try {
       await createGroup({
         group_name: formData.get('group_name') as string,
-        vehicle_id: formData.get('vehicle_id') as string,
-        created_by: 'admin_123', // Thay bằng user ID thật sau
+        vehicle_id, // int  
+        created_by: 1, // Thay bằng user ID thật sau
       });
       router.push('/ownership-groups-manage');
     } catch (error) {
@@ -32,12 +52,11 @@ export default function CreateGroupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-teal-50 via-white to-cyan-50">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
       {/* HERO HEADER + NÚT QUAY LẠI */}
-      <div className="bg-linear-to-r from-teal-500 to-cyan-800 text-white">
+      <div className="bg-gradient-to-r from-teal-500 to-cyan-800 text-white">
         <div className="max-w-4xl mx-auto px-6 py-12">
           <div className="flex items-center gap-6 mb-8">
-            {/* NÚT QUAY LẠI - ĐẸP NHƯ BA YÊU CẦU */}
             <Link
               href="/ownership-groups-manage"
               className="group flex items-center gap-3 bg-white/20 backdrop-blur-lg px-6 py-3.5 rounded-2xl hover:bg-white/30 transition-all duration-300 hover:scale-105 shadow-xl"
@@ -82,7 +101,7 @@ export default function CreateGroupPage() {
               <p className="text-sm text-gray-500 mt-2">Tên nhóm nên rõ ràng, dễ nhận diện</p>
             </div>
 
-            {/* XE (ID) */}
+            {/* XE (ID) - BÂY GIỜ LÀ SỐ */}
             <div>
               <label className="block text-xl font-bold text-gray-800 mb-3">
                 ID xe trong hệ thống
@@ -90,12 +109,23 @@ export default function CreateGroupPage() {
               <input
                 name="vehicle_id"
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]+"
                 required
-                placeholder="0e5571ef-a130-4128-88db-ca63e825e5d1"
-                className="w-full px-6 py-5 rounded-2xl border-2 border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-100 transition-all duration-300 font-mono text-lg tracking-wider placeholder-gray-400"
+                placeholder="123"
+                className="w-full px-6 py-5 rounded-2xl border-2 border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-100 transition-all duration-300 font-mono text-lg tracking-wider placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val && !/^\d*$/.test(val)) {
+                    e.target.value = val.replace(/\D/g, '');
+                  }
+                }}
               />
+              {vehicleIdError && (
+                <p className="text-sm text-red-600 mt-2 font-medium">{vehicleIdError}</p>
+              )}
               <p className="text-sm text-gray-500 mt-2">
-                Copy ID xe từ trang quản lý xe
+                Nhập ID số của xe (VD: 123) – xem trong trang quản lý xe
               </p>
             </div>
 

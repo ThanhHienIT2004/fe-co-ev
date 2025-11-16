@@ -35,7 +35,7 @@ export const Header = () => {
     { href: "/vehicles", label: "Danh sách xe", icon: Car },
     { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
-    { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
+    { href: "/services-task", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
   ];
 

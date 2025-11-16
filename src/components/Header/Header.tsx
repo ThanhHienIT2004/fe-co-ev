@@ -1,9 +1,9 @@
-// components/Header.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 import {
   Bell,
   Users,
@@ -12,101 +12,40 @@ import {
   Calendar,
   Home,
   UserCircle,
-  SquareMenu,
+  History,
   HandHelping,
   Settings,
   User,
   LogOut,
-  Menu,
-  X,
-  Search,
-  Moon,
-  Sun,
-  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthModal } from "../../app/(auth)/component/AuthModal";
+import { AuthModal } from "@/app/(auth)/component/AuthModal"; // Điều chỉnh đường dẫn nếu cần
 
 export const Header = () => {
-  const [open, setOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [notiOpen, setNotiOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentTime, setCurrentTime] = useState("");
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const pathname = usePathname();
 
-  // === USER STATE ===
-  const [user, setUser] = useState<{
-    email: string | null;
-    name: string | null;
-    avatar: string | null;
-  }>({ email: null, name: null, avatar: null });
-
-  // === THEO DÕI localStorage THAY ĐỔI ===
+  // Đọc email từ localStorage khi trang load
   useEffect(() => {
-    const updateUser = () => {
-      const email = localStorage.getItem("email");
-      const name = localStorage.getItem("fullName") || (email ? email.split("@")[0] : null);
-      const avatar = localStorage.getItem("avatar") || null;
-      setUser({ email, name, avatar });
-    };
-
-    // Lần đầu
-    updateUser();
-
-    // Lắng nghe storage event (tab khác)
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "email" || e.key === null) updateUser();
-    };
-
-    // Lắng nghe custom event (cùng tab)
-    const handleCustom = () => updateUser();
-
-    window.addEventListener("storage", handleStorage);
-    window.addEventListener("localStorageUpdated", handleCustom);
-
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("localStorageUpdated", handleCustom);
-    };
+    const email = localStorage.getItem("email");
+    if (email) setUserEmail(email);
   }, []);
 
-  // === CẬP NHẬT THỜI GIAN MỖI GIÂY ===
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const formatted = now.toLocaleString("vi-VN", {
-        timeZone: "Asia/Ho_Chi_Minh",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      }).replace("SA", "AM").replace("CH", "PM");
-      setCurrentTime(formatted);
-    };
+  // Callback khi đăng nhập thành công → cập nhật ngay lập tức
+  const handleLoginSuccess = () => {
+    const email = localStorage.getItem("email");
+    setUserEmail(email);
+    setAuthOpen(false);
+  };
 
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // === DARK MODE ===
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
-
-  // === ĐĂNG XUẤT ===
+  // Đăng xuất
   const handleLogout = () => {
-    localStorage.clear();
-    window.dispatchEvent(new Event("localStorageUpdated"));
-    setUserMenuOpen(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+    setUserEmail(null);
     window.location.href = "/";
   };
 
@@ -116,252 +55,119 @@ export const Header = () => {
     { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
-    { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
+    { href: "/history", label: "Lịch sử", icon: History },
+    { href: "/about", label: "Về chúng tôi", icon: Home },
   ];
 
   return (
-    <>
-      {/* === HEADER === */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-16 items-center justify-between">
-            {/* LEFT: LOGO + NAV */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+    <div className="sticky top-0 z-50 w-full bg-teal-50 shadow-md border-b border-gray-100">
+      <div className="mx-auto max-w-7xl px-4 relative">
+        <div className="flex h-14 items-center justify-between">
+          {/* Logo + Nav */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2 text-teal-600 hover:opacity-80 transition">
+              <div
+                className="size-9 rounded-xl grid place-items-center font-black text-white shadow-lg"
+                style={{ background: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)" }}
               >
-                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-
-              <Link href="/" className="flex items-center gap-2">
-                <div
-                  className="size-10 rounded-xl grid place-items-center font-black text-white shadow-lg"
-                  style={{
-                    background: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
-                  }}
-                >
-                  EV
-                </div>
-                <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  EVSharing
-                </span>
-              </Link>
-
-              <nav className="hidden md:flex items-center gap-1 ml-8">
-                {navItems.map((item) => {
-                  const isActive = pathname === item.href;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all
-                        ${isActive
-                          ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                        }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <AnimatePresence>
-                        {(isActive || open) && (
-                          <motion.span
-                            initial={{ width: 0, opacity: 0, marginLeft: 0 }}
-                            animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
-                            exit={{ width: 0, opacity: 0, marginLeft: 0 }}
-                            className="overflow-hidden whitespace-nowrap"
-                          >
-                            {item.label}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                      {isActive && (
-                        <motion.div
-                          layoutId="activePill"
-                          className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* RIGHT: SEARCH + NOTI + USER */}
-            <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center bg-gray-100 dark:bg-gray-800 rounded-full px-3 py-1.5 w-64">
-                <Search className="w-4 h-4 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Tìm xe, nhóm..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="ml-2 bg-transparent outline-none text-sm flex-1"
-                />
+                EV
               </div>
+              <span className="text-xl font-bold tracking-tight">EVSharing</span>
+            </Link>
 
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+            <nav className="ml-8 hidden md:flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                const isHoveredOrActive = hoveredItem === item.href || isActive;
+                const Icon = item.icon;
 
-              <div className="relative">
-                <button
-                  onClick={() => setNotiOpen(!notiOpen)}
-                  className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                </button>
-
-                <AnimatePresence>
-                  {notiOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border overflow-hidden"
-                    >
-                      <div className="p-3 border-b dark:border-gray-700">
-                        <h3 className="font-semibold">Thông báo</h3>
-                      </div>
-                      <div className="max-h-96 overflow-y-auto">
-                        <div className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                          <p className="text-sm font-medium">Xe VinFast VF8 đã sẵn sàng</p>
-                          <p className="text-xs text-gray-500">2 phút trước</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* === USER === */}
-              {user.email ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onMouseEnter={() => setHoveredItem(item.href)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className={`group relative flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
+                        : "text-gray-700 hover:bg-teal-100 hover:text-teal-600"
+                    }`}
                   >
-                    {user.avatar ? (
-                      <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                        {user.name?.[0]?.toUpperCase() || "U"}
-                      </div>
-                    )}
-                    <span className="hidden md:block font-medium text-gray-800 dark:text-white">
-                      {user.name}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
-                  </button>
-
-                  {/* === DROPDOWN VỚI USER INFO === */}
-                  <AnimatePresence>
-                    {userMenuOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 overflow-hidden"
-                      >
-                        <div className="p-4 border-b dark:border-gray-700 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900">
-                          <div className="flex items-center gap-3 mb-2">
-                            {user.avatar ? (
-                              <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
-                            ) : (
-                              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-bold">
-                                {user.name?.[0]?.toUpperCase() || "U"}
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-semibold text-gray-900 dark:text-white">{user.name}</p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{user.email}</p>
-                            </div>
-                          </div>
-
-                          <div className="mt-3 space-y-1 text-xs text-gray-700 dark:text-gray-300">
-                            <div className="flex justify-between">
-                              <span>Current time:</span>
-                              <span className="font-medium">{currentTime} +07</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Country:</span>
-                              <span className="font-medium">VN</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Link href="/profile" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">
-                          <User className="w-4 h-4" />
-                          Hồ sơ
-                        </Link>
-                        <Link href="/settings" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">
-                          <Settings className="w-4 h-4" />
-                          Cài đặt
-                        </Link>
-                        <div className="border-t dark:border-gray-700" />
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-teal-600"}`} />
+                    <AnimatePresence>
+                      {isHoveredOrActive && (
+                        <motion.span
+                          initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
+                          exit={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="overflow-hidden whitespace-nowrap"
                         >
-                          <LogOut className="w-4 h-4" />
-                          Đăng xuất
-                        </button>
-                      </motion.div>
+                          {item.label}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavPill"
+                        className="absolute inset-0 bg-linear-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
                     )}
-                  </AnimatePresence>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-3">
+            <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+              <Bell className="w-5 h-5 text-gray-700" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
+
+            {/* ĐÃ ĐĂNG NHẬP */}
+            {userEmail ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
+                  <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    {userEmail[0].toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 max-w-40 truncate">
+                    {userEmail}
+                  </span>
                 </div>
-              ) : (
                 <button
-                  onClick={() => setAuthOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:scale-105"
+                  onClick={handleLogout}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition"
+                  title="Đăng xuất"
                 >
-                  <UserCircle className="w-5 h-5" />
-                  <span>Đăng nhập</span>
+                  <LogOut className="w-5 h-5" />
                 </button>
-              )}
-            </div>
+              </div>
+            ) : (
+              /* CHƯA ĐĂNG NHẬP */
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+              >
+                <UserCircle className="w-5 h-5" />
+                <span>Đăng nhập</span>
+                <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              </button>
+            )}
           </div>
         </div>
-      </header>
+        <div className="absolute inset-x-0 top-full h-12 bg-transparent pointer-events-none" />
+      </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl z-50 md:hidden"
-          >
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-xl font-bold">Menu</span>
-                <button onClick={() => setMobileOpen(false)} className="p-2">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <item.icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
-    </>
+      {/* QUAN TRỌNG: Truyền callback để cập nhật ngay */}
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+    </div>
   );
 };

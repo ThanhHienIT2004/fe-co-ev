@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 export const bookingApi = {
   create: async (data: CreateBookingDto): Promise<Booking> => {
-    const res = await fetch(`${API_URL}/booking/create-booking`, {
+    const res = await fetch(`${API_URL}/booking/create`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -14,16 +14,16 @@ export const bookingApi = {
   },
 
   getAll: async (): Promise<Booking[]> => {
-    const res = await fetch(`${API_URL}/booking/get-all-bookings`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/booking`, { cache: 'no-store' });
     return res.json();
   },
 
-  getById: async (id: string): Promise<Booking> => {
+  getById: async (id: number): Promise<Booking> => {
     const res = await fetch(`${API_URL}/booking/${id}`);
     return res.json();
   },
 
-  update: async (id: string, data: UpdateBookingDto): Promise<Booking> => {
+  update: async (id: number, data: UpdateBookingDto): Promise<Booking> => {
     try {
       const res = await fetch(`${API_URL}/booking/${id}`, {
         method: 'PUT',
@@ -43,7 +43,7 @@ export const bookingApi = {
     }
   },
 
-  delete: async (id: string): Promise<void> => {
+  delete: async (id: number): Promise<void> => {
     await fetch(`${API_URL}/booking/${id}`, { method: 'DELETE' });
   },
 };

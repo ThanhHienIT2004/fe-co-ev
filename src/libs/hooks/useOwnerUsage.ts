@@ -8,7 +8,7 @@ export const useOwnerUsage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchUsages = async (userId?: string) => {
+  const fetchUsages = async (userId?: number) => {
     setIsLoading(true);
     try {
       const data = await usageApi.getAll(userId ? { user_id: userId } : undefined);
@@ -20,13 +20,13 @@ export const useOwnerUsage = () => {
     }
   };
 
-  const updateUsage = async (id: string, updateData: UpdateUsageDto) => {
+  const updateUsage = async (id: number, updateData: UpdateUsageDto) => {
     const updated = await usageApi.update(id, updateData);
     setUsages((prev) => prev.map(u => u.usage_id === id ? updated : u));
     return updated;
   };
 
-  const deleteUsage = async (id: string) => {
+  const deleteUsage = async (id: number) => {
     await usageApi.delete(id);
     setUsages((prev) => prev.filter(u => u.usage_id !== id));
   }

@@ -5,7 +5,7 @@ import { digitalSignatureApi } from '@/libs/apis/digital-signature';
 
 export function useDigitalSignatureAdmin() {
   const { data, error, isLoading } = useSWR<DigitalSignature[]>(
-    '/api/proxy/digital-signature',
+    '/api/proxy/digital-signature/get-all',
     async () => digitalSignatureApi.getAll()
   );
 

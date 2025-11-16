@@ -16,6 +16,7 @@ import {
   CircleDollarSign,
   HandHelping,
   Vote,
+  FileText, 
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,7 +30,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const pathname = usePathname();
   const [showText, setShowText] = useState(false);
 
-  // Đồng bộ hiển thị text khi sidebar mở
+
   useEffect(() => {
     if (open) {
       const timer = setTimeout(() => setShowText(true), 150);
@@ -42,7 +43,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const menuItems = [
     { href: "/admin-dashboard", label: "Dashboard", icon: Home },
     { href: "/users", label: "Người dùng", icon: User },
-    { href: "/profiles", label: "Hồ sơ", icon: User },
+    { href: "/profiles", label: "Hồ sơ", icon: FileText }, 
     { href: "/vehicles-manage", label: "Xe điện", icon: Car },
     { href: "/ownership-groups-manage", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },

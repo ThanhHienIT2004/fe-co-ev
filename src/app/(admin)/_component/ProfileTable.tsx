@@ -22,17 +22,22 @@ export default function ProfileTable({ profiles }: ProfileTableProps) {
           </tr>
         </thead>
         <tbody>
-          {profiles.map((profile) => (
-            <tr key={profile.profiles_id} className="border-t">
-              <td className="px-4 py-2 font-medium text-gray-900">{profile.profiles_id}</td>
-              <td className="px-4 py-2 font-medium text-gray-900">{profile.user_id}</td>
+          {profiles.map((profile, index) => (
+            <tr key={profile.userId} className="border-t">
+              <td className="px-4 py-2 font-medium text-gray-900">{index + 1}</td>
+              <td className="px-4 py-2 font-medium text-gray-900">{profile.userId}</td>
               <td className="px-4 py-2 font-medium text-gray-900">{profile.full_name}</td>
               <td className="px-4 py-2 font-medium text-gray-900">{profile.phone_number}</td>
               <td className="px-4 py-2 font-medium text-gray-900">{profile.address}</td>
               <td className="px-4 py-2 font-medium text-gray-900">{profile.driver_license_number}</td>
               <td className="px-4 py-2 font-medium text-gray-900">{profile.driver_license_expiry}</td>
               <td className="px-4 py-2 font-medium text-gray-900">
-                <a href={profile.license_image_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                <a 
+                  href={profile.license_image_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-blue-600 hover:underline"
+                >
                   View Image
                 </a>
               </td>

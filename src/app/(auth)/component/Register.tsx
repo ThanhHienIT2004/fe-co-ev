@@ -1,7 +1,7 @@
-// app/(auth)/component/Register.tsx
 "use client";
 
 import { useState } from "react";
+import { Check, X } from "lucide-react";
 
 type RegisterProps = {
   onClose: () => void;
@@ -16,108 +16,174 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  // Chỉ hiện cảnh báo khi đã từng gõ (touched)
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [confirmTouched, setConfirmTouched] = useState(false);
+
+  // Validate
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const isValidEmail = emailRegex.test(email.trim());
+
+  const hasMinLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+  const isPasswordValid = hasMinLength && hasUppercase && hasSpecialChar;
+  const isConfirmMatch = password === confirmPassword && confirmPassword !== "";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // Validate
-    if (!email || !password) return setError("Vui lòng nhập đầy đủ thông tin");
-    if (password !== confirmPassword) return setError("Mật khẩu xác nhận không khớp!");
-    if (password.length < 6) return setError("Mật khẩu phải từ 6 ký tự trở lên");
+    if (!isValidEmail) return setError("Email không hợp lệ");
+    if (!isPasswordValid) return setError("Mật khẩu chưa đủ mạnh");
+    if (!isConfirmMatch) return setError("Mật khẩu xác nhận không khớp");
 
     setLoading(true);
-
     try {
-      const response = await fetch("http://localhost:8080/user/register", {
+      const res = await fetch("http://localhost:8080/user/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Quan trọng: backend nhận JSON
-        },
-        body: JSON.stringify({
-          email: email.trim(),
-          password: password,
-          role_id: "3", // cố định role_id = 3 như Postman
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password, role_id: "3" }),
       });
+      const data = await res.json();
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (res.ok && data.success) {
         setSuccess(true);
-        setTimeout(() => {
-          onGoToLogin(); // tự động chuyển về form Đăng nhập
-        }, 2000);
+        setTimeout(() => onGoToLogin(), 2200);
       } else {
-        setError(data.message || data.desc || "Đăng ký thất bại. Email có thể đã tồn tại.");
+        setError(data.message || data.desc || "Email đã tồn tại");
       }
-    } catch (err) {
-      console.error(err);
-      setError("Không thể kết nối đến server. Vui lòng thử lại.");
+    } catch {
+      setError("Không kết nối được server");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-bold text-center mb-2 text-teal-600">
-        {success ? "Đăng Ký Thành Công!" : "Tạo Tài Khoản Mới"}
-      </h2>
-      <p className="text-center text-gray-600 mb-8 text-sm">
-        {success ? "Chào mừng bạn đến với EVSharing!" : "Chỉ mất 10 giây để tham gia"}
-      </p>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-teal-600">
+          {success ? "Đăng Ký Thành Công!" : "Tạo Tài Khoản Mới"}
+        </h2>
+        <p className="text-gray-600 mt-2 text-sm">
+          {success ? "Chào mừng bạn đến với EVSharing!" : "Chỉ mất 10 giây thôi"}
+        </p>
+      </div>
 
       {success ? (
         <div className="text-center py-12">
           <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
-            <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+            <Check className="w-12 h-12 text-green-600" />
           </div>
           <p className="text-lg font-semibold text-green-700">Hoàn tất!</p>
-          <p className="text-gray-600 mt-2">Tài khoản đã được tạo thành công</p>
           <p className="text-sm text-teal-600 mt-6">Đang chuyển sang đăng nhập...</p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <input
-            type="email"
-            placeholder="Email của bạn"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none transition"
-          />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* EMAIL */}
+          <div>
+            <input
+              type="text"
+              placeholder="Email của bạn"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setEmailTouched(true)}
+              onBlur={() => setEmailTouched(true)}
+              className={`w-full px-5 py-4 rounded-xl border-2 transition-all outline-none ${
+                !emailTouched
+                  ? "border-gray-300 focus:border-teal-500"
+                  : isValidEmail
+                  ? "border-green-500"
+                  : "border-red-500"
+              }`}
+            />
+            {emailTouched && email && !isValidEmail && (
+              <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
+                <X className="w-3.5 h-3.5" /> Email không hợp lệ
+              </p>
+            )}
+          </div>
 
-          <input
-            type="password"
-            placeholder="Mật khẩu (tối thiểu 6 ký tự)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none transition"
-          />
+          {/* MẬT KHẨU - CHỈ HIỆN HỘP KHI ĐỦ 8 KÝ TỰ */}
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="Mật khẩu (tối thiểu 8 ký tự)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`w-full px-5 py-4 rounded-xl border-2 transition-all outline-none ${
+                password === ""
+                  ? "border-gray-300 focus:border-teal-500"
+                  : isPasswordValid
+                  ? "border-green-500"
+                  : hasMinLength
+                  ? "border-orange-500"   // Đủ 8 ký tự → cảnh báo cần thêm
+                  : "border-red-500"
+              }`}
+            />
 
-          <input
-            type="password"
-            placeholder="Nhập lại mật khẩu"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none transition"
-          />
+            {/* Chỉ hiện hộp gợi ý khi đã gõ đủ 8 ký tự */}
+            {hasMinLength && !isPasswordValid && (
+              <div className="mt-3 p-4 bg-orange-50 border border-orange-300 rounded-xl text-sm animate-in fade-in slide-in-from-top-2">
+                <p className="font-semibold text-orange-800 mb-2">
+                  Mật khẩu cần thêm:
+                </p>
+                <div className="space-y-2">
+                  <div className={`flex items-center gap-2 ${hasUppercase ? "text-green-600" : "text-orange-700"}`}>
+                    {hasUppercase ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    Có ít nhất 1 chữ hoa (A–Z)
+                  </div>
+                  <div className={`flex items-center gap-2 ${hasSpecialChar ? "text-green-600" : "text-orange-700"}`}>
+                    {hasSpecialChar ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    Có ít nhất 1 ký tự đặc biệt (!@#$%^&*)
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Khi đủ hết → hiện thông báo thành công */}
+            {isPasswordValid && (
+              <p className="mt-3 text-sm text-green-600 flex items-center gap-2">
+                <Check className="w-5 h-5" /> 
+              </p>
+            )}
+          </div>
+
+          {/* XÁC NHẬN MẬT KHẨU */}
+          <div>
+            <input
+              type="password"
+              placeholder="Nhập lại mật khẩu"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onFocus={() => setConfirmTouched(true)}
+              onBlur={() => setConfirmTouched(true)}
+              className={`w-full px-5 py-4 rounded-xl border-2 transition-all outline-none ${
+                !confirmTouched
+                  ? "border-gray-300 focus:border-teal-500"
+                  : isConfirmMatch
+                  ? "border-green-500"
+                  : "border-red-500"
+              }`}
+            />
+            {confirmTouched && confirmPassword && !isConfirmMatch && (
+              <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
+                <X className="w-3.5 h-3.5" /> Mật khẩu không khớp
+              </p>
+            )}
+          </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg text-center">
+            <div className="p-4 bg-red-50 border border-red-300 rounded-xl text-red-700 text-sm text-center font-medium">
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3.5 rounded-lg font-semibold text-lg hover:shadow-xl transition disabled:opacity-70"
+            disabled={loading || !isValidEmail || !isPasswordValid || !isConfirmMatch}
+            className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Đang tạo tài khoản..." : "Đăng Ký Ngay"}
           </button>
@@ -125,19 +191,13 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
       )}
 
       {!success && (
-        <div className="mt-8 text-center">
-          <p className="text-gray-600 text-sm">
-            Đã có tài khoản?{" "}
-            <button
-              type="button"
-              onClick={onGoToLogin}
-              className="text-teal-600 font-semibold hover:underline"
-            >
-              Đăng nhập ngay
-            </button>
-          </p>
+        <div className="text-center text-sm text-gray-600">
+          Đã có tài khoản?{" "}
+          <button type="button" onClick={onGoToLogin} className="font-bold text-teal-600 hover:underline">
+            Đăng nhập ngay
+          </button>
         </div>
       )}
-    </>
+    </div>
   );
 };

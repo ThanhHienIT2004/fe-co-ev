@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 type LoginProps = {
   onClose: () => void;
   onLoginSuccess?: () => void;
-  onGoToRegister: () => void;   // ← Mới thêm
+  onGoToRegister: () => void;
 };
 
 export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) => {
@@ -29,7 +29,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
       const res = await fetch("http://localhost:8080/user/login/sign_in", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
+        body: formData,
       });
 
       const data = await res.json();
@@ -40,63 +40,70 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
         localStorage.setItem("email", data.data.email || email);
 
         onLoginSuccess?.();
-        onClose();
-        router.push("/");
+        router.refresh(); // Quan trọng: cập nhật header mà không reload trang
+        setTimeout(() => onClose(), 400); // Đợi animation đóng modal
       } else {
-        setError(data.desc || "Sai email hoặc mật khẩu");
+        setError(data.desc || "Email hoặc mật khẩu không đúng");
       }
     } catch (err) {
-      setError("Không thể kết nối server");
+      setError("Không thể kết nối server. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-bold text-center mb-2 text-teal-600">Chào mừng trở lại!</h2>
-      <p className="text-center text-gray-600 mb-8 text-sm">Đăng nhập để tiếp tục</p>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-teal-600">Chào mừng trở lại!</h2>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Email của bạn"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+          disabled={loading}
+          className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-teal-100 focus:border-teal-500 outline-none transition"
         />
+
         <input
           type="password"
           placeholder="Mật khẩu"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+          disabled={loading}
+          className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-teal-100 focus:border-teal-500 outline-none transition"
         />
 
-        {error && <p className="text-red-500 text-center text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm text-center bg-red-50 py-3 rounded-lg">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-70"
+          disabled={loading || !email || !password}
+          className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl hover:shadow-xl transform hover:scale-[1.02] transition disabled:opacity-60"
         >
           {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
         </button>
       </form>
 
-      <div className="mt-8 text-center">
-        <p className="text-gray-600 text-sm">
-          Chưa có tài khoản?{" "}
-          <button
-            onClick={onGoToRegister}
-            className="text-teal-600 font-semibold hover:underline"
-          >
-            Đăng ký ngay
-          </button>
-        </p>
+      <div className="text-center text-sm text-gray-600">
+        Chưa có tài khoản?{" "}
+        <button
+          type="button"
+          onClick={onGoToRegister}
+          className="font-bold text-teal-600 hover:underline"
+        >
+          Đăng ký ngay
+        </button>
       </div>
-    </>
+    </div>
   );
 };

@@ -107,8 +107,8 @@ export default function UsageHistoryPage() {
     <main className="p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen">
       {/* Header */}
       <div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Lịch sử sử dụng xe</h1>
-        <p className="text-sm text-slate-500 mt-1">Theo dõi chi tiết hành trình của từng xe</p>
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Bản ghi sử dụng xe</h1>
+        <p className="text-sm text-slate-500 mt-1">Theo dõi chi tiết từng lần sử dụng xe của bạn</p>
       </div>
 
       {/* Filters */}

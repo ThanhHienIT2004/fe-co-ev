@@ -19,12 +19,7 @@ import {
   CircleDollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-<<<<<<< HEAD
-import { AuthModal } from "../../app/(auth)/component/AuthModal";
-import NotificationBell from "./NotificationBell";
-=======
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
->>>>>>> 7a74b62c8bf1581f589947a6613c54a63211e695
 
 export const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -165,10 +160,6 @@ export const Header = () => {
                     }`}
                   />
                 </button>
-<<<<<<< HEAD
-
-                <NotificationBell user_id={user?.user_id} />
-=======
                 <AnimatePresence>
                   {dropdownOpen && (
                     <motion.div
@@ -207,7 +198,6 @@ export const Header = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
->>>>>>> 7a74b62c8bf1581f589947a6613c54a63211e695
               </div>
             ) : (
               /* CHƯA ĐĂNG NHẬP */

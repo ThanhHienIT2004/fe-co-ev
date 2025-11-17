@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 import {
   Bell,
   Users,
@@ -15,25 +14,27 @@ import {
   History,
   HandHelping,
   Settings,
-  User,
   LogOut,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthModal } from "@/app/(auth)/component/AuthModal"; // Điều chỉnh đường dẫn nếu cần
+import { AuthModal } from "@/app/(auth)/component/AuthModal";
 
 export const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Thêm state cho dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // Đọc email từ localStorage khi trang load
+  // Đọc email từ localStorage
   useEffect(() => {
     const email = localStorage.getItem("email");
     if (email) setUserEmail(email);
   }, []);
 
-  // Callback khi đăng nhập thành công → cập nhật ngay lập tức
+  // Callback khi đăng nhập thành công
   const handleLoginSuccess = () => {
     const email = localStorage.getItem("email");
     setUserEmail(email);
@@ -46,8 +47,20 @@ export const Header = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("email");
     setUserEmail(null);
+    setDropdownOpen(false);
     window.location.href = "/";
   };
+
+  // Đóng dropdown khi click ngoài
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
@@ -110,7 +123,7 @@ export const Header = () => {
                     {isActive && (
                       <motion.div
                         layoutId="activeNavPill"
-                        className="absolute inset-0 bg-linear-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
+                        className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -127,24 +140,63 @@ export const Header = () => {
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             </button>
 
-            {/* ĐÃ ĐĂNG NHẬP */}
+            {/* ĐÃ ĐĂNG NHẬP → Có dropdown */}
             {userEmail ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
+                >
                   <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                     {userEmail[0].toUpperCase()}
                   </div>
                   <span className="text-sm font-medium text-gray-700 max-w-40 truncate">
                     {userEmail}
                   </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition"
-                  title="Đăng xuất"
-                >
-                  <LogOut className="w-5 h-5" />
+                  <ChevronDown
+                    className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
+                      dropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
+                <AnimatePresence>
+                  {dropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
+                    >
+                      <div className="py-2">
+                        <Link
+                          href="/profile"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <User className="w-5 h-5 text-teal-600" />
+                          <span className="font-medium">Trang cá nhân</span>
+                        </Link>
+                        <Link
+                          href="/profile/settings"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <Settings className="w-5 h-5 text-gray-600" />
+                          <span>Cài đặt</span>
+                        </Link>
+                        <hr className="my-2 border-gray-100" />
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition"
+                        >
+                          <LogOut className="w-5 h-5" />
+                          <span className="font-medium">Đăng xuất</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               /* CHƯA ĐĂNG NHẬP */
@@ -159,10 +211,8 @@ export const Header = () => {
             )}
           </div>
         </div>
-        <div className="absolute inset-x-0 top-full h-12 bg-transparent pointer-events-none" />
       </div>
 
-      {/* QUAN TRỌNG: Truyền callback để cập nhật ngay */}
       <AuthModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}

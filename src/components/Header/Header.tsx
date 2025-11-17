@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "../../app/(auth)/component/AuthModal";
+import NotificationBell from "./NotificationBell";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -217,26 +218,7 @@ export const Header = () => {
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                 </button>
 
-                <AnimatePresence>
-                  {notiOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border overflow-hidden"
-                    >
-                      <div className="p-3 border-b dark:border-gray-700">
-                        <h3 className="font-semibold">Thông báo</h3>
-                      </div>
-                      <div className="max-h-96 overflow-y-auto">
-                        <div className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                          <p className="text-sm font-medium">Xe VinFast VF8 đã sẵn sàng</p>
-                          <p className="text-xs text-gray-500">2 phút trước</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <NotificationBell user_id={user?.user_id} />
               </div>
 
               {/* === USER === */}

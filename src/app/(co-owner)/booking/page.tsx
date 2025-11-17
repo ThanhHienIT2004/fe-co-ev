@@ -32,8 +32,8 @@ export default function BookNowPage() {
     if (!isClient || status !== "authenticated") return;
     setFormData(prev => ({
       ...prev,
-      user_id: userId,
-      vehicle_id: vehicleId,
+      user_id: typeof userId === "number" ? userId : 0,
+      vehicle_id: typeof vehicleId === "number" ? vehicleId : 0,
     }));
   }, [userId, vehicleId, status, isClient]);
 

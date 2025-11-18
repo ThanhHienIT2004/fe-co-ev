@@ -26,7 +26,7 @@ export default function HeroBanner() {
                 <div className="flex gap-4">
 
                     <Link href="/ownership-groups">
-                        <button className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full font-semibold cursor-pointer transition-colors duration-300">
+                        <button className="bg-linear-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white px-6 py-3 rounded-full font-semibold cursor-pointer transition-colors duration-300">
                             Vào nhóm đồng sở hữu ngay
                         </button>
                     </Link>

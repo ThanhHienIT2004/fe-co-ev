@@ -3,15 +3,15 @@ import { Vehicle } from "./vehicles.type";
 // types/ownership-group.ts
 export interface CreateOwnershipGroupDto {
   group_name: number;
-  vehicle_id: number;
-  created_by: number;
+  vehicle_id: string;
+  created_by: string;
 }
 
 export interface OwnershipGroupResponseDto {
-  group_id: number;
+  group_id: string;
   group_name: string;
-  vehicle_id: number;
-  created_by: number;
+  vehicle_id: string;
+  created_by: string;
   created_at: string; // ISO string
   updated_at: string;
   // Dữ liệu mở rộng (nếu API trả thêm)
@@ -19,13 +19,14 @@ export interface OwnershipGroupResponseDto {
   vehicle_name?: string;
   created_by_name?: string;
   vehicle?: Vehicle;
-
 }
 
 export type OwnershipGroup = {
-  group_id: number;
+  group_id: string;
   group_name: string;
   created_at: string;
-  created_by: number;
+  created_by: string;
   vehicle?: Vehicle;
+  member_count?: number;
+
 };

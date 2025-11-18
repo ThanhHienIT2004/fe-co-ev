@@ -6,7 +6,7 @@ import api from '../apis/admin-and-staff';
 const fetcher = (url: string) => api.get(url).then(res => res.data);
 
 // === LẤY DANH SÁCH THÀNH VIÊN ===
-export const useGroupMembers = (groupId: number) => {
+export const useGroupMembers = (groupId: string) => {
   const { data, error, isLoading, mutate } = useSWR<any[]>(
     groupId ? `/group-members/group/${groupId}` : null,
     fetcher,
@@ -60,8 +60,8 @@ export const useUpdateGroupMember = () => {
     groupId,
     data,
   }: {
-    memberId: number;
-    groupId: number;
+    memberId: string;
+    groupId: string;
     data: { group_role?: string; ownership_ratio?: number };
   }) => {
     const res = await api.put(`/group-members/${memberId}`, data);
@@ -76,7 +76,7 @@ export const useUpdateGroupMember = () => {
 export const useDeleteGroupMember = () => {
   const { mutate } = useSWRConfig();
 
-  const deleteMember = async (memberId: number, groupId: number) => {
+  const deleteMember = async (memberId: string, groupId: string) => {
     await api.delete(`/group-members/${memberId}`);
     mutate(`/group-members/group/${groupId}`);
   };
@@ -85,7 +85,7 @@ export const useDeleteGroupMember = () => {
 };
 
 // === ĐẾM SỐ LƯỢNG ===
-export const useGroupMemberCount = (groupId: number) => {
+export const useGroupMemberCount = (groupId: string) => {
   const { data, error, isLoading } = useSWR<any[]>(
     groupId ? `/group-members/group/${groupId}` : null,
     fetcher

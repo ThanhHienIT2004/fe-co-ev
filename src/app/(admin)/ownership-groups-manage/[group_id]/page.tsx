@@ -22,11 +22,11 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 
 export default function GroupDetailPage() {
-  const { groupId } = useParams();
-  const { group, isLoading: loadingGroup } = useOwnershipGroup(groupId as string);
-  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(groupId as string);
+  const { group_id } = useParams();
+  const { group, isLoading: loadingGroup } = useOwnershipGroup(group_id as string);
+  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(group_id as string);
   const { deleteMember } = useDeleteGroupMember();
-
+  console.log('id', group_id)
   const [deleting, setDeleting] = useState<string | null>(null);
 
   if (loadingGroup || loadingMembers) {
@@ -43,7 +43,7 @@ export default function GroupDetailPage() {
     if (!confirm("Bạn có chắc muốn xoá thành viên này?")) return;
     try {
       setDeleting(memberId);
-      await deleteMember(memberId, groupId as string);
+      await deleteMember(memberId, group_id as string);
       await mutate(); // refetch lại danh sách thành viên
     } finally {
       setDeleting(null);
@@ -78,14 +78,14 @@ export default function GroupDetailPage() {
 
             <div className="flex justify-end gap-4">
               <Link
-                href={`/ownership-groups-manage/${groupId}/edit`}
+                href={`/ownership-groups-manage/${group_id}/edit`}
                 className="bg-white text-teal-600 px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition shadow-xl"
               >
                 <Edit className="w-5 h-5 inline mr-2" />
                 Sửa nhóm
               </Link>
               <Link
-                href={`/ownership-groups-manage/${groupId}/add-member`}
+                href={`/ownership-groups-manage/${group_id}/add-member`}
                 className="bg-yellow-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-yellow-600 transition shadow-xl"
               >
                 <UserPlus className="w-5 h-5 inline mr-2" />
@@ -131,7 +131,7 @@ export default function GroupDetailPage() {
             <Users className="w-24 h-24 text-gray-300 mx-auto mb-6" />
             <p className="text-xl text-gray-600">Chưa có thành viên nào</p>
             <Link
-              href={`/ownership-groups-manage/${groupId}/add-member`}
+              href={`/ownership-groups-manage/${group_id}/add-member`}
               className="mt-6 inline-flex items-center gap-3 bg-teal-600 text-white px-8 py-4 rounded-2xl hover:bg-teal-700 transition"
             >
               <UserPlus className="w-5 h-5" />

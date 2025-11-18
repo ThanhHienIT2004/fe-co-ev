@@ -8,15 +8,17 @@ import { useGroupMembers, useUpdateGroupMember } from "@/libs/hooks/useGroupMemb
 import EditMemberForm from "../../../_component/EditMemberForm";
 
 export default function EditGroupMemberPage() {
-  const { memberId, groupId } = useParams();
+  const { member_id, id } = useParams();
   const router = useRouter();
-  console.log("Params:", { groupId, memberId });
 
   // Lấy chi tiết member
-  const { members, isLoading } = useGroupMembers(groupId as string);
-  const member = members?.find((m) => m.member_id === memberId);
+  const { members, isLoading } = useGroupMembers(id as string);
+  const member = members?.find((m) => m.member_id === member_id);
 
   const { updateMember } = useUpdateGroupMember();
+  console.log("Params:", { id, member_id });
+  console.log("Members:", members);
+  console.log("Found:", member);
 
   if (isLoading) {
     return (
@@ -36,13 +38,14 @@ export default function EditGroupMemberPage() {
 
   const handleSubmit = async (data: { group_role?: "admin" | "member"; ownership_ratio?: number }) => {
     try {
-      await updateMember({ memberId: member.member_id, groupId: groupId as string, data });
+      await updateMember({ memberId: member.member_id, groupId: id as string, data });
       toast.success("Cập nhật thành viên thành công!");
-      router.push(`/groups/${groupId}/members`);
+      router.push(`/groups/${id}/members`);
     } catch (error) {
       toast.error("Lỗi khi cập nhật thành viên!");
     }
   };
+  console.log("Params:", { member});
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 py-12 px-4">
@@ -50,7 +53,7 @@ export default function EditGroupMemberPage() {
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">
           <Link
-            href={`/groups/${groupId}/members`}
+            href={`/groups/${id}/members`}
             className="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-50"
           >
             <ArrowLeft className="w-5 h-5 text-teal-600 group-hover:-translate-x-1 transition-transform" />
@@ -74,8 +77,8 @@ export default function EditGroupMemberPage() {
 
           <EditMemberForm
             member={member}
-            groupId={groupId as string}
-            onClose={() => router.push(`/groups/${groupId}/members`)}
+            groupId={id as string}
+            onClose={() => router.push(`/groups/${id}/members`)}
           />
         </div>
 

@@ -1,5 +1,6 @@
 // src/libs/apis/user.ts
-import { User } from './type';
+
+import { User } from "@/types/user";
 
 const API_BASE = 'http://localhost:8080';
 
@@ -11,6 +12,8 @@ export async function fetchUsers(): Promise<User[]> {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
     },
   });
 
@@ -32,9 +35,8 @@ export const deleteUser = async (id: number): Promise<any> => {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error('DELETE failed:', res.status, text);
-    throw new Error(text || 'Xóa thất bại');
+    const errorText = await res.text();
+    throw new Error(errorText || 'Xóa thất bại');
   }
   return res.json();
 };

@@ -1,4 +1,4 @@
-// src/app/admin/_component/DeleteConfirmModal.tsx
+// src/app/admin/_component/DeleteUserModal.tsx
 "use client";
 import { X, Trash2 } from 'lucide-react';
 
@@ -30,16 +30,18 @@ export default function DeleteConfirmModal({ isOpen, onClose, onConfirm }: Props
         {/* Nút - giống Home */}
         <div className="flex gap-3">
           <button
-            onClick={onClose}
-            className="flex-1 py-2.5 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition"
-          >
-            Hủy
-          </button>
-          <button
             onClick={onConfirm}
             className="flex-1 bg-gradient-to-r from-rose-600 to-red-600 text-white py-2.5 rounded-xl font-medium hover:shadow-lg transition"
           >
             Xóa
+          </button>
+          
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-semibold shadow"
+          >
+            Hủy
           </button>
         </div>
       </div>

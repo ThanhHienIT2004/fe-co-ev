@@ -12,6 +12,7 @@ type Props = {
     created_by: string;
     created_at: string;
     vehicle?: {
+      vehicle_id: string;
       vehicle_name: string;
       license_plate: string;
       description?: string;
@@ -83,7 +84,7 @@ export default function GroupCard({ group, isPending }: Props) {
           </Link>
           <div className="flex gap-3">
           <Link
-            href={`/ownership-groups/${group.group_id}`}
+            href={`/booking/${group.vehicle?.vehicle_id}`}
             className="px-6 py-3 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 transition shadow-lg hover:shadow-xl"
           >
             Đặt lịch

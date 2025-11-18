@@ -26,7 +26,7 @@ export const useCreateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
   const createMember = async (
-    group_id: number,
+    group_id: string,
     data: {
       user_id: number;
       group_role?: string;
@@ -51,26 +51,31 @@ export const useCreateGroupMember = () => {
 };
 
 
-// === CẬP NHẬT THÀNH VIÊN ===
 export const useUpdateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
   const updateMember = async ({
-    memberId,
-    groupId,
+    userId, // number
     data,
   }: {
-    memberId: string;
-    groupId: string;
+    userId: number;
     data: { group_role?: string; ownership_ratio?: number };
   }) => {
-    const res = await api.put(`/group-members/${memberId}`, data);
-    mutate(`/group-members/group/${groupId}`);
+    // gọi PUT /group-members/:user_id
+    const res = await api.put(`/group-members/${userId}`, data);
+
+    // invalidate cache danh sách member của group
+    // nếu muốn chắc chắn cache đúng, bạn vẫn cần groupId
+    // mutate(`/group-members/group/${groupId}`);
+
     return res.data;
   };
 
   return { updateMember };
 };
+
+
+
 
 // === XÓA THÀNH VIÊN ===
 export const useDeleteGroupMember = () => {

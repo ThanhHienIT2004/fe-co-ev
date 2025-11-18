@@ -5,16 +5,16 @@ import { Check, User, Users } from "lucide-react";
 
 interface EditMemberFormProps {
   member: {
-    member_id: string;
+    member_id: number; // phải number
     group_role: "admin" | "member";
     ownership_ratio: number;
   };
   groupId: string;
   onClose?: () => void;
-  onSave?: (data: { group_role?: "admin" | "member"; ownership_ratio?: number }) => void;
+  onSubmit?: (data: { group_role?: "admin" | "member"; ownership_ratio?: number }) => void;
 }
 
-export default function EditMemberForm({ member, onClose, onSave }: EditMemberFormProps) {
+export default function EditMemberForm({ member, onClose, onSubmit }: EditMemberFormProps) {
   const [role, setRole] = useState<"admin" | "member">(member.group_role);
   const [ratio, setRatio] = useState<number>(member.ownership_ratio);
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ export default function EditMemberForm({ member, onClose, onSave }: EditMemberFo
 
     setLoading(true);
     try {
-      await onSave?.({ group_role: role, ownership_ratio: ratio });
+      await onSubmit?.({ group_role: role, ownership_ratio: ratio });
       onClose?.();
     } finally {
       setLoading(false);

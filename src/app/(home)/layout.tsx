@@ -7,9 +7,9 @@ import Footer from "@/components/Footer/Footer";
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
-            <Header />
+            <Header/>
             <HeroBanner />
-            <main className="grow">{children}</main>
+            <main>{children}</main>
             <Footer />
         </>
     );

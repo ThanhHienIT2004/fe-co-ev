@@ -22,9 +22,9 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 
 export default function GroupDetailPage() {
-  const { id } = useParams();
-  const { group, isLoading: loadingGroup } = useOwnershipGroup(id as string);
-  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(id as string);
+  const { group_id } = useParams();
+  const { group, isLoading: loadingGroup } = useOwnershipGroup(group_id as string);
+  const { members, isLoading: loadingMembers, mutate } = useGroupMembers(group_id as string);
   const { deleteMember } = useDeleteGroupMember();
 
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -47,7 +47,7 @@ export default function GroupDetailPage() {
 
     try {
       setDeleting(myMember.member_id);
-      await deleteMember(String(myMember.member_id), id as string);
+      await deleteMember(String(myMember.member_id), group_id as string);
       await mutate();
     } finally {
       setDeleting(null);
@@ -75,7 +75,7 @@ export default function GroupDetailPage() {
         return;
       }
       setDeleting(memberId);
-      await deleteMember(memberId, id as string);
+      await deleteMember(memberId, group_id as string);
       await mutate(); // refetch lại danh sách thành viên
     } finally {
       setDeleting(null);
@@ -122,14 +122,14 @@ export default function GroupDetailPage() {
                 </button>
               )}
               <Link
-                href={`/ownership-groups/${id}`}
+                href={`/ownership-groups/${group_id}`}
                 className="bg-white text-teal-600 px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition shadow-xl"
               >
                 <Edit className="w-5 h-5 inline mr-2" />
                 Sửa nhóm
               </Link>
               <Link
-                href={`/ownership-groups/${id}/add-member`}
+                href={`/ownership-groups/${group_id}/add-member`}
                 className="bg-yellow-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-yellow-600 transition shadow-xl"
               >
                 <UserPlus className="w-5 h-5 inline mr-2" />
@@ -175,7 +175,7 @@ export default function GroupDetailPage() {
             <Users className="w-24 h-24 text-gray-300 mx-auto mb-6" />
             <p className="text-xl text-gray-600">Chưa có thành viên nào</p>
             <Link
-              href={`/ownership-groups/${id}/add-member`}
+              href={`/ownership-groups/${group_id}/add-member`}
               className="mt-6 inline-flex items-center gap-3 bg-teal-600 text-white px-8 py-4 rounded-2xl hover:bg-teal-700 transition"
             >
               <UserPlus className="w-5 h-5" />
@@ -228,7 +228,7 @@ export default function GroupDetailPage() {
                     <div className="flex gap-3">
                       {/* Nút chỉnh sửa - dẫn đến trang riêng */}
                       <Link
-                        href={`/ownership-groups/${id}/${member.user_id}/edit-member`}
+                        href={`/ownership-groups/${group_id}/${member.user_id}/edit-member`}
                         className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition inline-flex items-center justify-center"
                       >
                         <Edit className="w-5 h-5" />

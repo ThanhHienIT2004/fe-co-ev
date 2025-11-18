@@ -8,18 +8,16 @@ import { useGroupMembers, useUpdateGroupMember } from "@/libs/hooks/useGroupMemb
 import EditMemberForm from "../../../_component/EditMemberForm";
 
 export default function EditGroupMemberPage() {
-  const { member_id, id } = useParams();
+  const { user_id, group_id } = useParams();
   const router = useRouter();
 
-  // Lấy chi tiết member
-  const { members, isLoading } = useGroupMembers(id as string);
-  const member = members?.find((m) => m.member_id === member_id);
+  const userId = Number(user_id);
+  const groupId = group_id;
 
-  const { updateMember } = useUpdateGroupMember();
-  console.log("Params:", { id, member_id });
-  console.log("Members:", members);
-  console.log("Found:", member);
-
+  const { members, isLoading } = useGroupMembers(groupId as string);
+  const member = members?.find((m) => m.user_id === userId);
+  const { updateMember } = useUpdateGroupMember();  // <-- QUAN TRỌNG
+  console.log('idd', user_id)
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -38,14 +36,18 @@ export default function EditGroupMemberPage() {
 
   const handleSubmit = async (data: { group_role?: "admin" | "member"; ownership_ratio?: number }) => {
     try {
-      await updateMember({ memberId: member.member_id, groupId: id as string, data });
+      await updateMember({
+        userId: member.user_id,  // number
+        data,
+      });
+
       toast.success("Cập nhật thành viên thành công!");
-      router.push(`/groups/${id}/members`);
+      router.push(`/ownership-groups/${group_id}`);
     } catch (error) {
       toast.error("Lỗi khi cập nhật thành viên!");
     }
   };
-  console.log("Params:", { member});
+
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 py-12 px-4">
@@ -53,7 +55,7 @@ export default function EditGroupMemberPage() {
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">
           <Link
-            href={`/groups/${id}/members`}
+            href={`/ownership-groups/${group_id}`}
             className="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-50"
           >
             <ArrowLeft className="w-5 h-5 text-teal-600 group-hover:-translate-x-1 transition-transform" />
@@ -71,14 +73,15 @@ export default function EditGroupMemberPage() {
               <span className="text-teal-600 font-bold text-lg">ID</span>
             </div>
             <code className="text-sm font-mono text-teal-600 bg-teal-50 px-3 py-1 rounded-lg">
-              {member.member_id}
+              {member.user_id}
             </code>
           </div>
 
           <EditMemberForm
             member={member}
-            groupId={id as string}
-            onClose={() => router.push(`/groups/${id}/members`)}
+            groupId={group_id as string}
+            onClose={() => router.push(`/ownership-groups/${group_id}`)}
+            onSubmit={handleSubmit}  // <-- thêm dòng này
           />
         </div>
 

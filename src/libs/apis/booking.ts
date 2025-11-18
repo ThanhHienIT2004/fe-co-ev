@@ -1,7 +1,7 @@
 // lib/apis/booking.ts
 import { Booking, CreateBookingDto, UpdateBookingDto } from '@/types/booking.type';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const API_URL = 'http://localhost:5001';
 
 export const bookingApi = {
   create: async (data: CreateBookingDto): Promise<Booking> => {

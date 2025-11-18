@@ -130,10 +130,10 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* 🔔 Notification Bell REAL */}
-            <NotificationBell />
 
             {/* Nếu user đã login */}
+            {/* 🔔 Notification Bell REAL */}
+                  <NotificationBell />
             {userEmail ? (
               <div className="relative" ref={dropdownRef}>
                 <button

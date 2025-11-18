@@ -19,7 +19,7 @@ export default function ServiceTasksPage() {
     return true;
   });
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (!confirm('Xóa công việc này? Hành động không thể hoàn tác.')) return;
     
     try {

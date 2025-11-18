@@ -15,8 +15,8 @@ export default function BookNowPage() {
   const userId = isClient ? ((session?.user as any)?.id || session?.user?.email || "") : "";
 
   const [formData, setFormData] = useState<CreateBookingDto & { pickup?: string }>({
-    user_id: "",
-    vehicle_id: "",
+    user_id: typeof userId === "number" ? userId : 0,
+    vehicle_id: typeof vehicleId === "number" ? vehicleId : 0,
     start_date: "",
     end_date: "",
     check_in_time: "",
@@ -32,8 +32,8 @@ export default function BookNowPage() {
     if (!isClient || status !== "authenticated") return;
     setFormData(prev => ({
       ...prev,
-      user_id: userId,
-      vehicle_id: vehicleId,
+      user_id: typeof userId === "number" ? userId : 0,
+      vehicle_id: typeof vehicleId === "number" ? vehicleId : 0,
     }));
   }, [userId, vehicleId, status, isClient]);
 

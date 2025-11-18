@@ -43,16 +43,18 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           {/* NÚT CHI TIẾT – ĐÚNG LINK */}
           <Link
             href={`/vehicles/${vehicle.vehicle_id}`}
-            className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+            className="bg-linear-to-r from-teal-500 to-cyan-500 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
           >
             Xem chi tiết
           </Link>
-        </div>
 
-        <div className="mt-4 pt-3 border-t border-gray-100">
-          <p className="text-xs text-center text-gray-500 font-medium">
-            Tiết kiệm 10% khi đặt từ 7 ngày
-          </p>
+          {/* NÚT ĐẶT LỊCH – ĐÚNG LINK */}
+          <Link
+            href={`/vehicles/${vehicle.vehicle_id}`}
+            className="bg-linear-to-r from-teal-500 to-cyan-500 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+          >
+            Đặt lịch
+          </Link>
         </div>
       </div>
     </div>

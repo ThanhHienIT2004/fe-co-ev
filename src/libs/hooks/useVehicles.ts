@@ -13,7 +13,7 @@ export const useVehicles = () => {
 };
  
 // === GET ONE ===
-export const useVehicle = (id: string | null) => {
+export const useVehicle = (id: number | null) => {
   const { data, error, isLoading } = useSWR<Vehicle>(
     id ? `/vehicles/${id}` : null,
     fetcher,
@@ -56,7 +56,7 @@ export const useCreateVehicle = () => {
 export const useUpdateVehicle = () => {
   const { mutate } = useSWRConfig();
 
-  const update = async (id: string, formData: UpdateVehicleFormData) => {
+  const update = async (id: number, formData: UpdateVehicleFormData) => {
     const data = new FormData();
     if (formData.vehicle_name) data.append('vehicle_name', formData.vehicle_name);
     if (formData.license_plate) data.append('license_plate', formData.license_plate);
@@ -72,7 +72,7 @@ export const useUpdateVehicle = () => {
     return res.data;
   };
 
-  const mutateUpdate = async (id: string, formData: UpdateVehicleFormData) => {
+  const mutateUpdate = async (id: number, formData: UpdateVehicleFormData) => {
     const updated = await update(id, formData);
     mutate('/vehicles-manage');
     mutate(`/vehicles-manage/${id}`);
@@ -86,11 +86,11 @@ export const useUpdateVehicle = () => {
 export const useDeleteVehicle = () => {
   const { mutate } = useSWRConfig();
 
-  const remove = async (id: string) => {
+  const remove = async (id: number) => {
     await api.delete(`/vehicles-manage/${id}`);
   };
 
-  const mutateDelete = async (id: string) => {
+  const mutateDelete = async (id: number) => {
     await remove(id);
     mutate('/vehicles-manage', (vehicles: Vehicle[] = []) => 
       vehicles.filter(v => v.vehicle_id !== id), false

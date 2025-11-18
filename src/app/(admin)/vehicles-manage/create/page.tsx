@@ -16,7 +16,7 @@ export default function CreateVehiclePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-white to-cyan-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* HEADER + NÚT QUAY LẠI */}
         <div className="flex items-center gap-4 mb-8">
@@ -34,7 +34,7 @@ export default function CreateVehiclePage() {
         <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-teal-100">
           {/* Icon + Tiêu đề phụ */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
               <span className="text-white font-black text-xl">+</span>
             </div>
             <div>

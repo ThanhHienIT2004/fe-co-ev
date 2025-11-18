@@ -12,7 +12,7 @@ export const useServiceTasks = () => {
 };
 
 // GET ONE
-export const useServiceTask = (id: string) => {
+export const useServiceTask = (id: number) => {
   const { data, error, isLoading } = useSWR<ServiceTask>(id ? `/service-tasks/${id}` : null, fetcher);
   return { data, error, isLoading };
 };
@@ -34,7 +34,7 @@ export const useCreateServiceTask = () => {
 export const useUpdateServiceTask = () => {
   const { mutate } = useSWRConfig();
   return {
-    mutate: async ({ id, data }: { id: string; data: any }) => {
+    mutate: async ({ id, data }: { id: number; data: any }) => {
       const res = await api.patch(`/service-tasks/${id}`, data);
       mutate('/service-tasks');
       mutate(`/service-tasks/${id}`);
@@ -48,7 +48,7 @@ export const useUpdateServiceTask = () => {
 export const useDeleteServiceTask = () => {
   const { mutate } = useSWRConfig();
   return {
-    mutate: async (id: string) => {
+    mutate: async (id: number) => {
       await api.delete(`/service-tasks/${id}`);
       mutate('/service-tasks', (tasks: ServiceTask[] = []) => 
         tasks.filter(t => t.task_id !== id), false

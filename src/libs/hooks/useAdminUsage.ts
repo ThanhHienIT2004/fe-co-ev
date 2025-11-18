@@ -4,8 +4,8 @@ import { usageApi } from '@/libs/apis/usage';
 import { UsageRecord, UpdateUsageDto } from '@/types/usage.type';
 
 interface FetchOptions {
-  user_id?: string;
-  booking_id?: string;
+  user_id?: number;
+  booking_id?: number;
   page?: number;
   limit?: number;
 }
@@ -30,7 +30,7 @@ export const useAdminUsage = () => {
         filtered = filtered.filter(u => u.user_id === options.user_id);
       }
       if (options?.booking_id) {
-        filtered = filtered.filter(u => u.booking_id.includes(options.booking_id!));
+        filtered = filtered.filter(u => u.booking_id === options.booking_id);
       }
 
       // Pagination cục bộ
@@ -49,7 +49,7 @@ export const useAdminUsage = () => {
     }
   };
 
-  const updateUsage = async (id: string, updateData: UpdateUsageDto) => {
+  const updateUsage = async (id: number, updateData: UpdateUsageDto) => {
     const updated = await usageApi.update(id, updateData);
     setUsages((prev) =>
       prev.map(u => u.usage_id === id ? { ...u, ...updated } : u)
@@ -57,10 +57,12 @@ export const useAdminUsage = () => {
     return updated;
   };
   
-  const deleteUsage = async (id: string) => {
+  const deleteUsage = async (id: number) => {
     await usageApi.delete(id);
     setUsages((prev) => prev.filter(u => u.usage_id !== id));
   };
 
   return { usages, isLoading, error, fetchUsages, updateUsage, deleteUsage, total };
+
+  
 };

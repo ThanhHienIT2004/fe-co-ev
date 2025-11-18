@@ -23,6 +23,24 @@ export const useOwnershipGroups = () => {
     mutate,
   };
 };
+// GET ALL GROUPS OF A USER
+export const useUserGroups = (userId: string | null) => {
+  const { data, error, isLoading, mutate } = useSWR<OwnershipGroupResponseDto[]>(
+    userId ? `/ownership-groups/user/${userId}/groups` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    }
+  );
+
+  return {
+    groups: data || [],
+    error,
+    isLoading,
+    mutate,
+  };
+};
 
 // GET ONE - Chi tiết nhóm
 export const useOwnershipGroup = (groupId: string | null) => {

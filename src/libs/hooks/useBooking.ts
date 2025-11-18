@@ -13,12 +13,12 @@ export function useBookings() {
     mutate('/api/proxy/bookings');
   };
 
-  const updateBooking = async (id: string, data: UpdateBookingDto) => {
+  const updateBooking = async (id: number, data: UpdateBookingDto) => {
     await bookingApi.update(id, data);
     mutate('/api/proxy/bookings');
   };
 
-  const deleteBooking = async (id: string) => {
+  const deleteBooking = async (id: number) => {
     await bookingApi.delete(id);
     mutate('/api/proxy/bookings');
   };

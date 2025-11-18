@@ -5,8 +5,17 @@ import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAlerts } from "@/libs/hooks/useAlert";
 
-export default function NotificationBell({ user_id }: { user_id: number }) {
-  const { data: alerts } = useAlerts(user_id);
+export default function NotificationBell() {
+  const [userId, setUserId] = useState<number | null>(null);
+
+  // 🔐 Lấy userId từ localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("userId");
+    setUserId(stored ? Number(stored) : null);
+  }, []);
+
+  // Nếu chưa load userId → không gọi API
+  const { data: alerts } = useAlerts(userId ?? 0);
 
   const latest = alerts && alerts.length > 0 ? alerts[0] : null;
   const [open, setOpen] = useState(false);
@@ -14,7 +23,6 @@ export default function NotificationBell({ user_id }: { user_id: number }) {
 
   const ref = useRef<HTMLDivElement>(null);
 
-  // Click outside để đóng
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) {
@@ -25,22 +33,19 @@ export default function NotificationBell({ user_id }: { user_id: number }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  if (dismissed || !latest) return null;
+  if (dismissed || !latest || userId === null) return null;
 
   return (
     <div className="relative" ref={ref}>
-      {/* Icon chuông */}
       <button
         className="relative p-2 hover:bg-gray-100 rounded-full"
         onClick={() => setOpen(!open)}
       >
         <Bell size={24} />
 
-        {/* Dot đỏ */}
         <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
       </button>
 
-      {/* Dropdown */}
       <AnimatePresence>
         {open && (
           <motion.div

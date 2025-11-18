@@ -5,15 +5,14 @@ import { useOwnerUsage } from "@/libs/hooks/useOwnerUsage";
 import { UsageRecord } from "@/types/usage.type";
 import SignModal from "./components/signModal";
 import { SignatureType } from "@/types/digital-signature.type";
-import { useSession } from "next-auth/react";
+
 
 export default function UsageRecordPage() {
-  const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  const userId = session?.user?.id ? parseInt(session.user.id, 10) : null;
+  const [userId, setUserId] = useState<number | null>(null);
 
   const {
     usages,
@@ -43,8 +42,17 @@ export default function UsageRecordPage() {
   
 
     useEffect(() => {
-      fetchUsages(userId || undefined);
-    }, [userId, status]);
+      if (typeof window !== "undefined") {
+        const storedId = localStorage.getItem("userId");
+        if (storedId) {
+          setUserId(Number(storedId));
+        }
+      }
+    }, []);
+
+    useEffect(() => {
+      if (userId !== null) fetchUsages(userId);
+    }, [userId]);
 
   const filteredHistory = usages?.filter(u => {
       const matchesSearch = String(u.booking_id)?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -264,7 +272,7 @@ export default function UsageRecordPage() {
           isOpen={isSignOpen}
           onClose={closeSignModal}
           usage={signUsage}
-          userId={session?.user?.id}
+          userId={userId  || undefined}
           onSuccess={() => { fetchUsages(); closeSignModal(); }}
           initialType={signInitialType}
         />

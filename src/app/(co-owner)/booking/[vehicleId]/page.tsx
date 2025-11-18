@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { bookingApi } from "@/libs/apis/booking";
 import { CreateBookingDto } from "@/types/booking.type";
 
@@ -10,13 +9,18 @@ export default function BookNowPage() {
   const vehicleIdParam = params?.vehicleId;
   const vehicleId = Array.isArray(vehicleIdParam) ? vehicleIdParam[0] : vehicleIdParam || "";
 
-  const { data: session, status } = useSession();
-  const isClient = typeof window !== "undefined"; // chỉ render trên client
-  const userId = isClient ? ((session?.user as any)?.id || session?.user?.email || "") : "";
+  const isClient = typeof window !== "undefined";
+  const [userId, setUserId] = useState<number>(0);
+
+  useEffect(() => {
+    if (!isClient) return;
+    const stored = localStorage.getItem("userId");
+    setUserId(stored ? Number(stored) : 0);
+  }, [isClient]);
 
   const [formData, setFormData] = useState<CreateBookingDto & { pickup?: string }>({
-    user_id: typeof userId === "number" ? userId : 0,
-    vehicle_id: typeof vehicleId === "number" ? vehicleId : 0,
+    user_id: userId,
+    vehicle_id: Number(vehicleId) || 0,
     start_date: "",
     end_date: "",
     check_in_time: "",
@@ -28,14 +32,14 @@ export default function BookNowPage() {
   const [error, setError] = useState("");
 
   // Sync formData khi vehicleId hoặc userId thay đổi
-    useEffect(() => {
-    if (!isClient || status !== "authenticated") return;
+  useEffect(() => {
+    if (!isClient) return;
     setFormData(prev => ({
       ...prev,
-      user_id: typeof userId === "number" ? userId : 0,
-      vehicle_id: typeof vehicleId === "number" ? vehicleId : 0,
+      user_id: userId,
+      vehicle_id: Number(vehicleId) || 0,
     }));
-  }, [userId, vehicleId, status, isClient]);
+  }, [userId, vehicleId, isClient]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

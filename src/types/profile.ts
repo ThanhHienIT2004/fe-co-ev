@@ -23,3 +23,13 @@ export interface UserProfile {
   driverLicenseExpiry?: string;
   licenseImageUrl?: string;
 }
+// types/profile.ts
+export type ProfileDTO = {
+  userId: number;
+  full_name: string;
+  phone_number: string;
+  address: string;
+  driver_license_number: string;
+  driver_license_expiry: string; // format: YYYY-MM-DD
+  license_image_url: string;     // URL ảnh GPLX (có thể là 1 hoặc 2 ảnh, phân cách bằng dấu phẩy)
+};

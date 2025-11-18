@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   Bell,
   Users,
@@ -28,6 +28,7 @@ export const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false); // Thêm state cho dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const { user_id } = useParams();
 
   // Đọc email từ localStorage
   useEffect(() => {
@@ -171,7 +172,7 @@ export const Header = () => {
                     >
                       <div className="py-2">
                         <Link
-                          href="/profile"
+                          href={`/profile/${user_id}`}
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
                         >

@@ -55,26 +55,25 @@ export const useUpdateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
   const updateMember = async ({
-    userId, // number
+    groupId,  // number | string
+    userId,   // number
     data,
   }: {
+    groupId: string | number;
     userId: number;
     data: { group_role?: string; ownership_ratio?: number };
   }) => {
-    // gọi PUT /group-members/:user_id
-    const res = await api.put(`/group-members/${userId}`, data);
+    // gọi PUT /group-members/:group_id/:user_id
+    const res = await api.put(`/group-members/${groupId}/${userId}`, data);
 
     // invalidate cache danh sách member của group
-    // nếu muốn chắc chắn cache đúng, bạn vẫn cần groupId
-    // mutate(`/group-members/group/${groupId}`);
+    mutate(`/group-members/group/${groupId}`);
 
     return res.data;
   };
 
   return { updateMember };
 };
-
-
 
 
 // === XÓA THÀNH VIÊN ===

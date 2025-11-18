@@ -14,7 +14,7 @@ interface AddMemberFormProps {
 
 export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps) {
   const [userId, setUserId] = useState('');
-  const [groupRole, setGroupRole] = useState<'member' | 'admin'>('member');
+  const [groupRole, setGroupRole] = useState('member');
   const [ownershipRatio, setOwnershipRatio] = useState('');
   const [contractFile, setContractFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

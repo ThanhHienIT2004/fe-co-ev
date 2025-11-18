@@ -43,10 +43,7 @@ export default function UsageRecordPage() {
   
 
     useEffect(() => {
-      if (status === "authenticated" && userId !== null && !isNaN(userId)) {
-        fetchUsages(userId);
-        
-      }
+      fetchUsages(userId || undefined);
     }, [userId, status]);
 
   const filteredHistory = usages?.filter(u => {

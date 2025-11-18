@@ -7,13 +7,21 @@ import SignModal from "./components/signModal";
 import { SignatureType } from "@/types/digital-signature.type";
 import { useSession } from "next-auth/react";
 
-export default function UsageHistoryPage() {
-  const { data: session } = useSession();
+export default function UsageRecordPage() {
+  const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  const { usages, fetchUsages, isLoading, updateUsage, deleteUsage } = useOwnerUsage();
+  const userId = session?.user?.id ? parseInt(session.user.id, 10) : null;
+
+  const {
+    usages,
+    fetchUsages,
+    isLoading,
+    updateUsage,
+    deleteUsage,
+  } = useOwnerUsage();
 
    // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,9 +42,12 @@ export default function UsageHistoryPage() {
     const [signInitialType, setSignInitialType] = useState<SignatureType | null>(null);
   
 
-  useEffect(() => {
-    fetchUsages();
-  }, []);
+    useEffect(() => {
+      if (status === "authenticated" && userId !== null && !isNaN(userId)) {
+        fetchUsages(userId);
+        
+      }
+    }, [userId, status]);
 
   const filteredHistory = usages?.filter(u => {
       const matchesSearch = String(u.booking_id)?.toLowerCase().includes(searchTerm.toLowerCase());

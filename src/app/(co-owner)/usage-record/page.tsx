@@ -5,15 +5,22 @@ import { useOwnerUsage } from "@/libs/hooks/useOwnerUsage";
 import { UsageRecord } from "@/types/usage.type";
 import SignModal from "./components/signModal";
 import { SignatureType } from "@/types/digital-signature.type";
-import { useSession } from "next-auth/react";
 
-export default function UsageHistoryPage() {
-  const { data: session } = useSession();
+
+export default function UsageRecordPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  const { usages, fetchUsages, isLoading, updateUsage, deleteUsage } = useOwnerUsage();
+  const [userId, setUserId] = useState<number | null>(null);
+
+  const {
+    usages,
+    fetchUsages,
+    isLoading,
+    updateUsage,
+    deleteUsage,
+  } = useOwnerUsage();
 
    // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,9 +41,18 @@ export default function UsageHistoryPage() {
     const [signInitialType, setSignInitialType] = useState<SignatureType | null>(null);
   
 
-  useEffect(() => {
-    fetchUsages();
-  }, []);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const storedId = localStorage.getItem("userId");
+        if (storedId) {
+          setUserId(Number(storedId));
+        }
+      }
+    }, []);
+
+    useEffect(() => {
+      if (userId !== null) fetchUsages(userId);
+    }, [userId]);
 
   const filteredHistory = usages?.filter(u => {
       const matchesSearch = String(u.booking_id)?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -107,8 +123,8 @@ export default function UsageHistoryPage() {
     <main className="p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen">
       {/* Header */}
       <div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Lịch sử sử dụng xe</h1>
-        <p className="text-sm text-slate-500 mt-1">Theo dõi chi tiết hành trình của từng xe</p>
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Bản ghi sử dụng xe</h1>
+        <p className="text-sm text-slate-500 mt-1">Theo dõi chi tiết từng lần sử dụng xe của bạn</p>
       </div>
 
       {/* Filters */}
@@ -256,7 +272,7 @@ export default function UsageHistoryPage() {
           isOpen={isSignOpen}
           onClose={closeSignModal}
           usage={signUsage}
-          userId={session?.user?.id}
+          userId={userId  || undefined}
           onSuccess={() => { fetchUsages(); closeSignModal(); }}
           initialType={signInitialType}
         />

@@ -6,6 +6,7 @@ import SignaturePad from './signaturePad';
 import { SignatureType } from '@/types/digital-signature.type';
 import { UsageRecord as UsageType } from '@/types/usage.type';
 import { useDigitalSignatureOwner } from '@/libs/hooks/useDigitalSignature.Owner';
+import { useRouter } from "next/navigation";
 
 interface SignModalProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ export default function SignModal({ isOpen, onClose, usage, userId, onSuccess, i
   const [type, setType] = useState<SignatureType | null>(null);
   const [signatureData, setSignatureData] = useState<string>('');
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   const { createSignature } = useDigitalSignatureOwner();
 
   // support both naming conventions (with or without underscore)
@@ -44,8 +45,10 @@ export default function SignModal({ isOpen, onClose, usage, userId, onSuccess, i
       });
       onSuccess();
       handleClose();
-    } catch (err: any) {
-      alert(err?.message || 'Ký thất bại');
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi khi ký. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }

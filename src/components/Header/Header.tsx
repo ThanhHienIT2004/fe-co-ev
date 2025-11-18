@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   Users,
-  Car,
-  ChevronDown,
   Calendar,
   Home,
   UserCircle,
@@ -17,25 +15,27 @@ import {
   LogOut,
   User,
   CircleDollarSign,
+  ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
+import NotificationBell from "./NotificationBell";
 
 export const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // Thêm state cho dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // Đọc email từ localStorage
+  // 🔐 Lấy email từ localStorage
   useEffect(() => {
     const email = localStorage.getItem("email");
     if (email) setUserEmail(email);
   }, []);
 
-  // Callback khi đăng nhập thành công
+  // Khi login thành công
   const handleLoginSuccess = () => {
     const email = localStorage.getItem("email");
     setUserEmail(email);
@@ -52,7 +52,7 @@ export const Header = () => {
     window.location.href = "/";
   };
 
-  // Đóng dropdown khi click ngoài
+  // Click outside để đóng dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -108,6 +108,7 @@ export const Header = () => {
                     }`}
                   >
                     <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-teal-600"}`} />
+
                     <AnimatePresence>
                       {isHoveredOrActive && (
                         <motion.span
@@ -121,13 +122,6 @@ export const Header = () => {
                         </motion.span>
                       )}
                     </AnimatePresence>
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeNavPill"
-                        className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
                   </Link>
                 );
               })}
@@ -136,12 +130,10 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-              <Bell className="w-5 h-5 text-gray-700" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            </button>
 
-            {/* ĐÃ ĐĂNG NHẬP → Có dropdown */}
+            {/* Nếu user đã login */}
+            {/* 🔔 Notification Bell REAL */}
+                  <NotificationBell />
             {userEmail ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -160,6 +152,7 @@ export const Header = () => {
                     }`}
                   />
                 </button>
+
                 <AnimatePresence>
                   {dropdownOpen && (
                     <motion.div
@@ -178,6 +171,7 @@ export const Header = () => {
                           <User className="w-5 h-5 text-teal-600" />
                           <span className="font-medium">Trang cá nhân</span>
                         </Link>
+
                         <Link
                           href="/profile/settings"
                           onClick={() => setDropdownOpen(false)}
@@ -186,7 +180,9 @@ export const Header = () => {
                           <Settings className="w-5 h-5 text-gray-600" />
                           <span>Cài đặt</span>
                         </Link>
+
                         <hr className="my-2 border-gray-100" />
+
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition"
@@ -200,25 +196,20 @@ export const Header = () => {
                 </AnimatePresence>
               </div>
             ) : (
-              /* CHƯA ĐĂNG NHẬP */
+              // Chưa đăng nhập
               <button
                 onClick={() => setAuthOpen(true)}
                 className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <UserCircle className="w-5 h-5" />
                 <span>Đăng nhập</span>
-                <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
               </button>
             )}
           </div>
         </div>
       </div>
 
-      <AuthModal
-        open={authOpen}
-        onClose={() => setAuthOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onLoginSuccess={handleLoginSuccess} />
     </div>
   );
 };

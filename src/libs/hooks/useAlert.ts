@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { AlertLog } from "@/types/alert.type";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+const API_URL = "http://localhost:5001";
 
 export const useAlerts = (user_id?: number) => {
   const [data, setData] = useState<AlertLog[]>([]);

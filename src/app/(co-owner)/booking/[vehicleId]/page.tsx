@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { bookingApi } from "@/libs/apis/booking";
@@ -8,6 +9,9 @@ import { CreateBookingDto } from "@/types/booking.type";
 export default function BookNowPage() {
   const params = useParams();
   const vehicleIdParam = params?.vehicleId;
+  const vehicleId = Array.isArray(vehicleIdParam)
+    ? Number(vehicleIdParam[0])
+    : Number(vehicleIdParam || 0);
   const vehicleId = Array.isArray(vehicleIdParam)
     ? Number(vehicleIdParam[0])
     : Number(vehicleIdParam || 0);
@@ -36,12 +40,14 @@ export default function BookNowPage() {
     if (!isClient) return;
     setFormData(prev => ({
       ...prev,
-      user_id: userId,
+      user_id: userId ?? 0, // nếu userId null thì dùng 0
       vehicle_id: vehicleId,
     }));
   }, [userId, vehicleId, isClient]);
+  }, [userId, vehicleId, isClient]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -50,6 +56,7 @@ export default function BookNowPage() {
     setLoading(true);
     setError("");
 
+    // Validate ngày giờ
     // Validate ngày giờ
     const start = new Date(`${formData.start_date}T${formData.check_in_time}`);
     const end = new Date(`${formData.end_date}T${formData.check_out_time}`);

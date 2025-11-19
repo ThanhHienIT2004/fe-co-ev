@@ -22,22 +22,26 @@ export default function UsersPage() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50">
         <div className="p-6 max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-6">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Quản lý Người dùng
               </h1>
-              <p className="text-gray-600 mt-1 text-sm">Thêm, xóa và quản lý tài khoản người dùng</p>
             </div>
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium"
-            >
-              <Plus className="w-5 h-5" />
-              Thêm người dùng
-            </button>
+
+            {/* CHỈ HIỆN NÚT KHI CÓ USER */}
+            {users.length > 0 && (
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium whitespace-nowrap"
+              >
+                <Plus className="w-5 h-5" />
+                Thêm người dùng
+              </button>
+            )}
           </div>
 
+          {/* Nội dung */}
           {users.length === 0 ? (
             <EmptyState onAdd={() => setIsCreateModalOpen(true)} />
           ) : (

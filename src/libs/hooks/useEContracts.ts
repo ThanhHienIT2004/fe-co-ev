@@ -53,3 +53,17 @@ export const downloadFile = async (url: string, fileName: string) => {
     toast.error("Không thể tải file!");
   }
 };
+
+export const useUserContracts = (userId: string) => {
+  const { data, error, isLoading, mutate } = useSWR<EContract[]>(
+    userId ? `/e-contracts/user/${userId}` : null, // nếu chưa có userId thì không gọi
+    fetcher
+  );
+
+  return {
+    contracts: data ?? [],
+    isLoading,
+    error,
+    mutate,
+  };
+};

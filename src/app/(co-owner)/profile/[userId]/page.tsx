@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import LicenseImages from '../_components/LicenseImages';
 import ProfileInfoItem from '../_components/ProfileInfoItem';
-import { useParams } from 'next/navigation';
 
 type Props = {
   profile: ProfileDTO;
@@ -36,7 +35,7 @@ export default function ProfileCard({ profile }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
       {/* Header gradient */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 h-32 relative">
+      <div className="bg-linear-to-r from-emerald-500 to-teal-600 h-32 relative">
         <div className="absolute -bottom-16 left-8">
           <div className="w-32 h-32 bg-white rounded-full p-2 shadow-2xl">
             <div className="w-full h-full rounded-full bg-gray-200 border-4 border-white flex items-center justify-center">

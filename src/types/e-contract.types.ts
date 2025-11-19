@@ -2,8 +2,8 @@
 export type SignatureStatus = 'pending' | 'signed' | 'rejected' | 'expired';
 
 export interface EContract {
-  contract_id: number;
-  ownership_group_id: number;
+  contract_id: string;
+  ownership_group_id: string;
   user_id: number;
   contract_url: string;
   signature_status: SignatureStatus;
@@ -13,12 +13,12 @@ export interface EContract {
 
   // Populate
   user?: {
-    user_id: number;
+    user_id: string;
     name: string;
     email: string;
   };
   ownership_group?: {
-    group_id: number;
+    group_id: string;
     group_name: string;
   };
 }

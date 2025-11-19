@@ -29,9 +29,9 @@ export default function GroupDetailPage() {
 
   const [deleting, setDeleting] = useState<string | null>(null);
 
-    const currentUserId = typeof window !== "undefined"
-    ? Number(localStorage.getItem("userId"))
-    : null;
+  const currentUserId = typeof window !== "undefined"
+  ? Number(localStorage.getItem("userId"))
+  : null;
   
   // tìm chính mình trong danh sách members
   const myMember = members?.find(m => m.user_id === currentUserId) ?? null;

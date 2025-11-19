@@ -166,7 +166,7 @@ export const Header = () => {
                     >
                       <div className="py-2">
                         <Link
-                          href={`/profile/${user_id}`}
+                          href={`/profile`}
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
                         >

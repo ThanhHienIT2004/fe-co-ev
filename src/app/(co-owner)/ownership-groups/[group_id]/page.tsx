@@ -122,7 +122,7 @@ export default function GroupDetailPage() {
                 </button>
               )}
               <Link
-                href={`/ownership-groups/${group_id}`}
+                href={`/ownership-groups/${group_id}/edit`}
                 className="bg-white text-teal-600 px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition shadow-xl"
               >
                 <Edit className="w-5 h-5 inline mr-2" />

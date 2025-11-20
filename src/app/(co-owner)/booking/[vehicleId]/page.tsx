@@ -1,22 +1,26 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { bookingApi } from "@/libs/apis/booking";
 import { CreateBookingDto } from "@/types/booking.type";
 
 export default function BookNowPage() {
   const params = useParams();
   const vehicleIdParam = params?.vehicleId;
-  const vehicleId = Array.isArray(vehicleIdParam) ? vehicleIdParam[0] : vehicleIdParam || "";
+  const vehicleId = Array.isArray(vehicleIdParam)
+    ? Number(vehicleIdParam[0])
+    : Number(vehicleIdParam || 0);
 
-  const { data: session, status } = useSession();
-  const isClient = typeof window !== "undefined"; // chỉ render trên client
-  const userId = isClient ? ((session?.user as any)?.id || session?.user?.email || "") : "";
+  const isClient = typeof window !== "undefined";
+
+  // Lấy user_id từ localStorage
+  const storedUserId = isClient ? localStorage.getItem("user_id") : null;
+  const userId = storedUserId ? Number(storedUserId) : 0;
 
   const [formData, setFormData] = useState<CreateBookingDto & { pickup?: string }>({
-    user_id: "",
-    vehicle_id: "",
+    user_id: userId,
+    vehicle_id: vehicleId,
     start_date: "",
     end_date: "",
     check_in_time: "",
@@ -28,17 +32,17 @@ export default function BookNowPage() {
   const [error, setError] = useState("");
 
   // Sync formData khi vehicleId hoặc userId thay đổi
-    useEffect(() => {
-    if (!isClient || status !== "authenticated") return;
+  useEffect(() => {
+    if (!isClient) return;
     setFormData(prev => ({
       ...prev,
       user_id: userId,
       vehicle_id: vehicleId,
     }));
-  }, [userId, vehicleId, status, isClient]);
+  }, [userId, vehicleId, isClient]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,7 +50,7 @@ export default function BookNowPage() {
     setLoading(true);
     setError("");
 
-    // 🧠 Kiểm tra logic ngày giờ trước khi gửi API
+    // Validate ngày giờ
     const start = new Date(`${formData.start_date}T${formData.check_in_time}`);
     const end = new Date(`${formData.end_date}T${formData.check_out_time}`);
 

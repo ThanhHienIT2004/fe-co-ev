@@ -8,11 +8,11 @@ import OwnershipGroupForm from "../../_components/OwnershipGroupForm";
 import { toast } from 'react-hot-toast';
 
 export default function EditOwnershipGroupPage() {
-  const { id } = useParams();
+  const { group_id } = useParams();
   const router = useRouter();
 
   // Lấy chi tiết nhóm
-  const { group, isLoading } = useOwnershipGroup(id as string);
+  const { group, isLoading } = useOwnershipGroup(group_id as string);
   // Hook cập nhật nhóm
   const { updateGroup } = useUpdateOwnershipGroup();
 
@@ -26,7 +26,7 @@ export default function EditOwnershipGroupPage() {
 
   const handleSubmit = async (data: any) => {
     try {
-      await updateGroup({ groupId: id as string, data });
+      await updateGroup({ groupId: group_id as string, data });
       toast.success("Cập nhật nhóm thành công!");
       router.push("/ownership-groups-manage");
     } catch (error) {
@@ -65,7 +65,6 @@ export default function EditOwnershipGroupPage() {
           <OwnershipGroupForm
             defaultValues={{
               group_name: group?.group_name || "",
-              description: group?.vehicle?.description || "",
               vehicle_id: group?.vehicle?.vehicle_id || "",
             }}
             onSubmit={handleSubmit}

@@ -8,13 +8,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface AddMemberFormProps {
-  groupId: number;
+  groupId: string;
   onSuccess?: () => void;
 }
 
 export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps) {
   const [userId, setUserId] = useState('');
-  const [groupRole, setGroupRole] = useState('Co-owner');
+  const [groupRole, setGroupRole] = useState('member');
   const [ownershipRatio, setOwnershipRatio] = useState('');
   const [contractFile, setContractFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

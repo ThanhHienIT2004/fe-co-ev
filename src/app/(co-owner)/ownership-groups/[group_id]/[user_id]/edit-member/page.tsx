@@ -12,7 +12,7 @@ export default function EditGroupMemberPage() {
   const router = useRouter();
 
   const userId = Number(user_id);
-  const groupId = group_id;
+  const groupId = group_id as string;
 
   const { members, isLoading } = useGroupMembers(groupId as string);
   const member = members?.find((m) => m.user_id === userId);
@@ -37,6 +37,7 @@ export default function EditGroupMemberPage() {
   const handleSubmit = async (data: { group_role?: "admin" | "member"; ownership_ratio?: number }) => {
     try {
       await updateMember({
+        groupId: groupId,
         userId: member.user_id,  // number
         data,
       });

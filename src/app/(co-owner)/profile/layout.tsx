@@ -1,10 +1,9 @@
 import HeroBanner from "@/components/Banner/HeroBanner";
 import Footer from "@/components/Footer/Footer";
 import { Header } from "@/components/Header/Header";
-
 import React from "react";
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
+export default function OwnerShipGroupLayout({ children }: { children: React.ReactNode }) {
     return (
         <div>
             <Header/>

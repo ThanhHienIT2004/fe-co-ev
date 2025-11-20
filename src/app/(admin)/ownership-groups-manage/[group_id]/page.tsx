@@ -178,13 +178,17 @@ export default function GroupDetailPage() {
                       <p className="font-black text-2xl text-teal-600 flex items-center gap-1">
                         {member.ownership_ratio || 0}%
                       </p>
-                    </div>
+                    </div>  
 
                     {/* Hành động */}
                     <div className="flex gap-3">
-                      <button className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition">
+                      {/* Nút chỉnh sửa - dẫn đến trang riêng */}
+                      <Link
+                        href={`/ownership-groups-manage/${group_id}/${member.user_id}/edit-member`}
+                        className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition inline-flex items-center justify-center"
+                      >
                         <Edit className="w-5 h-5" />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(member.member_id)}
                         disabled={deleting === member.member_id}

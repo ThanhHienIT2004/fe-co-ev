@@ -1,65 +1,47 @@
-"use client";
-
+// src/hooks/useAdminProfiles.ts
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-// Sửa type import
-import { UserProfile } from "@/types/profile.type"; 
-import { fetchProfileApi, updateProfileApi } from "../apis/profile.api";
+import axios from "axios";
+import { AdminProfileResponse } from "@/types/service-tasks.type";
 
-export const useProfile = () => {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const userId = session?.user?.id as string;
-  const userEmail = session?.user?.email as string; // Lấy email
+const API_BASE = "http://localhost:8080/user/profiles";
 
-  const [profile, setProfile] = useState<UserProfile | null>(null); // Sửa type
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [triggerFetch, setTriggerFetch] = useState(0);
+export const useAdminProfiles = () => {
+  const [profiles, setProfiles] = useState<AdminProfileResponse[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const reloadProfile = () => setTriggerFetch(prev => prev + 1);
+  const fetchProfiles = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await axios.get<AdminProfileResponse[]>(`${API_BASE}/admin`);
+      setProfiles(res.data);
+    } catch (err: any) {
+      setError(err.response?.data || "Lỗi tải danh sách người dùng");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  useEffect(() => {
-    // Thêm userEmail vào điều kiện
-    if (status === "authenticated" && userId && userEmail) { 
-      const loadProfile = async () => {
-        try {
-          setIsLoading(true);
-          setError("");
-          // Truyền email vào
-          const data = await fetchProfileApi(userId, userEmail); 
-          setProfile(data);
-        } catch (err: any) {
-          setError(err.message);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loadProfile();
-    } else if (status === "unauthenticated") {
-      router.push("/"); // Nên đẩy về trang chủ
-    }
-    // Thêm userEmail vào dependency array
-  }, [status, userId, userEmail, triggerFetch, router]); 
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
-  const updateProfile = async (dataToUpdate: Partial<UserProfile>) => { // Sửa type
-    if (!userId) throw new Error("User ID không tồn tại");
-    try {
-      const updated = await updateProfileApi(userId, dataToUpdate);
-      setProfile(updated);
-      return updated;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    }
-  };
+  // Lọc theo từ khóa
+  const filteredProfiles = profiles.filter((p) =>
+    `${p.fullName} ${p.phoneNumber} ${p.email} ${p.driverLicenseNumber}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
-  return {
-    profile,
-    isLoading: status === "loading" || isLoading,
-    error,
-    updateProfile,
-    reloadProfile,
-  };
+  return {
+    profiles: filteredProfiles,
+    allProfiles: profiles,
+    loading,
+    error,
+    searchTerm,
+    setSearchTerm,
+    refetch: fetchProfiles,
+  };
 };

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   Bell,
   Users,
@@ -15,7 +15,8 @@ import {
   LogOut,
   User,
   CircleDollarSign,
-  ChevronDown
+  ChevronDown,
+  File
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
@@ -28,6 +29,7 @@ export const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const { user_id } = useParams();
 
   // 🔐 Lấy email từ localStorage
   useEffect(() => {
@@ -103,7 +105,7 @@ export const Header = () => {
                     onMouseLeave={() => setHoveredItem(null)}
                     className={`group relative flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                       isActive
-                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
+                        ? "bg-linear-to-r from-teal-500 to-cyan-500 text-white shadow-md"
                         : "text-gray-700 hover:bg-teal-100 hover:text-teal-600"
                     }`}
                   >
@@ -140,7 +142,7 @@ export const Header = () => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  <div className="w-8 h-8 bg-linear-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                     {userEmail[0].toUpperCase()}
                   </div>
                   <span className="text-sm font-medium text-gray-700 max-w-40 truncate">
@@ -164,12 +166,21 @@ export const Header = () => {
                     >
                       <div className="py-2">
                         <Link
-                          href="/profile"
+                          href={`/profile`}
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
                         >
                           <User className="w-5 h-5 text-teal-600" />
                           <span className="font-medium">Trang cá nhân</span>
+                        </Link>
+
+                        <Link
+                          href={`/e-contracts`}
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <File className="w-5 h-5 text-teal-600" />
+                          <span className="font-medium">Hợp đồng điện tử</span>
                         </Link>
 
                         <Link
@@ -199,7 +210,7 @@ export const Header = () => {
               // Chưa đăng nhập
               <button
                 onClick={() => setAuthOpen(true)}
-                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <UserCircle className="w-5 h-5" />
                 <span>Đăng nhập</span>

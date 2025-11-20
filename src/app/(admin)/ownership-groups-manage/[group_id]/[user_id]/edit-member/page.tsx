@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useGroupMembers, useUpdateGroupMember } from "@/libs/hooks/useGroupMembers";
-import EditMemberForm from "../../../_component/EditMemberForm";
+import EditMemberForm from "@/app/(co-owner)/ownership-groups/_component/EditMemberForm";
 
 export default function EditGroupMemberPage() {
   const { user_id, group_id } = useParams();
@@ -42,7 +42,7 @@ export default function EditGroupMemberPage() {
       });
 
       toast.success("Cập nhật thành viên thành công!");
-      router.push(`/ownership-groups/${group_id}`);
+      router.push(`/ownership-groups-manage/${group_id}`);
     } catch (error) {
       toast.error("Lỗi khi cập nhật thành viên!");
     }
@@ -55,7 +55,7 @@ export default function EditGroupMemberPage() {
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">
           <Link
-            href={`/ownership-groups/${group_id}`}
+            href={`/ownership-groups-manage/${group_id}`}
             className="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-50"
           >
             <ArrowLeft className="w-5 h-5 text-teal-600 group-hover:-translate-x-1 transition-transform" />
@@ -80,7 +80,7 @@ export default function EditGroupMemberPage() {
           <EditMemberForm
             member={member}
             groupId={group_id as string}
-            onClose={() => router.push(`/ownership-groups/${group_id}`)}
+            onClose={() => router.push(`/ownership-groups-manage/${group_id}`)}
             onSubmit={handleSubmit}  // <-- thêm dòng này
           />
         </div>

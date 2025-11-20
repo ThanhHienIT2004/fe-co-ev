@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 
 interface AddMemberFormProps {
   groupId: string;
+  groupId: string;
   onSuccess?: () => void;
 }
 

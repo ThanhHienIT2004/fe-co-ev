@@ -8,18 +8,26 @@ import { CreateBookingDto } from "@/types/booking.type";
 export default function BookNowPage() {
   const params = useParams();
   const vehicleIdParam = params?.vehicleId;
+
   const vehicleId = Array.isArray(vehicleIdParam)
     ? Number(vehicleIdParam[0])
     : Number(vehicleIdParam || 0);
 
-  const isClient = typeof window !== "undefined";
+  // --- Lấy userId đúng cách ---
+  const [userId, setUserId] = useState<number | null>(null);
 
-  // Lấy user_id từ localStorage
-  const storedUserId = isClient ? localStorage.getItem("user_id") : null;
-  const userId = storedUserId ? Number(storedUserId) : 0;
+  useEffect(() => {
+    const stored = localStorage.getItem("user_id");
+    if (stored) {
+      setUserId(Number(stored));
+    } else {
+      setUserId(null); // Không có user → chưa đăng nhập
+    }
+  }, []);
 
+  // --- formData ---
   const [formData, setFormData] = useState<CreateBookingDto & { pickup?: string }>({
-    user_id: userId,
+    user_id: 0,
     vehicle_id: vehicleId,
     start_date: "",
     end_date: "",
@@ -28,21 +36,22 @@ export default function BookNowPage() {
     pickup: "",
   });
 
+  // --- Đồng bộ userId & vehicleId khi load xong ---
+  useEffect(() => {
+    if (userId !== null) {
+      setFormData((prev) => ({
+        ...prev,
+        user_id: userId,
+        vehicle_id: vehicleId,
+      }));
+    }
+  }, [userId, vehicleId]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Sync formData khi vehicleId hoặc userId thay đổi
-  useEffect(() => {
-    if (!isClient) return;
-    setFormData(prev => ({
-      ...prev,
-      user_id: userId,
-      vehicle_id: Number(vehicleId) || 0,
-    }));
-  }, [userId, vehicleId, isClient]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,7 +59,13 @@ export default function BookNowPage() {
     setLoading(true);
     setError("");
 
-    // Validate ngày giờ
+    if (!userId) {
+      setError("Bạn chưa đăng nhập.");
+      setLoading(false);
+      return;
+    }
+
+    // Validate
     const start = new Date(`${formData.start_date}T${formData.check_in_time}`);
     const end = new Date(`${formData.end_date}T${formData.check_out_time}`);
 
@@ -61,7 +76,7 @@ export default function BookNowPage() {
     }
 
     if (end <= start) {
-      setError("Ngày kết thúc và giờ check-out phải sau ngày bắt đầu và giờ check-in.");
+      setError("Ngày kết thúc phải sau ngày bắt đầu.");
       setLoading(false);
       return;
     }
@@ -76,11 +91,12 @@ export default function BookNowPage() {
         check_out_time: formData.check_out_time,
       };
 
-      await bookingApi.create(payload);
-      alert("✅ Đặt xe thành công! Chúng tôi sẽ liên hệ sớm.");
+      console.log("Payload gửi đi:", payload);
 
-      // Reset form
-      setFormData(prev => ({
+      await bookingApi.create(payload);
+      alert("Đặt xe thành công!");
+
+      setFormData((prev) => ({
         ...prev,
         start_date: "",
         end_date: "",
@@ -88,7 +104,7 @@ export default function BookNowPage() {
         check_out_time: "",
       }));
     } catch (err: any) {
-      setError(err.message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
+      setError(err.message || "Đã có lỗi xảy ra.");
     } finally {
       setLoading(false);
     }
@@ -103,6 +119,12 @@ export default function BookNowPage() {
             Đặt xe trực tiếp từ nhà cung cấp đã được xác minh
           </p>
         </div>
+
+        {userId === null && (
+          <p className="text-center text-red-600 font-semibold mb-6">
+            Bạn chưa đăng nhập — không thể đặt xe.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Ngày đi / ngày về */}
@@ -168,14 +190,14 @@ export default function BookNowPage() {
             </div>
           </div>
 
-          {/* Thông báo lỗi */}
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
 
-          {/* Nút gửi */}
           <div className="flex justify-center">
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || userId === null}
               className={`font-semibold px-16 py-3 rounded-lg text-white transition-all ${
                 loading
                   ? "bg-gray-400 cursor-not-allowed"

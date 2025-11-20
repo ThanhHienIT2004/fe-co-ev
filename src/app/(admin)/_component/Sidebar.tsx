@@ -44,7 +44,7 @@ export default function Sidebar() {
     { href: "/services", label: "Dịch vụ", icon: HandHelping },
     { href: "/contracts", label: "Hợp đồng", icon: ReceiptText },
     { href: "/conflicts", label: "Xung đột", icon: Flame },
-    { href: "/fees", label: "Chi phí dịch vụ", icon: CircleDollarSign },
+    { href: "/cost", label: "Chi phí dịch vụ", icon: CircleDollarSign },
     { href: "/payments", label: "Thanh toán", icon: CreditCard },
     { href: "/votes", label: "Bỏ phiếu", icon: Vote },
     { href: "/reports", label: "Báo cáo", icon: BarChart },

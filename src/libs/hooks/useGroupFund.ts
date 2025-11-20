@@ -6,7 +6,7 @@ import type {
   CreateFundRequest,
 } from '@/types/groupfund.type';
 
-export const useGroupFund = (groupId?: string) => {
+export const useGroupFund = (groupId?: number) => {
   const [funds, setFunds] = useState<GroupFund[]>([]);
   const [loading, setLoading] = useState(false);
 

@@ -2,16 +2,16 @@
 export interface GroupFund {
   [x: string]: any;
   fundId: number;
-  groupId: string;
+  groupId: number;
   fundName: string;
   balance: string; // BigDecimal → string
-  createdBy: string;
+  createdBy: number;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateFundRequest {
-  groupId: string;
+  groupId: number;
   fundName: string;
   initialBalance?: string;
 }

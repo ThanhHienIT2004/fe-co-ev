@@ -1,14 +1,22 @@
 // app/admin/dashboard/page.tsx (hoặc components/AdminDashboard.tsx nếu bạn dùng như component)
 'use client';
 
+import { useVehicles } from "@/libs/hooks/useVehicles";
 import { ContractLineChart } from "./_components/ContractLineChart";
 import { DarkModeToggle } from "./_components/DarkModeToggle";
 import { StatsCard } from "./_components/StatsCard";
 import { TopGroupsBar } from "./_components/TopGroupsBar";
 import { VehicleStatusPie } from "./_components/VehicleStatusPie";
 import { WeeklyBookingsChart } from "./_components/WeeklyBookingsChart";
+import { useOwnershipGroup, useOwnershipGroups } from "@/libs/hooks/useOwnershipGroups";
+
 
 export default function AdminDashboard() {
+  const { data: vehicles = [], isLoading, error } = useVehicles();
+  const { groups = [], isLoading: loadingGroups } = useOwnershipGroups(); 
+
+  const totalVehicles = vehicles.length;
+  const totalGroups = groups.length; // ← Đúng rồi! Dùng .length
   return (
     <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-white dark:from-gray-900 dark:to-gray-950">
       <DarkModeToggle />
@@ -19,8 +27,8 @@ export default function AdminDashboard() {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <StatsCard label="Tổng hợp đồng đã ký" value="1,512" change="+278 tháng này" color="from-teal-500 to-teal-600" />
-            <StatsCard label="Xe đang hoạt động" value="68" change="92% khả dụng" color="from-cyan-500 to-cyan-600" />
-            <StatsCard label="Nhóm đồng sở hữu" value="24" change="+3 nhóm mới" color="from-emerald-500 to-emerald-600" />
+            <StatsCard label="Xe đang hoạt động" value={totalVehicles.toString()} change="92% khả dụng" color="from-cyan-500 to-cyan-600" />
+            <StatsCard label="Nhóm đồng sở hữu" value={totalGroups.toString()} change="+3 nhóm mới" color="from-emerald-500 to-emerald-600" />
             <StatsCard label="Lượt đặt xe hôm nay" value="189" change="+42% so với hôm qua" color="from-sky-500 to-sky-600" />
           </div>
 

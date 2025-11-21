@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-white dark:from-gray-900 dark:to-gray-950">
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-white dark:from-gray-900 dark:to-gray-950">
       {/* Nút Dark Mode - đồng bộ với header */}
       <button
         onClick={() => setDarkMode(!darkMode)}
@@ -70,10 +70,10 @@ export default function AdminDashboard() {
                 className="group relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 shadow-lg hover:shadow-2xl transition-all duration-300"
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-10`} />
+                  <div className={`absolute inset-0 bg-linear-to-br ${stat.color} opacity-10`} />
                 </div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.label}</p>
-                <p className="text-4xl font-black mt-3 bg-gradient-to-r from-teal-600 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
+                <p className="text-4xl font-black mt-3 bg-linear-to-r from-teal-600 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
                   {stat.value}
                 </p>
                 <p className="text-sm font-semibold mt-4 text-teal-600 dark:text-cyan-400">
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Hợp đồng theo thời gian */}
             <div className="lg:col-span-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
-              <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-bold mb-6 bg-linear-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Hợp đồng điện tử theo tháng
               </h3>
               <ResponsiveContainer width="100%" height={400}>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
 
             {/* Trạng thái xe */}
             <div className="lg:col-span-4 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
-              <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-bold mb-6 bg-linear-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Tình trạng xe hiện tại
               </h3>
               <ResponsiveContainer width="100%" height={400}>
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
 
             {/* Top nhóm hoạt động */}
             <div className="lg:col-span-7 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
-              <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-bold mb-6 bg-linear-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Top nhóm đồng sở hữu
               </h3>
               <ResponsiveContainer width="100%" height={340}>
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
 
             {/* Hoạt động tuần */}
             <div className="lg:col-span-5 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
-              <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-bold mb-6 bg-linear-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 Đặt xe trong tuần
               </h3>
               <ResponsiveContainer width="100%" height={340}>

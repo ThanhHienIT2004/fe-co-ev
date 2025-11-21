@@ -5,7 +5,7 @@ export default function EVCoOwnershipHero() {
   return (
     <>
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-teal-600 via-cyan-500 to-blue-600 dark:from-teal-900 dark:via-cyan-800 dark:to-blue-900 pt-32 pb-48">
+      <section className="relative overflow-hidden bg-linear-to-br from-teal-600 via-cyan-500 to-blue-600 dark:from-teal-900 dark:via-cyan-800 dark:to-blue-900 pt-32 pb-48">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="absolute inset-0 bg-grid-white/10 bg-grid"></div>
         
@@ -69,7 +69,7 @@ export default function EVCoOwnershipHero() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Card 1 */}
-            <div className="group relative bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950 dark:to-cyan-950 rounded-3xl p-10 border border-teal-200 dark:border-teal-800 overflow-hidden hover:shadow-2xl transition-all">
+            <div className="group relative bg-linear-to-br from-teal-50 to-cyan-50 dark:from-teal-950 dark:to-cyan-950 rounded-3xl p-10 border border-teal-200 dark:border-teal-800 overflow-hidden hover:shadow-2xl transition-all">
               <div className="absolute top-0 right-0 w-32 h-32 bg-teal-400/20 rounded-full blur-3xl"></div>
               <div className="relative z-10">
                 <div className="w-20 h-20 bg-teal-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
@@ -92,7 +92,7 @@ export default function EVCoOwnershipHero() {
             </div>
 
             {/* Card 2 */}
-            <div className="group relative bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-3xl p-10 border border-blue-200 dark:border-blue-800 overflow-hidden hover:shadow-2xl transition-all">
+            <div className="group relative bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-3xl p-10 border border-blue-200 dark:border-blue-800 overflow-hidden hover:shadow-2xl transition-all">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl"></div>
               <div className="relative z-10">
                 <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
@@ -114,7 +114,7 @@ export default function EVCoOwnershipHero() {
             </div>
 
             {/* Card 3 */}
-            <div className="group relative bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 rounded-3xl p-10 border border-purple-200 dark:border-purple-800 overflow-hidden hover:shadow-2xl transition-all">
+            <div className="group relative bg-linear-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 rounded-3xl p-10 border border-purple-200 dark:border-purple-800 overflow-hidden hover:shadow-2xl transition-all">
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400/20 rounded-full blur-3xl"></div>
               <div className="relative z-10">
                 <div className="w-20 h-20 bg-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
@@ -139,7 +139,7 @@ export default function EVCoOwnershipHero() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
+      <section className="py-24 bg-linear-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Chỉ 4 Bước Để Sở Hữu Xe Điện Chung</h2>
@@ -182,7 +182,7 @@ export default function EVCoOwnershipHero() {
               { icon: Users, title: "Cộng đồng đồng sở hữu lớn nhất VN", desc: "Kết nối với hàng ngàn người cùng sở hữu xe điện" },
             ].map((benefit, idx) => (
               <div key={idx} className="flex gap-5 p-6 rounded-2xl hover:bg-teal-50 dark:hover:bg-teal-950/50 transition-all">
-                <benefit.icon className="w-12 h-12 text-teal-600 dark:text-cyan-400 flex-shrink-0" />
+                <benefit.icon className="w-12 h-12 text-teal-600 dark:text-cyan-400 shrink-0" />
                 <div>
                   <h4 className="font-bold text-xl mb-2">{benefit.title}</h4>
                   <p className="text-gray-600 dark:text-gray-400">{benefit.desc}</p>
@@ -194,7 +194,7 @@ export default function EVCoOwnershipHero() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-24 bg-gradient-to-r from-teal-600 to-cyan-600">
+      <section className="py-24 bg-linear-to-r from-teal-600 to-cyan-600">
         <div className="max-w-4xl mx-auto text-center px-6">
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-8">
             Sẵn Sàng Sở Hữu Xe Điện Chung?

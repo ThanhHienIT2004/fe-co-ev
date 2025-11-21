@@ -74,7 +74,7 @@ export default function Topbar({ sidebarWidth }: TopbarProps) {
               className="flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 cursor-pointer group"
             >
               {/* Avatar chữ cái đầu */}
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+              <div className="w-9 h-9 rounded-full bg-linear-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg">
                 {userEmail[0].toUpperCase()}
               </div>
 

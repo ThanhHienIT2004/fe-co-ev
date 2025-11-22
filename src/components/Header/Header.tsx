@@ -16,7 +16,8 @@ import {
   User,
   CircleDollarSign,
   ChevronDown,
-  File
+  File,
+  Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
@@ -72,7 +73,7 @@ export const Header = () => {
     { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/history", label: "Lịch sử", icon: History },
-    { href: "/about", label: "Về chúng tôi", icon: Home },
+    { href: "/about-us", label: "Về chúng tôi", icon: Info },
   ];
 
   return (
@@ -117,7 +118,7 @@ export const Header = () => {
                           initial={{ width: 0, opacity: 0, marginLeft: 0 }}
                           animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
                           exit={{ width: 0, opacity: 0, marginLeft: 0 }}
-                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          transition={{ duration: 0.1, ease: "easeInOut" }}
                           className="overflow-hidden whitespace-nowrap"
                         >
                           {item.label}

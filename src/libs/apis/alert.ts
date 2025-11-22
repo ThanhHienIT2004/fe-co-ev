@@ -1,6 +1,6 @@
 import { AlertLog, AlertType } from "@/types/alert.type";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const API_URL =  'http://localhost:5001';
 
 /** Lấy toàn bộ alert */
 export async function getAllAlerts(): Promise<AlertLog[]> {

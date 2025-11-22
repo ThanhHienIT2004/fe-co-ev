@@ -1,10 +1,10 @@
-// "use client";
+"use client";
 
 
-// import { useState, useEffect } from "react";
-// import { useParams } from "next/navigation";
-// import { bookingApi } from "@/libs/apis/booking";
-// import { CreateBookingDto } from "@/types/booking.type";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { bookingApi } from "@/libs/apis/booking";
+import { CreateBookingDto } from "@/types/booking.type";
 
 export default function BookNowPage() {
   const params = useParams();
@@ -70,11 +70,11 @@ export default function BookNowPage() {
     const start = new Date(`${formData.start_date}T${formData.check_in_time}`);
     const end = new Date(`${formData.end_date}T${formData.check_out_time}`);
 
-//     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-//       setError("Vui lòng nhập đầy đủ ngày và giờ hợp lệ.");
-//       setLoading(false);
-//       return;
-//     }
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      setError("Vui lòng nhập đầy đủ ngày và giờ hợp lệ.");
+      setLoading(false);
+      return;
+    }
 
     if (end <= start) {
       setError("Ngày kết thúc phải sau ngày bắt đầu.");
@@ -135,61 +135,61 @@ export default function BookNowPage() {
 //                 Ngày bắt đầu *
 //               </label>
 //               <input
-//                 type="date"
-//                 name="start_date"
-//                 value={formData.start_date}
-//                 onChange={handleChange}
-//                 required
-//                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-//               />
-//             </div>
+                type="date"
+                name="start_date"
+                value={formData.start_date}
+                onChange={handleChange}
+                required
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
 
-//             <div>
-//               <label className="block text-sm font-semibold text-gray-700 mb-2">
-//                 Ngày kết thúc *
-//               </label>
-//               <input
-//                 type="date"
-//                 name="end_date"
-//                 value={formData.end_date}
-//                 onChange={handleChange}
-//                 required
-//                 min={formData.start_date}
-//                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-//               />
-//             </div>
-//           </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Ngày kết thúc *
+              </label>
+              <input
+                type="date"
+                name="end_date"
+                value={formData.end_date}
+                onChange={handleChange}
+                required
+                min={formData.start_date}
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+          </div>
 
-//           {/* Giờ check in / check out */}
-//           <div className="grid md:grid-cols-2 gap-8">
-//             <div>
-//               <label className="block text-sm font-semibold text-gray-700 mb-2">
-//                 Giờ Check In *
-//               </label>
-//               <input
-//                 type="time"
-//                 name="check_in_time"
-//                 value={formData.check_in_time}
-//                 onChange={handleChange}
-//                 required
-//                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-//               />
-//             </div>
+          {/* Giờ check in / check out */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Giờ Check In *
+              </label>
+              <input
+                type="time"
+                name="check_in_time"
+                value={formData.check_in_time}
+                onChange={handleChange}
+                required
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
 
-//             <div>
-//               <label className="block text-sm font-semibold text-gray-700 mb-2">
-//                 Giờ Check Out *
-//               </label>
-//               <input
-//                 type="time"
-//                 name="check_out_time"
-//                 value={formData.check_out_time}
-//                 onChange={handleChange}
-//                 required
-//                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-//               />
-//             </div>
-//           </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Giờ Check Out *
+              </label>
+              <input
+                type="time"
+                name="check_out_time"
+                value={formData.check_out_time}
+                onChange={handleChange}
+                required
+                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+          </div>
 
           {error && (
             <p className="text-red-500 text-sm text-center">{error}</p>

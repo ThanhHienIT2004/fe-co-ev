@@ -2,7 +2,7 @@
 
 import { User } from "@/types/user";
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = 'http://localhost:8085';
 
 export async function fetchUsers(): Promise<User[]> {
   const res = await fetch(`${API_BASE}/user/users/get`, {

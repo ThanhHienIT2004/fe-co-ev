@@ -171,21 +171,22 @@ export const Header = () => {
                     >
                       <div className="py-2">
                         <Link
-                          href="/profile"
-                          onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
-                        >
-                          <User className="w-5 h-5 text-teal-600" />
-                          <span className="font-medium">Trang cá nhân</span>
-                        </Link>
-                        <Link
-                          href="/profile/settings"
-                          onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
-                        >
-                          <Settings className="w-5 h-5 text-gray-600" />
-                          <span>Cài đặt</span>
-                        </Link>
+                              href="/profile"                    // sửa ở đây
+                              onClick={() => setDropdownOpen(false)}
+                              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                            >
+                              <User className="w-5 h-5 text-teal-600" />
+                              <span className="font-medium">Trang cá nhân</span>
+                            </Link>
+
+                            <Link
+                              href="/profile/settings"           // sửa ở đây (nếu bạn có trang settings)
+                              onClick={() => setDropdownOpen(false)}
+                              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                            >
+                              <Settings className="w-5 h-5 text-gray-600" />
+                              <span>Cài đặt</span>
+                            </Link>
                         <hr className="my-2 border-gray-100" />
                         <button
                           onClick={handleLogout}

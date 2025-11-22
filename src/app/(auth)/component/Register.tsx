@@ -40,7 +40,7 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/user/register", {
+      const res = await fetch("http://localhost:8085/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password, role_id: "3" }),

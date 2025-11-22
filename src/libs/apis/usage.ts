@@ -1,7 +1,7 @@
 // lib/apis/usage.ts
 import { UsageRecord, CreateUsageDto, UpdateUsageDto } from '@/types/usage.type';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const API_URL =  'http://localhost:5001';
 
 export const usageApi = {
   create: async (data: CreateUsageDto): Promise<UsageRecord> => {

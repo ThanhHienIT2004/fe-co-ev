@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { bookingApi } from "@/libs/apis/booking";
@@ -9,24 +8,29 @@ import { CreateBookingDto } from "@/types/booking.type";
 export default function BookNowPage() {
   const params = useParams();
   const vehicleIdParam = params?.vehicleId;
-
   const vehicleId = Array.isArray(vehicleIdParam)
     ? Number(vehicleIdParam[0])
     : Number(vehicleIdParam || 0);
 
-  // --- Lấy userId đúng cách ---
+  // --- Lấy userId từ localStorage ---
   const [userId, setUserId] = useState<number | null>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("user_id");
+    const stored = localStorage.getItem("userId");
+
     if (stored) {
-      setUserId(Number(stored));
+      const id = Number(stored);
+      // Nếu id hợp lệ (không phải NaN)
+      setUserId(isNaN(id) ? null : id);
     } else {
-      setUserId(null); // Không có user → chưa đăng nhập
+      setUserId(null);
     }
+
+    setLoadingUser(false); // kết thúc trạng thái loading
   }, []);
 
-  // --- formData ---
+  // --- Form state ---
   const [formData, setFormData] = useState<CreateBookingDto & { pickup?: string }>({
     user_id: 0,
     vehicle_id: vehicleId,
@@ -37,7 +41,7 @@ export default function BookNowPage() {
     pickup: "",
   });
 
-  // --- Đồng bộ userId & vehicleId khi load xong ---
+  // --- Đồng bộ userId & vehicleId ---
   useEffect(() => {
     if (userId !== null) {
       setFormData((prev) => ({
@@ -66,7 +70,6 @@ export default function BookNowPage() {
       return;
     }
 
-    // Validate
     const start = new Date(`${formData.start_date}T${formData.check_in_time}`);
     const end = new Date(`${formData.end_date}T${formData.check_out_time}`);
 
@@ -111,6 +114,15 @@ export default function BookNowPage() {
     }
   };
 
+  // --- Loading user check ---
+  if (loadingUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Đang kiểm tra đăng nhập...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-6 flex flex-col items-center">
       <div className="w-full max-w-5xl bg-white shadow-md rounded-2xl p-10">
@@ -127,14 +139,14 @@ export default function BookNowPage() {
           </p>
         )}
 
-//         <form onSubmit={handleSubmit} className="space-y-8">
-//           {/* Ngày đi / ngày về */}
-//           <div className="grid md:grid-cols-2 gap-8">
-//             <div>
-//               <label className="block text-sm font-semibold text-gray-700 mb-2">
-//                 Ngày bắt đầu *
-//               </label>
-//               <input
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Ngày đi / ngày về */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Ngày bắt đầu *
+              </label>
+              <input
                 type="date"
                 name="start_date"
                 value={formData.start_date}
@@ -191,9 +203,7 @@ export default function BookNowPage() {
             </div>
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <div className="flex justify-center">
             <button

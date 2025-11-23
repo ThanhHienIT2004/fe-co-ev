@@ -21,7 +21,7 @@ export default function HistoryPage() {
       }
 
       try {
-        const res = await fetch(`http://localhost:8083/api/history/get/${userId}`, {
+        const res = await fetch(`http://localhost:8085/past/history/get/${userId}`, {
           cache: "no-store",
           headers: {
             "Content-Type": "application/json",

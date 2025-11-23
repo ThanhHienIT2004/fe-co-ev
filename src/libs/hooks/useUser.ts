@@ -1,7 +1,8 @@
 // src/libs/hooks/useUser.ts
 import { useState, useEffect } from 'react';
 import { fetchUsers } from '@/libs/apis/user';
-import type { User } from '@/libs/apis/type';
+import { User } from '@/types/user';
+
 
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -17,7 +18,7 @@ export function useUsers() {
       setUsers(data);
     } catch (err: any) {
       console.error('useUsers error:', err);
-      setError(err.message || 'Lỗi tải dữ liệu');
+      setError(err.message || 'Lỗi tải dữ liệu người dùng');
     } finally {
       setLoading(false);
     }
@@ -27,10 +28,15 @@ export function useUsers() {
     load();
   }, []);
 
-  const refetch = () => {
-    console.log('refetch() called');
-    load();
+  const refetch = async () => {
+    console.log('refetch() called – reloading users...');
+    await load();
   };
 
-  return { users, loading, error, refetch };
+  return {
+    users,
+    loading,
+    error,
+    refetch,
+  };
 }

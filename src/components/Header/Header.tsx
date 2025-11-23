@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   Bell,
   Users,
-  Car,
-  ChevronDown,
   Calendar,
   Home,
   UserCircle,
@@ -17,25 +15,30 @@ import {
   LogOut,
   User,
   CircleDollarSign,
+  ChevronDown,
+  File,
+  Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
+import NotificationBell from "./NotificationBell";
 
 export const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // Thêm state cho dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const { user_id } = useParams();
 
-  // Đọc email từ localStorage
+  // 🔐 Lấy email từ localStorage
   useEffect(() => {
     const email = localStorage.getItem("email");
     if (email) setUserEmail(email);
   }, []);
 
-  // Callback khi đăng nhập thành công
+  // Khi login thành công
   const handleLoginSuccess = () => {
     const email = localStorage.getItem("email");
     setUserEmail(email);
@@ -52,7 +55,7 @@ export const Header = () => {
     window.location.href = "/";
   };
 
-  // Đóng dropdown khi click ngoài
+  // Click outside để đóng dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -70,7 +73,7 @@ export const Header = () => {
     { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/history", label: "Lịch sử", icon: History },
-    { href: "/about", label: "Về chúng tôi", icon: Home },
+    { href: "/about-us", label: "Về chúng tôi", icon: Info },
   ];
 
   return (
@@ -103,31 +106,25 @@ export const Header = () => {
                     onMouseLeave={() => setHoveredItem(null)}
                     className={`group relative flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                       isActive
-                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
+                        ? "bg-linear-to-r from-teal-500 to-cyan-500 text-white shadow-md"
                         : "text-gray-700 hover:bg-teal-100 hover:text-teal-600"
                     }`}
                   >
                     <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-teal-600"}`} />
+
                     <AnimatePresence>
                       {isHoveredOrActive && (
                         <motion.span
                           initial={{ width: 0, opacity: 0, marginLeft: 0 }}
                           animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
                           exit={{ width: 0, opacity: 0, marginLeft: 0 }}
-                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          transition={{ duration: 0.1, ease: "easeInOut" }}
                           className="overflow-hidden whitespace-nowrap"
                         >
                           {item.label}
                         </motion.span>
                       )}
                     </AnimatePresence>
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeNavPill"
-                        className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
                   </Link>
                 );
               })}
@@ -136,19 +133,17 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-              <Bell className="w-5 h-5 text-gray-700" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            </button>
 
-            {/* ĐÃ ĐĂNG NHẬP → Có dropdown */}
+            {/* Nếu user đã login */}
+            {/* 🔔 Notification Bell REAL */}
+                  <NotificationBell />
             {userEmail ? (
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  <div className="w-8 h-8 bg-linear-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                     {userEmail[0].toUpperCase()}
                   </div>
                   <span className="text-sm font-medium text-gray-700 max-w-40 truncate">
@@ -160,6 +155,7 @@ export const Header = () => {
                     }`}
                   />
                 </button>
+
                 <AnimatePresence>
                   {dropdownOpen && (
                     <motion.div
@@ -171,23 +167,34 @@ export const Header = () => {
                     >
                       <div className="py-2">
                         <Link
-                              href="/profile"                    // sửa ở đây
-                              onClick={() => setDropdownOpen(false)}
-                              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
-                            >
-                              <User className="w-5 h-5 text-teal-600" />
-                              <span className="font-medium">Trang cá nhân</span>
-                            </Link>
+                          href={`/profile`}
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <User className="w-5 h-5 text-teal-600" />
+                          <span className="font-medium">Trang cá nhân</span>
+                        </Link>
 
-                            <Link
-                              href="/profile/settings"           // sửa ở đây (nếu bạn có trang settings)
-                              onClick={() => setDropdownOpen(false)}
-                              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
-                            >
-                              <Settings className="w-5 h-5 text-gray-600" />
-                              <span>Cài đặt</span>
-                            </Link>
+                        <Link
+                          href={`/e-contracts`}
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <File className="w-5 h-5 text-teal-600" />
+                          <span className="font-medium">Hợp đồng điện tử</span>
+                        </Link>
+
+                        <Link
+                          href="/profile/settings"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <Settings className="w-5 h-5 text-gray-600" />
+                          <span>Cài đặt</span>
+                        </Link>
+
                         <hr className="my-2 border-gray-100" />
+
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition"
@@ -201,25 +208,20 @@ export const Header = () => {
                 </AnimatePresence>
               </div>
             ) : (
-              /* CHƯA ĐĂNG NHẬP */
+              // Chưa đăng nhập
               <button
                 onClick={() => setAuthOpen(true)}
-                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <UserCircle className="w-5 h-5" />
                 <span>Đăng nhập</span>
-                <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
               </button>
             )}
           </div>
         </div>
       </div>
 
-      <AuthModal
-        open={authOpen}
-        onClose={() => setAuthOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onLoginSuccess={handleLoginSuccess} />
     </div>
   );
 };

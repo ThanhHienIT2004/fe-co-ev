@@ -1,15 +1,19 @@
 // lib/apis/booking.ts
 import { Booking, CreateBookingDto, UpdateBookingDto } from '@/types/booking.type';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const API_URL = 'http://localhost:5001';
 
 export const bookingApi = {
   create: async (data: CreateBookingDto): Promise<Booking> => {
-    const res = await fetch(`${API_URL}/booking/create`, {
+    const res = await fetch(`${API_URL}/booking`, {  // bỏ /create
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Server error: ${res.status} ${text}`);
+    }
     return res.json();
   },
 

@@ -50,8 +50,6 @@ export default function OwnershipGroupsPage() {
           </div>
         )}
       </div>
-
-      <FloatingActionButton />
     </div>
   );
 }

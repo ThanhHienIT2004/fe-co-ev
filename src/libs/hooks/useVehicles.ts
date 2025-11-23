@@ -86,11 +86,11 @@ export const useUpdateVehicle = () => {
 export const useDeleteVehicle = () => {
   const { mutate } = useSWRConfig();
 
-  const remove = async (id: number) => {
+  const remove = async (id: string) => {
     await api.delete(`/vehicles-manage/${id}`);
   };
 
-  const mutateDelete = async (id: number) => {
+  const mutateDelete = async (id: string) => {
     await remove(id);
     mutate('/vehicles-manage', (vehicles: Vehicle[] = []) => 
       vehicles.filter(v => v.vehicle_id !== id), false

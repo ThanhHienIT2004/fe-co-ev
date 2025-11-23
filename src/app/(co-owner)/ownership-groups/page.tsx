@@ -4,10 +4,23 @@
 import { useVehicles } from '@/libs/hooks/useVehicles';
 import { Plus, Users, Car, DollarSign, Wrench } from 'lucide-react';
 import Link from 'next/link';
-import VehicleList from '../vehicles/_component/VehicleList';
+import { useDeleteOwnershipGroup, useOwnershipGroups, useUserGroups } from '@/libs/hooks/useOwnershipGroups';
+import EmptyState from '../history/components/EmptyState';
+import GroupCard from './_component/GroupCard';
+import { useEffect, useState } from 'react';
+import { useDeleteGroupMember } from '@/libs/hooks/useGroupMembers';
+import { mutate } from 'swr';
 
 export default function VehiclesPage() {
-  const { data: vehicles, isLoading, error } = useVehicles();
+  const { data: vehicles } = useVehicles();
+    const [id, setId] = useState<string | null>(null);
+    useEffect(() => {
+    const storedId = localStorage.getItem("userId");
+    setId(storedId);
+  }, []); 
+  const { groups, isLoading, error } = useUserGroups(id);
+  const { deleteMember } = useDeleteGroupMember();
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   // Giả lập dữ liệu nhóm (thay bằng API thực tế sau)
   const groupStats = {
@@ -104,11 +117,19 @@ export default function VehiclesPage() {
 
       {/* DANH SÁCH XE */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-10">
-          <h2 className="text-3xl font-black text-gray-900">Xe của nhóm</h2>
-          <p className="text-lg text-gray-600 mt-2">
-            {isLoading ? 'Đang tải danh sách xe...' : `${vehicles?.length || 0} xe sẵn sàng chia sẻ`}
-          </p>
+        <div className="max-w-7xl mx-auto px-6 -mt-10 pb-24">
+          {groups.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {groups.map((group) => (  
+                <GroupCard
+                  key={group.group_id}
+                  group={group}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* LOADING SKELETON */}
@@ -138,10 +159,6 @@ export default function VehiclesPage() {
           </div>
         )}
 
-        {/* DANH SÁCH XE */}
-        {!isLoading && vehicles && vehicles.length > 0 && (
-          <VehicleList vehicles={vehicles} />
-        )}
 
         {!isLoading && vehicles && vehicles.length === 0 && (
           <div className="text-center py-20">

@@ -1,106 +1,135 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { useProfile } from "@/libs/hooks/useProfile";
+import { ProfileAvatar } from "./_components/ProfileAvatar";
+import { ProfileEditActions } from "./_components/ProfileEditActions";
+import { ProfileInfoGrid } from "./_components/ProfileInfoGrid";
+import { ProfileHeader } from "./_components/ProfileHeader";
 
-import { UserProfile } from "@/types/profile.type";
-import { ProfileHeader } from "../_component/ProfileHeader";
-import { ProfileInfoSection } from "../_component/ProfileInfoSection";
-import { ProfileSkeleton } from "../_component/ProfileSkeleton";
-import { useSession } from "next-auth/react";
 
-export default function ProfilePage() {
-  const { profile, isLoading, error, updateProfile } = useProfile();
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<UserProfile>>({});
-  const [isSaving, setIsSaving] = useState(false);
-  const [editError, setEditError] = useState("");
-  const { data: session } = useSession();
-  const email = session?.user?.name || null;
-console.log(email)
+interface Profile {
+  userId: number;
+  fullName: string | null;
+  email: string;
+  phoneNumber: string | null;
+  address: string | null;
+  driverLicenseNumber: string | null;
+  driverLicenseExpiry: string | null;
+  licenseImageUrl: string | null;
+  createdAt: string;
+}
+
+export default function UserProfilePage() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({ fullName: "", phoneNumber: "", address: "", driverLicenseNumber: "", driverLicenseExpiry: "" });
+
+  const userId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
   useEffect(() => {
-    if (profile) setFormData(profile);
-  }, [profile]);
+  if (!userId) {
+    toast.error("Vui lòng đăng nhập để xem hồ sơ");
+    return;
+  }
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`http://localhost:8080/user/profiles/${userId}`);
+        setProfile(res.data);
+        setFormData({
+          fullName: res.data.fullName || "",
+          phoneNumber: res.data.phoneNumber || "",
+          address: res.data.address || "",
+          driverLicenseNumber: res.data.driverLicenseNumber || "",
+          driverLicenseExpiry: res.data.driverLicenseExpiry || "",
+        });
+      } catch {
+        toast.error("Không tải được hồ sơ");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [userId]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name as keyof UserProfile]: value }));
-  };
-
-  const onEditClick = () => { if(profile){setFormData(profile); setIsEditing(true); setEditError("");} };
-  const onCancelClick = () => { setIsEditing(false); setEditError(""); };
-  const onSaveClick = async () => {
-    setIsSaving(true);
-    setEditError("");
-
+  const handleSave = async () => {
+    if (!profile) return;
     try {
-      const dataToSave: Partial<UserProfile> = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        driverLicenseNumber: formData.driverLicenseNumber,
-        driverLicenseExpiry: formData.driverLicenseExpiry,
-      };
-      await updateProfile(dataToSave);
-      setIsEditing(false);
-    } catch (err: any) {
-      setEditError(err.message || "Lỗi khi lưu.");
-    } finally { setIsSaving(false); }
+      setSaving(true);
+      await axios.put(`http://localhost:8080/user/profiles/${userId}`, formData);
+      setProfile({ ...profile, ...formData });
+      setEditing(false);
+      toast.success("Cập nhật thành công!");
+    } catch {
+      toast.error("Cập nhật thất bại");
+    } finally {
+      setSaving(false);
+    }
   };
-      console.log('test',formData.email);
 
-  if (isLoading) return <ProfileSkeleton />;
-  if (error && !profile) return (
-    <div className="bg-gray-100 flex justify-center items-center p-8" style={{ minHeight: 'calc(100vh - 60px)' }}>
-      <div className="text-center bg-white p-12 rounded-2xl shadow-lg">
-        <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-red-600 mb-2">Đã xảy ra lỗi</h2>
-        <p className="text-gray-700">{error}</p>
-        <Link href="/" className="mt-6 inline-block px-6 py-2 rounded-lg text-white font-semibold shadow-md bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transition-all">
-          Về trang chủ
-        </Link>
+  const handleFieldChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  if (loading || !profile) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-20 w-20 border-8 border-teal-500 border-t-transparent"></div>
       </div>
-    </div>
-  );
-
-  const displayData = { ...profile, ...formData };
+    );
+  }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4 md:p-8">
-      <div className="max-w-6xl mx-auto mb-6">
-        {!isEditing && (
-          <Link href="/" className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-white font-semibold shadow-md bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-300">
-            <ArrowLeft className="w-5 h-5" /> Quay về Trang chủ
-          </Link>
-        )}
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-white">
+      <ProfileHeader />
+      
+      <div className="relative -mt-16 px-4 md:px-8 lg:px-16">
+        <motion.div
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-teal-100 overflow-hidden"
+        >
+          <ProfileAvatar fullName={profile.fullName} createdAt={profile.createdAt} />
+
+          <div className="px-8 py-12 lg:px-16 lg:py-16">
+            <div className="flex flex-col lg:flex-row justify-between items-start mb-12 gap-8">
+              <div>
+                <h3 className="text-3xl font-bold text-gray-800">Thông tin chi tiết</h3>
+                <p className="text-teal-600 mt-2">Cập nhật hồ sơ để sử dụng dịch vụ tốt hơn</p>
+              </div>
+              <ProfileEditActions
+                editing={editing}
+                saving={saving}
+                onEdit={() => setEditing(true)}
+                onSave={handleSave}
+                onCancel={() => {
+                  setEditing(false);
+                  setFormData({
+                    fullName: profile.fullName || "",
+                    phoneNumber: profile.phoneNumber || "",
+                    address: profile.address || "",
+                    driverLicenseNumber: profile.driverLicenseNumber || "",
+                    driverLicenseExpiry: profile.driverLicenseExpiry || "",
+                  });
+                }}
+              />
+            </div>
+
+            <ProfileInfoGrid
+              profile={profile}
+              editing={editing}
+              formData={formData}
+              onChange={handleFieldChange}
+            />
+          </div>
+        </motion.div>
       </div>
-
-      <motion.div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <motion.div className="lg:w-1/3 lg:sticky lg:top-24 h-fit" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-          <ProfileHeader
-            isEditing={isEditing}
-            isSaving={isSaving}
-            profile={profile!}
-            formData={formData}
-            onEditClick={onEditClick}
-            onCancelClick={onCancelClick}
-            onSaveClick={onSaveClick}
-            editError={editError}
-          />
-        </motion.div>
-
-        <motion.div className="lg:w-2/3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
-          <ProfileInfoSection
-            isEditing={isEditing}
-            displayData={displayData}
-            handleInputChange={handleInputChange}
-            profile={profile!}
-          />
-        </motion.div>
-      </motion.div>
     </div>
   );
 }

@@ -38,3 +38,17 @@ export interface ProfileResponse extends ProfileDTO {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AdminProfileResponse {
+  profileId: number;
+  userId: number;
+  email: string;
+  fullName: string;
+  phoneNumber: string;
+  address: string;
+  driverLicenseNumber: string;
+  driverLicenseExpiry: string; // YYYY-MM-DD
+  licenseImageUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}

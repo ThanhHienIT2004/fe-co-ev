@@ -25,8 +25,8 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
       const formData = new URLSearchParams();
       formData.append("email", email.trim());
       formData.append("password", password);
-
-      const res = await fetch("http://localhost:8085/user/login/sign_in", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_USER}/login/sign_in`, 
+      {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
@@ -40,7 +40,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
         localStorage.setItem("token", data.data.token);
         localStorage.setItem("userId", data.data.userId.toString());
         localStorage.setItem("email", data.data.email || email);
-        localStorage.setItem("role", data.data.role_name || "USER"); // Lưu role luôn
+        localStorage.setItem("role", data.data.role_id.role_name); // Lưu role luôn
 
         // Xác định trang cần redirect
         const role = data.data.role_name;
@@ -110,7 +110,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl hover:shadow-xl transform hover:scale-[1.02] transition disabled:opacity-60"
+          className="w-full bg-linear-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl hover:shadow-xl transform hover:scale-[1.02] transition disabled:opacity-60"
         >
           {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
         </button>

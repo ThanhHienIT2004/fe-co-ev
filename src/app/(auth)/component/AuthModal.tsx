@@ -25,7 +25,7 @@ export const AuthModal = ({ open, onClose, onLoginSuccess }: AuthModalProps) => 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9998]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-9998"
           />
 
           {/* Modal chính */}
@@ -34,7 +34,7 @@ export const AuthModal = ({ open, onClose, onLoginSuccess }: AuthModalProps) => 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50 }}
             transition={{ type: "spring", damping: 30, stiffness: 400 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            className="fixed inset-0 z-9999 flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">

@@ -61,26 +61,17 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-teal-600">
-          {success ? "Đăng Ký Thành Công!" : "Tạo Tài Khoản Mới"}
-        </h2>
-        <p className="text-gray-600 mt-2 text-sm">
-          {success ? "Chào mừng bạn đến với EVSharing!" : "Chỉ mất 10 giây thôi"}
-        </p>
-      </div>
-
+    <div className="space-y-6 pt-4">
       {success ? (
-        <div className="text-center py-12">
-          <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
-            <Check className="w-12 h-12 text-green-600" />
-          </div>
-          <p className="text-lg font-semibold text-green-700">Hoàn tất!</p>
-          <p className="text-sm text-teal-600 mt-6">Đang chuyển sang đăng nhập...</p>
+      <div className="text-center py-12">
+        <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
+          <Check className="w-12 h-12 text-green-600" />
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <p className="text-2xl font-bold text-green-700">Đăng ký thành công!</p>
+        <p className="text-sm text-teal-600 mt-4">Đang chuyển về đăng nhập...</p>
+      </div>
+    ) : (
+      <form onSubmit={handleSubmit} className="space-y-6">
           {/* EMAIL */}
           <div>
             <input

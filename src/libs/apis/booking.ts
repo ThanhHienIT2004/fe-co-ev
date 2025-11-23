@@ -1,11 +1,11 @@
 // lib/apis/booking.ts
 import { Booking, CreateBookingDto, UpdateBookingDto } from '@/types/booking.type';
 
-const API_URL = 'http://localhost:5001';
+const API_URL = 'http://localhost:8085';
 
 export const bookingApi = {
   create: async (data: CreateBookingDto): Promise<Booking> => {
-    const res = await fetch(`${API_URL}/booking`, {  // bỏ /create
+    const res = await fetch(`${API_URL}/booking/create`, {  
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

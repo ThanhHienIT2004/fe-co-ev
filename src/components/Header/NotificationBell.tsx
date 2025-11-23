@@ -10,20 +10,22 @@ export default function NotificationBell() {
   const [userId, setUserId] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<number[]>([]);
-  const [viewingId, setViewingId] = useState<number | null>(null); // ID đang xem chi tiết
+  const [viewingId, setViewingId] = useState<number | null>(null);
 
-  // Lấy userId từ localStorage
+  // --- Lấy userId từ localStorage ---
   useEffect(() => {
     const stored = localStorage.getItem("userId");
     setUserId(stored ? Number(stored) : null);
   }, []);
 
+  // --- Lấy data từ hooks ---
   const { data: alerts } = useAlerts(userId ?? 0);
   const { conflicts } = useConflictOwner(userId ?? 0);
-  const conflictList = conflicts || [];
+  const conflictList = Array.isArray(conflicts) ? conflicts : [];
 
-  // Gộp notifications
-  const notifications = [
+
+  // --- Gộp và lọc dismissed ---
+ const notifications = [
     ...(alerts || []).map(a => ({
       type: "alert" as const,
       id: a.alert_id,
@@ -37,6 +39,13 @@ export default function NotificationBell() {
       created_at: c.created_at,
     })),
   ].filter(n => !dismissedIds.includes(n.id));
+
+  // --- Chỉ lấy 1 notification mới nhất ---
+  const latestNotification = notifications.length
+    ? [notifications.reduce((prev, current) =>
+        new Date(prev.created_at) > new Date(current.created_at) ? prev : current
+      )]
+    : [];
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -65,13 +74,13 @@ export default function NotificationBell() {
         onClick={() => setOpen(!open)}
       >
         <Bell size={24} />
-        {notifications.length > 0 && (
+        {latestNotification.length > 0 && (
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
         )}
       </button>
 
       <AnimatePresence>
-        {open && notifications.length > 0 && (
+        {open && latestNotification.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -83,7 +92,7 @@ export default function NotificationBell() {
             </div>
 
             <div className="p-3 space-y-3 max-h-96 overflow-y-auto">
-              {notifications.map(n => (
+              {latestNotification.map(n => (
                 <div key={n.id} className="border-b last:border-b-0">
                   <div className="flex justify-between items-start p-2">
                     <div>
@@ -108,7 +117,6 @@ export default function NotificationBell() {
                     </div>
                   </div>
 
-                  {/* Form chi tiết */}
                   {viewingId === n.id && (
                     <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-b-md text-sm text-gray-700 dark:text-gray-200 space-y-1">
                       <p><span className="font-semibold">ID:</span> {n.id}</p>

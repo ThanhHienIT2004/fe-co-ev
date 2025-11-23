@@ -1,7 +1,7 @@
 import { DigitalSignature } from '@/types/digital-signature.type';
 import { CreateSignatureDto } from '@/types/digital-signature.type';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/booking/digital-signature';
+const API_URL = 'http://localhost:8085/booking/digital-signature';
 
 export const digitalSignatureApi = {
   create: async (data: CreateSignatureDto): Promise<DigitalSignature> => {

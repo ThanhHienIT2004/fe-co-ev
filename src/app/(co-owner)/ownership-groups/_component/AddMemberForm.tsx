@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 
 interface AddMemberFormProps {
   groupId: string;
+  groupId: string;
   onSuccess?: () => void;
 }
 
@@ -27,30 +28,17 @@ export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps
   const { createMember } = useCreateGroupMember();
   const { createEContract } = useCreateEContract();
 
-  // === PARSE + VALIDATE user_id ===
-  const trimmedUserId = userId.trim();
-  const parsedUserId = trimmedUserId ? parseInt(trimmedUserId, 10) : 0;
-  const isValidUserId = trimmedUserId && !isNaN(parsedUserId) && parsedUserId > 0;
+  // Kiểm tra ID
+  const user_id = Number(userId);
+  const isValidUserId = userId.trim() !== '' && !isNaN(user_id) && user_id > 0;
+  const isMemberExist = members.some(m => m.user_id === user_id);
 
-  // Kiểm tra thành viên đã tồn tại (so sánh number)
-  const isMemberExist = members.some(m => m.user_id === parsedUserId);
-
-  // === XỬ LÝ FILE ===
+  // File handler
   const handleFileChange = (file: File | null) => {
-    if (!file) {
-      setContractFile(null);
-      return;
-    }
+    if (!file) return setContractFile(null);
 
-    if (file.type !== 'application/pdf') {
-      setErrorMsg('Vui lòng chọn file PDF');
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      setErrorMsg('File PDF không được vượt quá 10MB');
-      return;
-    }
+    if (file.type !== 'application/pdf') return setErrorMsg('Chỉ chọn file PDF');
+    if (file.size > 10 * 1024 * 1024) return setErrorMsg('File PDF không được vượt quá 10MB');
 
     setContractFile(file);
     setErrorMsg('');
@@ -58,73 +46,58 @@ export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    handleFileChange(file);
+    handleFileChange(e.dataTransfer.files[0]);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+
+  // Submit
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  };
+    if (!isValidUserId) return setErrorMsg("ID thành viên phải là số nguyên dương");
+    if (isMemberExist) return setErrorMsg("Thành viên đã tồn tại trong nhóm");
 
-  // === SUBMIT ===
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg('');
+    setSuccess(false);
 
-  if (!isValidUserId) {
-    setErrorMsg("ID thành viên phải là số nguyên dương");
-    return;
-  }
+    try {
+      // 1. Thêm member
+      await createMember(groupId, {
+        user_id,
+        group_role: groupRole,
+        ownership_ratio: ownershipRatio ? Number(ownershipRatio) : undefined,
+      });
 
-  if (isMemberExist) {
-    setErrorMsg("Thành viên này đã có trong nhóm!");
-    return;
-  }
+      // 2. Upload PDF nếu có
+      if (contractFile) {
+        const formData = new FormData();
+        formData.append("ownership_group_id", groupId);
+        formData.append("user_id", user_id.toString());
+        formData.append("files", contractFile);
+        formData.append("signature_status", "pending");
+        await createEContract(formData);
+      }
 
-  setIsSubmitting(true);
-  setErrorMsg("");
-  setSuccess(false);
+      setSuccess(true);
+      setUserId('');
+      setOwnershipRatio('');
+      setGroupRole('member');
+      setContractFile(null);
 
-  try {
-    // === 1. Thêm member vào group (JSON raw) ===
-    await createMember(groupId, {
-      user_id: parsedUserId,
-      group_role: groupRole,
-      ownership_ratio: ownershipRatio ? Number(ownershipRatio) : undefined,
-    });
-
-    // === 2. Upload file PDF (nếu có) ===
-    if (contractFile) {
-      const contractFormData = new FormData();
-      contractFormData.append("ownership_group_id", groupId.toString());
-      contractFormData.append("user_id", parsedUserId.toString());
-      contractFormData.append("files", contractFile);
-      contractFormData.append("signature_status", "pending");
-
-      await createEContract(contractFormData);
+      onSuccess?.();
+      setTimeout(() => router.push("/ownership-groups-manage"), 1500);
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.message || "Thêm thất bại";
+      setErrorMsg(Array.isArray(msg) ? msg.join(", ") : msg);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setSuccess(true);
-    setUserId("");
-    setOwnershipRatio("");
-    setGroupRole("Co-owner");
-    setContractFile(null);
-
-    onSuccess?.();
-    setTimeout(() => router.push("/ownership-groups-manage"), 1500);
-
-  } catch (err: any) {
-    const msg = err.response?.data?.message || err.message || "Thêm thất bại";
-    setErrorMsg(Array.isArray(msg) ? msg.join(", ") : msg);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-  
+  };
 
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
       <form onSubmit={handleSubmit} className="space-y-8">
-
         {/* ID Thành viên */}
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -133,19 +106,13 @@ const handleSubmit = async (e: React.FormEvent) => {
           <input
             type="text"
             inputMode="numeric"
-            pattern="[0-9]*"
+            pattern="\d*"
             value={userId}
-            onChange={(e) => {
-              const val = e.target.value;
-              if (/^\d*$/.test(val)) setUserId(val); // Chỉ cho số
-            }}
+            onChange={(e) => /^\d*$/.test(e.target.value) && setUserId(e.target.value)}
             placeholder="123"
-            className="font-mono w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition [appearance:textfield] [&::-webkit-outer-spin-button]:hidden [&::-webkit-inner-spin-button]:hidden"
+            className="font-mono w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Nhập ID số từ Profile → User ID</p>
-
-          {/* Lỗi validate */}
           {userId && !isValidUserId && (
             <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
               <AlertCircle className="w-4 h-4" /> ID phải là số nguyên dương
@@ -163,11 +130,11 @@ const handleSubmit = async (e: React.FormEvent) => {
           <label className="block text-sm font-bold text-gray-700 mb-2">Vai trò</label>
           <select
             value={groupRole}
-            onChange={(e) => setGroupRole(e.target.value)}
+            onChange={(e) => setGroupRole(e.target.value as 'member' | 'admin')}
             className="w-full px-5 py-4 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-100 transition"
           >
-            <option value="Co-owner">Đồng sở hữu</option>
-            <option value="Owner">Chủ sở hữu</option>
+            <option value="member">Đồng sở hữu</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
 
@@ -188,22 +155,14 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         {/* Upload PDF */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            Hợp đồng (PDF - tùy chọn)
-          </label>
-
+          <label className="block text-sm font-bold text-gray-700 mb-2">Hợp đồng (PDF - tùy chọn)</label>
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onClick={() => fileInputRef.current?.click()}
-            className={`
-              relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer
-              transition-all duration-200
-              ${contractFile
-                ? 'border-teal-500 bg-teal-50'
-                : 'border-gray-300 hover:border-teal-400 hover:bg-teal-50/50'
-              }
-            `}
+            className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${
+              contractFile ? 'border-teal-500 bg-teal-50' : 'border-gray-300 hover:border-teal-400 hover:bg-teal-50/50'
+            }`}
           >
             <input
               ref={fileInputRef}
@@ -212,15 +171,12 @@ const handleSubmit = async (e: React.FormEvent) => {
               onChange={(e) => e.target.files?.[0] && handleFileChange(e.target.files[0])}
               className="hidden"
             />
-
             {contractFile ? (
               <div className="flex items-center justify-center gap-3 p-3">
                 <FileText className="w-10 h-10 text-red-600" />
                 <div className="text-left">
                   <p className="font-medium text-gray-800 truncate max-w-xs">{contractFile.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {(contractFile.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
+                  <p className="text-xs text-gray-500">{(contractFile.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
                 <button
                   type="button"
@@ -262,14 +218,11 @@ const handleSubmit = async (e: React.FormEvent) => {
           <button
             type="submit"
             disabled={isSubmitting || !isValidUserId || isMemberExist}
-            className={`
-              flex-1 flex items-center justify-center gap-3 font-bold py-5 rounded-2xl 
-              transition-all hover:scale-105 shadow-xl
-              ${isSubmitting || !isValidUserId || isMemberExist
-                ? 'bg-teal-400 text-white cursor-not-allowed shadow-lg' 
+            className={`flex-1 flex items-center justify-center gap-3 font-bold py-5 rounded-2xl transition-all hover:scale-105 shadow-xl ${
+              isSubmitting || !isValidUserId || isMemberExist
+                ? 'bg-teal-400 text-white cursor-not-allowed shadow-lg'
                 : 'bg-teal-600 hover:bg-teal-700 text-white shadow-xl'
-              }
-            `}
+            }`}
           >
             {isSubmitting ? (
               <> <Loader2 className="w-6 h-6 animate-spin" /> Đang thêm...</>
@@ -277,8 +230,8 @@ const handleSubmit = async (e: React.FormEvent) => {
               <> <UserPlus className="w-6 h-6" /> Thêm vào nhóm</>
             )}
           </button>
-          <Link 
-            href="/ownership-groups-manage" 
+          <Link
+            href="/ownership-groups-manage"
             className="px-8 py-5 bg-red-300 text-white font-bold rounded-2xl hover:bg-red-400 transition shadow-xl"
           >
             Hủy

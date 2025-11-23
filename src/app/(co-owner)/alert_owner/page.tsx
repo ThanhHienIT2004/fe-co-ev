@@ -1,18 +1,33 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAlerts } from "@/libs/hooks/useAlert";
 import { Loader2 } from "lucide-react";
 
 export default function AlertOwnerPage() {
-  const user_id = 101; // TODO: thay bằng data thật từ auth hoặc context
-  const { data: alerts, isLoading, error } = useAlerts(user_id);
+  const [userId, setUserId] = useState<number | null>(null);
+
+  // 🔐 Lấy user_id từ localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("userId");
+    setUserId(stored ? Number(stored) : null);
+  }, []);
+
+  // ❗ Chỉ gọi API nếu userId đã có
+  const { data: alerts, isLoading, error } = useAlerts(userId ?? 0);
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-semibold mb-6">Thông báo của bạn</h1>
 
-      {isLoading && (
+      {/* Nếu chưa load được userId → loading */}
+      {userId === null && (
+        <div className="flex justify-center py-10">
+          <Loader2 className="animate-spin" size={24} />
+        </div>
+      )}
+
+      {userId !== null && isLoading && (
         <div className="flex justify-center py-10">
           <Loader2 className="animate-spin" size={24} />
         </div>
@@ -24,11 +39,11 @@ export default function AlertOwnerPage() {
         </p>
       )}
 
-      {!isLoading && !error && alerts?.length === 0 && (
+      {userId !== null && !isLoading && !error && alerts?.length === 0 && (
         <p className="text-gray-500 text-center py-6">Không có cảnh báo nào</p>
       )}
 
-      {!isLoading && !error && alerts?.length > 0 && (
+      {userId !== null && !isLoading && !error && alerts?.length > 0 && (
         <div className="overflow-x-auto bg-white shadow-md rounded-xl p-4">
           <table className="min-w-full table-auto border border-gray-200">
             <thead className="bg-gray-100">

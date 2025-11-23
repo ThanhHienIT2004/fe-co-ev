@@ -1,7 +1,7 @@
 // lib/apis/conflict.ts
 import { ConflictLog, CreateConflictDto, UpdateConflictStatusDto } from '@/types/conflict.type';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const API_URL = 'http://localhost:5001';
 
 export const conflictApi = {
   // Tạo conflict mới

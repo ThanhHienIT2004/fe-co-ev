@@ -1,27 +1,47 @@
-// src/libs/hooks/useProfile.ts
-import { useState, useEffect } from 'react';
-import { fetchProfiles } from '@/libs/apis/profile';
+// src/hooks/useAdminProfiles.ts
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { AdminProfileResponse } from "@/types/service-tasks.type";
 
-export function useProfiles() {
-  const [profiles, setProfiles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+const API_BASE = "http://localhost:8080/user/profiles";
+
+export const useAdminProfiles = () => {
+  const [profiles, setProfiles] = useState<AdminProfileResponse[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const load = async () => {
-  try {
-    setLoading(true);
-    setError(null);
-    const data = await fetchProfiles();
-    setProfiles(data);
-  } catch (err: any) {
-    console.error("useProfiles error:", err);
-    setError(err.message || "Không thể tải danh sách hồ sơ");
-  } finally {
-    setLoading(false);
-  }
+  const fetchProfiles = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await axios.get<AdminProfileResponse[]>(`${API_BASE}/admin`);
+      setProfiles(res.data);
+    } catch (err: any) {
+      setError(err.response?.data || "Lỗi tải danh sách người dùng");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  // Lọc theo từ khóa
+  const filteredProfiles = profiles.filter((p) =>
+    `${p.fullName} ${p.phoneNumber} ${p.email} ${p.driverLicenseNumber}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  return {
+    profiles: filteredProfiles,
+    allProfiles: profiles,
+    loading,
+    error,
+    searchTerm,
+    setSearchTerm,
+    refetch: fetchProfiles,
+  };
 };
-
-  useEffect(() => { load(); }, []);
-
-  return { profiles, loading, error, refetch: load };
-}

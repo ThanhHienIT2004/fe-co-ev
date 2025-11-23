@@ -26,13 +26,14 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
       formData.append("email", email.trim());
       formData.append("password", password);
 
-      const res = await fetch("http://localhost:8080/user/login/sign_in", {
+      const res = await fetch("http://localhost:8085/user/login/sign_in", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
       });
 
       const data = await res.json();
+      console.log(data)
 
       if (data.success && data.data?.token) {
         localStorage.setItem("token", data.data.token);
@@ -46,7 +47,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
         setError(data.desc || "Email hoặc mật khẩu không đúng");
       }
     } catch (err) {
-      setError("Không thể kết nối server. Vui lòng thử lại!");
+      setError("Không thể kết nối server. Vui lòng thử lại!"+ err);
     } finally {
       setLoading(false);
     }

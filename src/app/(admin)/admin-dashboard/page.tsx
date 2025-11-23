@@ -8,7 +8,9 @@ import { StatsCard } from "./_components/StatsCard";
 import { TopGroupsBar } from "./_components/TopGroupsBar";
 import { VehicleStatusPie } from "./_components/VehicleStatusPie";
 import { WeeklyBookingsChart } from "./_components/WeeklyBookingsChart";
+import { YearDistanceChart } from "./_components/YearDistanceChart";
 import { useOwnershipGroup, useOwnershipGroups } from "@/libs/hooks/useOwnershipGroups";
+
 
 
 export default function AdminDashboard() {
@@ -38,7 +40,8 @@ export default function AdminDashboard() {
             <div className="lg:col-span-4"><VehicleStatusPie /></div>
             <div className="lg:col-span-7"><TopGroupsBar /></div>
             <div className="lg:col-span-5"><WeeklyBookingsChart /></div>
-          </div>
+            <div className="lg:col-span-5"><YearDistanceChart /></div>
+          </div>.
 
           {/* Footer */}
           <div className="mt-16 text-center">

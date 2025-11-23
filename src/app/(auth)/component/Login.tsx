@@ -26,7 +26,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
       formData.append("email", email.trim());
       formData.append("password", password);
 
-      const res = await fetch("http://localhost:8085/user/login/sign_in", {
+      const res = await fetch("http://localhost:8080/user/login/sign_in", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,

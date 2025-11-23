@@ -43,14 +43,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
         localStorage.setItem("role", data.data.role_id.role_name); // Lưu role luôn
 
         // Xác định trang cần redirect
-        const role = data.data.role_name;
         let redirectTo = "/"; // mặc định về trang chủ
-
-        if (role === "ADMIN") {
-          redirectTo = "/admin-dashboard"; // hoặc "/admin-dashboard" tùy route bạn
-        }
-        // Nếu là USER → về trang chủ bình thường
-        // Nếu muốn USER cũng vào admin thì bỏ điều kiện trên
 
         // Gọi callback (đóng modal, cập nhật header, v.v.)
         onLoginSuccess?.();

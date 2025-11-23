@@ -85,7 +85,6 @@ export default function FundDetailPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-green-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
 
-        {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-4xl font-bold text-gray-900">{fund.fundName}</h1>
@@ -102,7 +101,6 @@ export default function FundDetailPage() {
           </Link>
         </div>
 
-        {/* Balance */}
         <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-8 rounded-2xl shadow-xl mb-8">
           <p className="text-blue-100 text-sm font-medium">Số dư hiện tại</p>
           <p className="text-5xl font-bold mt-2">
@@ -113,7 +111,6 @@ export default function FundDetailPage() {
           </p>
         </div>
 
-        {/* Deposit */}
         <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 mb-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Nạp tiền vào quỹ</h2>
 
@@ -126,7 +123,6 @@ export default function FundDetailPage() {
               className="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 transition"
             />
 
-            {/* Chỉ còn nút VNPAY */}
             <button
               onClick={handleDeposit}
               disabled={hookLoading || !depositAmount}
@@ -143,7 +139,6 @@ export default function FundDetailPage() {
           )}
         </div>
 
-        {/* Info */}
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
           <h3 className="font-semibold text-gray-900 mb-3">Thông tin quỹ</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">

@@ -13,7 +13,6 @@ export default function DepositPage() {
   const [amount, setAmount] = useState('');
   const [fund, setFund] = useState<any>(null);
 
-  // gateway cố định
   const gateway: "VNPAY" = "VNPAY";
 
   useEffect(() => {
@@ -30,7 +29,6 @@ export default function DepositPage() {
 
     setLoading(true);
     try {
-      // luôn redirect sang trang success
       const fakeUrl = `/payment/success?fundId=${id}&amount=${amount}&gateway=VNPAY`;
       return router.push(fakeUrl);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -11,84 +11,123 @@ import {
   Calendar,
   Home,
   UserCircle,
-  SquareMenu,
-  HandHelping
+  History,
+  HandHelping,
+  Settings,
+  LogOut,
+  User,
+  CircleDollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AuthModal } from "@/app/(auth)/component/AuthModal";
 
 export const Header = () => {
-  const [open, setOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Thêm state cho dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
+  // Đọc email từ localStorage
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    if (email) setUserEmail(email);
+  }, []);
+
+  // Callback khi đăng nhập thành công
+  const handleLoginSuccess = () => {
+    const email = localStorage.getItem("email");
+    setUserEmail(email);
+    setAuthOpen(false);
+  };
+
+  // Đăng xuất
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+    setUserEmail(null);
+    setDropdownOpen(false);
+    window.location.href = "/";
+  };
+
+  // Đóng dropdown khi click ngoài
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
-    { href: "/vehicles", label: "Danh sách xe", icon: Car },
-    { href: "/group", label: "Nhóm đồng sở hữu", icon: Users },
+    { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
+    { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
-    { href: "/about", label: "Về chúng tôi", icon: SquareMenu },
-
+    { href: "/history", label: "Lịch sử", icon: History },
+    { href: "/about", label: "Về chúng tôi", icon: Home },
   ];
 
   return (
-    <div className="sticky top-0 z-20 w-full bg-gradient-to-tr from-black via-gray-600 to-gray-900 transition-all duration-140 text-white">
-      <div
-        className="mx-auto max-w-7xl px-4"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-      >
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo + Menu */}
+    <div className="sticky top-0 z-50 w-full bg-teal-50 shadow-md border-b border-gray-100">
+      <div className="mx-auto max-w-7xl px-4 relative">
+        <div className="flex h-14 items-center justify-between">
+          {/* Logo + Nav */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-white/90 hover:opacity-80 transition"
-            >
+            <Link href="/" className="flex items-center gap-2 text-teal-600 hover:opacity-80 transition">
               <div
-                className="size-8 rounded-xl grid place-items-center font-bold"
-                style={{
-                  background:
-                    "linear-gradient(to right, #B8C2FF 0%, #6183FF 100%)",
-                }}
+                className="size-9 rounded-xl grid place-items-center font-black text-white shadow-lg"
+                style={{ background: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)" }}
               >
                 EV
               </div>
-              <span className="text-lg font-semibold">EVSharing</span>
+              <span className="text-xl font-bold tracking-tight">EVSharing</span>
             </Link>
 
-            {/* Navigation */}
-            <nav className="ml-6 hidden md:flex items-center gap-2">
+            <nav className="ml-8 hidden md:flex items-center gap-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
+                const isHoveredOrActive = hoveredItem === item.href || isActive;
+                const Icon = item.icon;
+
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`group relative inline-flex items-center rounded-full px-3 py-1 text-sm transition 
-                      ${isActive ? "text-white" : "text-white/90 hover:bg-indigo-500/20"}`}
-                    style={
+                    onMouseEnter={() => setHoveredItem(item.href)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className={`group relative flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                       isActive
-                        ? {
-                            background:
-                              "linear-gradient(to right, #B8C2FF 0%, #6183FF 100%)",
-                          }
-                        : {}
-                    }
+                        ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md"
+                        : "text-gray-700 hover:bg-teal-100 hover:text-teal-600"
+                    }`}
                   >
-                    <item.icon className="size-5 shrink-0" />
-                    <AnimatePresence initial={false}>
-                      {(isActive || open) && (
+                    <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-teal-600"}`} />
+                    <AnimatePresence>
+                      {isHoveredOrActive && (
                         <motion.span
-                          initial={{ width: 0, opacity: 0 }}
-                          animate={{ width: "auto", opacity: 1 }}
-                          exit={{ width: 0, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="overflow-hidden ml-2 whitespace-nowrap"
+                          initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
+                          exit={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="overflow-hidden whitespace-nowrap"
                         >
                           {item.label}
                         </motion.span>
                       )}
                     </AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavPill"
+                        className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full -z-10"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
                   </Link>
                 );
               })}
@@ -97,21 +136,89 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* Notifications */}
-            <button className="rounded-full bg-white/10 p-2 hover:bg-white/15">
-              <Bell className="size-5" />
+            <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+              <Bell className="w-5 h-5 text-gray-700" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             </button>
 
-            {/* User section (tĩnh) */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 backdrop-blur-md text-sm font-medium text-white hover:bg-white/20 transition cursor-pointer">
-              <UserCircle className="w-5 h-5 text-white/90" />
-              Đăng nhập
-
-              <ChevronDown className="size-4" />
-            </div>
+            {/* ĐÃ ĐĂNG NHẬP → Có dropdown */}
+            {userEmail ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    {userEmail[0].toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 max-w-40 truncate">
+                    {userEmail}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
+                      dropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {dropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
+                    >
+                      <div className="py-2">
+                        <Link
+                          href="/profile"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <User className="w-5 h-5 text-teal-600" />
+                          <span className="font-medium">Trang cá nhân</span>
+                        </Link>
+                        <Link
+                          href="/profile/settings"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-teal-50 transition"
+                        >
+                          <Settings className="w-5 h-5 text-gray-600" />
+                          <span>Cài đặt</span>
+                        </Link>
+                        <hr className="my-2 border-gray-100" />
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition"
+                        >
+                          <LogOut className="w-5 h-5" />
+                          <span className="font-medium">Đăng xuất</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              /* CHƯA ĐĂNG NHẬP */
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+              >
+                <UserCircle className="w-5 h-5" />
+                <span>Đăng nhập</span>
+                <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 };

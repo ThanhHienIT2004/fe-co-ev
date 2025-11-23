@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function HeroBanner() {
     return (
-        <section className="relative w-full h-[100vh] overflow-hidden">
+        <section className="relative w-full h-screen overflow-hidden">
             {/* Background image */}
             <Image
                 src="/images/herobanner.png"
@@ -25,7 +25,7 @@ export default function HeroBanner() {
                 {/* Action Buttons */}
                 <div className="flex gap-4">
 
-                    <Link href="/pages">
+                    <Link href="/ownership-groups">
                         <button className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full font-semibold cursor-pointer transition-colors duration-300">
                             Vào nhóm đồng sở hữu ngay
                         </button>

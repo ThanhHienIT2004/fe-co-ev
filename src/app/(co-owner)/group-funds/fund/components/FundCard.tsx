@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 interface FundCardProps {
   fund: GroupFund;
   onDelete: (id: number) => void;
-  groupId: string;
+  groupId: number;
 }
 
 export default function FundCard({ fund, onDelete, groupId }: FundCardProps) {

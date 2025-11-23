@@ -8,7 +8,7 @@ interface Props {
   cost: VehicleCost;
   groupId: string;
   userId?: number;
-  onUpdate?: () => void; // callback để reload parent
+  onUpdate?: () => void;
 }
 
 export default function VehicleCostCard({ cost, groupId, userId = 1, onUpdate }: Props) {

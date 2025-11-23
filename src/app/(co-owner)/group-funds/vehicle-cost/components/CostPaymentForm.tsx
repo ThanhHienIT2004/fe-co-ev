@@ -4,12 +4,12 @@ import { useVehicleCost } from '@/libs/hooks/useVehicleCost';
 import { useRouter } from 'next/navigation';
 
 interface Props {
-  groupId: number; // vẫn là number
+  groupId: number;
   onSuccess?: () => void;
 }
 
 export default function VehicleCostForm({ groupId, onSuccess }: Props) {
-  const { create } = useVehicleCost(String(groupId)); // Ép number → string
+  const { create } = useVehicleCost(String(groupId));
   const router = useRouter();
   const [form, setForm] = useState({
     costName: '',
@@ -23,16 +23,15 @@ export default function VehicleCostForm({ groupId, onSuccess }: Props) {
   if (!form.costName || !form.amount) return alert('Vui lòng nhập đầy đủ');
   setLoading(true);
 
-  // Chuyển vehicleId sang number, nếu rỗng thì gửi 0
   const vehicleIdNumber = form.vehicleId ? Number(form.vehicleId) : 0;
 
   try {
     await create({
-      groupId,                     // number
-      fundId: 1,                   // ví dụ tạm
+      groupId,         
+      fundId: 1,    
       costName: form.costName,     
       amount: Number(form.amount), 
-      vehicleId: vehicleIdNumber,  // gửi number cho backend
+      vehicleId: vehicleIdNumber, 
     });
     onSuccess?.();
     router.push('/group-funds/vehicle-cost');

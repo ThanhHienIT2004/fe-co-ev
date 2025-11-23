@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import VehicleCostDetail from '../components/VehicleCostDetail';
-import api from '@/libs/apis/api';
+import api from '@/libs/apis/funds';
 export default function VehicleCostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();

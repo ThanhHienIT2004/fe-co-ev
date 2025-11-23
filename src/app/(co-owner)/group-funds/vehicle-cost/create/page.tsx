@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 
 export default function CreateVehicleCostPage() {
   const { groupId } = useParams<{ groupId: string }>();
-  const GROUP_ID = groupId ?? '1'; // mặc định groupId = '1'
+  const GROUP_ID = groupId ?? '1';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-teal-50 py-12 px-4">

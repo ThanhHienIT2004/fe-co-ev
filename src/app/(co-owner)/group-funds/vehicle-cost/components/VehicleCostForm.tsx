@@ -17,8 +17,8 @@ export default function VehicleCostForm({ groupId }: Props) {
   const [form, setForm] = useState({
     costName: '',
     amount: '',
-    fundId: '',      // string state
-    vehicleId: '',   // string state
+    fundId: '', 
+    vehicleId: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,8 +32,8 @@ export default function VehicleCostForm({ groupId }: Props) {
         groupId: Number(groupId),
         costName: form.costName.trim(),
         amount: Number(form.amount),
-        fundId: form.fundId ? Number(form.fundId) : undefined,      // convert string -> number
-        vehicleId: form.vehicleId ? Number(form.vehicleId) : undefined, // convert string -> number
+        fundId: form.fundId ? Number(form.fundId) : undefined,
+        vehicleId: form.vehicleId ? Number(form.vehicleId) : undefined,
       });
 
       alert('Thêm chi phí thành công!');

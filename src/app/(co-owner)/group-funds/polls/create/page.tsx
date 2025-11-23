@@ -22,7 +22,7 @@ export default function CreatePollPage() {
     setLoading(true);
     try {
       await create({
-        groupId: 1, // ĐÃ SỬA: number thay vì string
+        groupId: 1,
         description: form.description,
         costId: form.costId ? Number(form.costId) : null,
         expiresAt: form.expiresAt || null,

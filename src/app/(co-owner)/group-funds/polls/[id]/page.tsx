@@ -20,14 +20,12 @@ export default function PollDetailPage() {
   const [loading, setLoading] = useState(true);
   const [myVote, setMyVote] = useState<'yes' | 'no' | 'abstain' | null>(null);
 
-  // Chuyển đổi hiển thị tiếng Việt
   const voteLabel: Record<'yes' | 'no' | 'abstain', string> = {
     yes: 'Đồng ý',
     no: 'Không',
     abstain: 'Kiêng',
   };
 
-  // Kiểm tra pollId hợp lệ
   useEffect(() => {
     if (!pollId || isNaN(pollId)) {
       router.push('/group-funds/polls');
@@ -63,7 +61,6 @@ export default function PollDetailPage() {
     loadData();
   }, [loadData]);
 
-  // HANDLE VOTE – gửi đúng YES/NO/ABSTAIN (viết HOA)
   const handleVote = useCallback(
     async (value: 'yes' | 'no' | 'abstain') => {
       if (!pollId) return;

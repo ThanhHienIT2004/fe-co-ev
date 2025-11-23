@@ -1,7 +1,7 @@
 // src/libs/hooks/usePayment.ts
 import { useState, useEffect } from 'react';
-import api from '../apis/api';
 import { Payment } from '../../types/payment.type';
+import api from '../apis/payment';
 
 export const usePayment = () => {
   const [payments, setPayments] = useState<Payment[]>([]);

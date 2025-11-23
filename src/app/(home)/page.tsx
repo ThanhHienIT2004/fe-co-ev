@@ -1,9 +1,8 @@
-
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: "Trang Chủ - Y Tế Thông Minh",
-    description: "Khám phá các dịch vụ y tế chất lượng cao, đặt lịch dễ dàng.",
+    title: "Trang Chủ - Hệ thống đồng sở hữu xe điện thông minh",
+    description: "Khám phá các dịch vụ đồng sở hữu chất lượng cao, đặt lịch dễ dàng.",
 };
 
 export default function HomePage() {
@@ -40,7 +39,7 @@ export default function HomePage() {
                                 <span className="font-semibold">✉️ Email:</span> contact@yte.vn
                             </p>
                             <p>
-                                <span className="font-semibold">🏥 Địa chỉ:</span> 123 Đường Sức Khỏe, TP. Hồ Chí Minh
+                                <span className="font-semibold">🏥 Địa chỉ:</span> Tô Ký, Q.12, TP. Hồ Chí Minh
                             </p>
                         </div>
                     </div>

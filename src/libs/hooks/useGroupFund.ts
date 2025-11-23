@@ -1,14 +1,12 @@
 // src/libs/hooks/useGroupFund.ts
 import { useState, useEffect, useCallback } from 'react';
+import api from '@/libs/apis/funds';
 import type {
   GroupFund,
   CreateFundRequest,
-  DepositRequest,
-  MomoPaymentResponse,
 } from '@/types/groupfund.type';
-import api from '../apis/payment';
 
-export const useGroupFund = (groupId?: string) => {
+export const useGroupFund = (groupId?: string) => {  // ĐỔI TỪ number → string
   const [funds, setFunds] = useState<GroupFund[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,8 +17,8 @@ export const useGroupFund = (groupId?: string) => {
     }
     setLoading(true);
     try {
-      const res = await api.get<GroupFund[]>(`/funds`, {
-        params: { groupId },
+      const res = await api.get<GroupFund[]>('/funds', {
+        params: { groupId }, // vẫn gửi string → backend sẽ xử lý
       });
       setFunds(res.data);
     } catch (err) {
@@ -38,19 +36,27 @@ export const useGroupFund = (groupId?: string) => {
 
   const create = async (data: CreateFundRequest): Promise<GroupFund> => {
     const res = await api.post<GroupFund>('/funds', data);
+    await fetchAll(); // Tự động cập nhật danh sách
     return res.data;
   };
 
   const deposit = async (
-    id: number,
-    data: DepositRequest
-  ): Promise<MomoPaymentResponse> => {
-    const res = await api.post<MomoPaymentResponse>(`/funds/${id}/deposit`, data);
+    fundId: number,
+    data: { amount: string; gateway: 'VNPAY'; fake: boolean }
+  ) => {
+    const res = await api.post('/payments/fake-create', {
+      fundId,
+      groupId: groupId ? Number(groupId) : undefined,
+      amount: Number(data.amount),
+      gateway: 'VNPAY',
+      fake: data.fake,
+    });
     return res.data;
   };
 
   const deleteFund = async (id: number): Promise<void> => {
     await api.delete(`/funds/${id}`);
+    await fetchAll();
   };
 
   useEffect(() => {

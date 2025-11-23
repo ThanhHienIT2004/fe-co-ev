@@ -8,26 +8,32 @@ export default function DepositPage() {
   const { deposit, getById } = useGroupFund();
   const router = useRouter();
   const { id } = useParams();
+
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState('');
-  const [gateway, setGateway] = useState<'MOMO' | 'VNPAY'>('VNPAY');
   const [fund, setFund] = useState<any>(null);
+
+  const gateway: "VNPAY" = "VNPAY";
 
   useEffect(() => {
     if (id) {
-      getById(Number(id)).then(setFund).catch(() => router.push('/group-funds/fund'));
+      getById(Number(id))
+        .then(setFund)
+        .catch(() => router.push('/group-funds/fund'));
     }
   }, [id, getById, router]);
 
   const handleDeposit = async () => {
-    if (!amount || Number(amount) < 10000) return alert('Tối thiểu 10,000đ');
-    
+    if (!amount || Number(amount) < 10000)
+      return alert('Tối thiểu 10,000đ');
+
     setLoading(true);
     try {
-      const { paymentUrl } = await deposit(Number(id), { amount, gateway });
-      window.location.href = paymentUrl;
+      const fakeUrl = `/payment/success?fundId=${id}&amount=${amount}&gateway=VNPAY`;
+      return router.push(fakeUrl);
+
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Nạp thất bại');
+      alert(err.response?.data?.message || "Nạp thất bại");
     } finally {
       setLoading(false);
     }
@@ -69,39 +75,14 @@ export default function DepositPage() {
               />
             </div>
 
+            {/* Chỉ hiển thị cổng VNPAY */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Cổng thanh toán
               </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setGateway('MOMO')}
-                  className={`p-4 rounded-lg border-2 transition ${
-                    gateway === 'MOMO'
-                      ? 'border-purple-500 bg-purple-50 text-purple-700'
-                      : 'border-gray-300 text-gray-600'
-                  }`}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-8 h-8 bg-pink-500 rounded-full"></div>
-                    <span className="font-medium">MOMO</span>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setGateway('VNPAY')}
-                  className={`p-4 rounded-lg border-2 transition ${
-                    gateway === 'VNPAY'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-300 text-gray-600'
-                  }`}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full"></div>
-                    <span className="font-medium">VNPAY</span>
-                  </div>
-                </button>
+              <div className="p-4 rounded-lg border-2 border-blue-500 bg-blue-50 text-blue-700 flex items-center justify-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full"></div>
+                <span className="font-medium">VNPAY</span>
               </div>
             </div>
 
@@ -110,7 +91,7 @@ export default function DepositPage() {
               disabled={loading || !amount}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-lg font-medium hover:shadow-lg transition disabled:opacity-50"
             >
-              {loading ? 'Đang chuyển hướng...' : 'Tiếp tục thanh toán'}
+              {loading ? 'Đang chuyển hướng...' : 'Thanh toán với VNPAY'}
             </button>
           </div>
         </div>

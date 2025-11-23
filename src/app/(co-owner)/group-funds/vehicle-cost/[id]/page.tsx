@@ -1,52 +1,49 @@
+// src/app/(co-owner)/group-funds/vehicle-cost/[id]/page.tsx
 'use client';
-import { useEffect, useState } from 'react';
-import { useVehicleCost } from '@/libs/hooks/useVehicleCost';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import VehicleCostDetail from '../components/VehicleCostDetail';
-
+import api from '@/libs/apis/funds';
 export default function VehicleCostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const groupIdFromQuery = searchParams.get('groupId');
-  const GROUP_ID = groupIdFromQuery ?? 'group_001';
   const costId = Number(id);
+  const groupIdRef = useRef<string>(searchParams.get('groupId') ?? 'group_001');
 
-  // CHỈ DÙNG getById → KHÔNG GỌI fetchAll → KHÔNG RE-RENDER
-  const { getById } = useVehicleCost(GROUP_ID);
   const [cost, setCost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadData = async () => {
     if (!costId || isNaN(costId)) {
       router.replace('/group-funds/vehicle-cost');
       return;
     }
 
+    try {
+      setLoading(true);
+      const res = await api.get(`/costs/${costId}`, {
+        params: { groupId: groupIdRef.current }
+      });
+      setCost(res.data);
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Không tìm thấy chi phí');
+      router.replace('/group-funds/vehicle-cost');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     let isMounted = true;
 
-    const load = async () => {
-      try {
-        setLoading(true);
-        const c = await getById(costId);
-        if (isMounted) setCost(c);
-      } catch (err: any) {
-        if (isMounted) {
-          alert(err.response?.data?.message || 'Không tìm thấy chi phí');
-          router.replace('/group-funds/vehicle-cost');
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    load();
+    loadData();
 
     return () => {
       isMounted = false;
     };
-  }, [costId, getById, router]);
+  }, [costId, router]);
 
   if (loading) {
     return (
@@ -61,5 +58,5 @@ export default function VehicleCostDetailPage() {
 
   if (!cost) return null;
 
-  return <VehicleCostDetail cost={cost} groupId={GROUP_ID} />;
+  return <VehicleCostDetail cost={cost} groupId={groupIdRef.current} />;
 }

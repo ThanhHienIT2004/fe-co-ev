@@ -87,7 +87,7 @@ export const ForgotPassword = ({
         <button
           type="submit"
           disabled={isLoading || isCooldown}
-          className="w-full py-3 rounded-xl text-white font-semibold shadow-md bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+          className="w-full py-3 rounded-xl text-white font-semibold shadow-md bg-linear-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
         >
           {isLoading
             ? "Đang gửi..."

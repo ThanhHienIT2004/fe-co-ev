@@ -40,7 +40,7 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8085/user/register", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_USER}/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password, role_id: "3" }),
@@ -183,7 +183,7 @@ export const Register = ({ onClose, onGoToLogin }: RegisterProps) => {
           <button
             type="submit"
             disabled={loading || !isValidEmail || !isPasswordValid || !isConfirmMatch}
-            className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-linear-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Đang tạo tài khoản..." : "Đăng Ký Ngay"}
           </button>

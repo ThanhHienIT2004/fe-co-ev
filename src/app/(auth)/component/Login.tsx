@@ -25,29 +25,50 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
       const formData = new URLSearchParams();
       formData.append("email", email.trim());
       formData.append("password", password);
-
-      const res = await fetch("http://localhost:8085/user/login/sign_in", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_USER}/login/sign_in`, 
+      {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
       });
 
       const data = await res.json();
-      console.log(data)
+      console.log("Login response:", data);
 
       if (data.success && data.data?.token) {
+        // Lưu thông tin chung
         localStorage.setItem("token", data.data.token);
-        localStorage.setItem("userId", data.data.userId || "");
+        localStorage.setItem("userId", data.data.userId.toString());
         localStorage.setItem("email", data.data.email || email);
+        localStorage.setItem("role", data.data.role_id.role_name); // Lưu role luôn
 
+        // Xác định trang cần redirect
+        const role = data.data.role_name;
+        let redirectTo = "/"; // mặc định về trang chủ
+
+        if (role === "ADMIN") {
+          redirectTo = "/admin-dashboard"; // hoặc "/admin-dashboard" tùy route bạn
+        }
+        // Nếu là USER → về trang chủ bình thường
+        // Nếu muốn USER cũng vào admin thì bỏ điều kiện trên
+
+        // Gọi callback (đóng modal, cập nhật header, v.v.)
         onLoginSuccess?.();
-        router.refresh(); // Quan trọng: cập nhật header mà không reload trang
-        setTimeout(() => onClose(), 400); // Đợi animation đóng modal
+
+        // Refresh để header nhận biết đã login
+        router.refresh();
+
+        // Đợi một chút cho animation rồi redirect
+        setTimeout(() => {
+          onClose();
+          router.push(redirectTo); // Đây là điểm quan trọng: redirect đúng trang
+        }, 400);
       } else {
         setError(data.desc || "Email hoặc mật khẩu không đúng");
       }
-    } catch (err) {
-      setError("Không thể kết nối server. Vui lòng thử lại!"+ err);
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError("Không thể kết nối server. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
@@ -89,7 +110,7 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl hover:shadow-xl transform hover:scale-[1.02] transition disabled:opacity-60"
+          className="w-full bg-linear-to-r from-teal-500 to-cyan-500 text-white font-bold py-4 rounded-xl hover:shadow-xl transform hover:scale-[1.02] transition disabled:opacity-60"
         >
           {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
         </button>

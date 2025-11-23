@@ -18,9 +18,9 @@ const GenerateButton: React.FC<GenerateButtonProps> = ({ loading, disabled, onCl
           : "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl hover:shadow-2xl"
       }`}
     >
-      {loading ? "Đang tạo báo cáo siêu xịn..." : "Generate Report"}
+      {loading ? "Đang tạo báo cáo..." : "Generate Report"}
     </button>
   );
 };
 
-export default GenerateButton;   // BẮT BUỘC PHẢI CÓ DÒNG NÀY!!!
+export default GenerateButton;  

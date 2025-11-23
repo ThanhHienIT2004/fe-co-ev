@@ -64,7 +64,7 @@ export default function HistoryPage() {
           <div className="text-center py-20">
             <p className="text-red-600 text-lg font-medium">{error}</p>
             {!localStorage.getItem("userId") && (
-              <a href="/login" className="mt-4 inline-block text-teal-600 underline">
+              <a href="/" className="mt-4 inline-block text-teal-600 underline">
                 Đăng nhập ngay
               </a>
             )}

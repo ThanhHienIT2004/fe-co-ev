@@ -22,8 +22,11 @@ export default function DateRangePicker({ onChange }: DateRangePickerProps) {
 
   const handleSelect = (range: DateRange | undefined) => {
     setDateRange(range);
+
+    // Chuyển sang format yyyy-MM-dd để backend parse LocalDateTime
     const start = range?.from ? format(range.from, "yyyy-MM-dd") : "";
     const end = range?.to ? format(range.to, "yyyy-MM-dd") : "";
+
     onChange(start, end);
   };
 
@@ -41,6 +44,7 @@ export default function DateRangePicker({ onChange }: DateRangePickerProps) {
           {dateRange?.from ? (
             dateRange.to ? (
               <>
+                {/* Hiển thị dd/MM/yyyy cho người dùng */}
                 {format(dateRange.from, "dd/MM/yyyy")} → {format(dateRange.to, "dd/MM/yyyy")}
               </>
             ) : (

@@ -62,7 +62,7 @@ export function YearDistanceChart() {
         <p className="text-5xl font-extrabold bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
           {loading ? "..." : totalDistance}
         </p>
-        <p className="text-xs text-gray-400 mt-1">Cập nhật tự động • Tất cả xe</p>
+        <p className="text-xs text-gray-400 mt-1">Cập nhật tự động</p>
       </div>
 
       {/* Biểu đồ */}
@@ -80,7 +80,7 @@ export function YearDistanceChart() {
       </ResponsiveContainer>
 
       <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
-        Dữ liệu từ hệ thống • Cập nhật mỗi 5 phút
+        Cập nhật mỗi 5 phút
       </p>
     </div>
   );

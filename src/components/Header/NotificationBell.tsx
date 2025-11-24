@@ -3,11 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAlerts } from "@/libs/hooks/useAlert";
-import { useConflictOwner } from "@/libs/hooks/useConflictOwner";
+
+type Notification = {
+  type: "alert" | "conflict";
+  id: number;
+  message: string;
+  created_at: string;
+};
 
 export default function NotificationBell() {
   const [userId, setUserId] = useState<number | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<number[]>([]);
   const [viewingId, setViewingId] = useState<number | null>(null);
@@ -18,31 +24,57 @@ export default function NotificationBell() {
     setUserId(stored ? Number(stored) : null);
   }, []);
 
-  // --- Lấy data từ hooks ---
-  const { data: alerts } = useAlerts(userId ?? 0);
-  const { conflicts } = useConflictOwner(userId ?? 0);
-  const conflictList = Array.isArray(conflicts) ? conflicts : [];
+  // --- Fetch notifications 1 lần ---
+  useEffect(() => {
+    if (userId === null) return;
 
+    let cancelled = false;
 
-  // --- Gộp và lọc dismissed ---
- const notifications = [
-    ...(alerts || []).map(a => ({
-      type: "alert" as const,
-      id: a.alert_id,
-      message: a.message,
-      created_at: a.created_at,
-    })),
-    ...(conflictList).map(c => ({
-      type: "conflict" as const,
-      id: c.conflict_id,
-      message: c.description || "Có xung đột mới",
-      created_at: c.created_at,
-    })),
-  ].filter(n => !dismissedIds.includes(n.id));
+    async function fetchNotifications() {
+      try {
+        const [alertsRes, conflictsRes] = await Promise.all([
+          fetch(`http://localhost:8085/booking/alerts/user/${userId}`),
+          fetch(`http://localhost:8085/booking/conflict-log/user_id/${userId}`)
+        ]);
 
-  // --- Chỉ lấy 1 notification mới nhất ---
-  const latestNotification = notifications.length
-    ? [notifications.reduce((prev, current) =>
+        const alertsData = await alertsRes.json();
+        const conflictsData = await conflictsRes.json();
+        const conflictsArray = Array.isArray(conflictsData) ? conflictsData : conflictsData.data || [];
+
+        if (!cancelled) {
+          const merged: Notification[] = [
+            ...alertsData.map((a: any) => ({
+              type: "alert",
+              id: a.alert_id,
+              message: a.message,
+              created_at: a.created_at
+            })),
+            ...conflictsArray.map((c: any) => ({
+              type: "conflict",
+              id: c.conflict_id,
+              message: c.description || "Có xung đột mới",
+              created_at: c.created_at
+            }))
+          ];
+
+          setNotifications(merged);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchNotifications();
+
+    return () => { cancelled = true };
+  }, [userId]);
+
+  // --- Lọc notifications chưa dismissed ---
+  const activeNotifications = notifications.filter(n => !dismissedIds.includes(n.id));
+
+  // --- Lấy notification mới nhất ---
+  const latestNotification = activeNotifications.length
+    ? [activeNotifications.reduce((prev, current) =>
         new Date(prev.created_at) > new Date(current.created_at) ? prev : current
       )]
     : [];

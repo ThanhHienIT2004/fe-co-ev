@@ -11,7 +11,7 @@ import { DarkModeToggle } from "./_components/DarkModeToggle";
 import { StatsCard } from "./_components/StatsCard";
 import { TopGroupsBar } from "./_components/TopGroupsBar";
 import { VehicleStatusPie } from "./_components/VehicleStatusPie";
-import { WeeklyBookingsChart } from "./_components/WeeklyBookingsChart";
+import { MonthlyStatChart } from "./_components/MontlyStatsChart";
 import { YearDistanceChart } from "./_components/YearDistanceChart";
 
 export default function AdminDashboardPage() {
@@ -39,9 +39,9 @@ export default function AdminDashboardPage() {
             <div className="lg:col-span-8"><ContractLineChart /></div>
             <div className="lg:col-span-4"><VehicleStatusPie /></div>
             <div className="lg:col-span-7"><TopGroupsBar /></div>
-            <div className="lg:col-span-5"><WeeklyBookingsChart /></div>
-            <div className="lg:col-span-7"><YearDistanceChart /></div>
-          </div>
+            <div className="lg:col-span-5"><MonthlyStatChart title={""} apiMonthly={""} apiTotal={""} /></div>
+            <div className="lg:col-span-5"><YearDistanceChart /></div>
+          </div>.
 
           <div className="mt-16 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">

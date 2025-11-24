@@ -28,8 +28,8 @@ export const conflictApi = {
   },
 
   // Lấy conflict theo user ID
-  getByBooking: async (user_id: number): Promise<ConflictLog[]> => {
-    const res = await fetch(`${API_URL}/booking/conflict-log/${user_id}`);
+  getByUser: async (user_id: number): Promise<ConflictLog[]> => {
+    const res = await fetch(`${API_URL}/booking/conflict-log/user_id/${user_id}`);
     return res.json();
   },
 

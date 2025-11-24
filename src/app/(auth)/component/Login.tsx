@@ -9,7 +9,11 @@ type LoginProps = {
   onGoToRegister: () => void;
 };
 
-export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) => {
+export const Login = ({
+  onClose,
+  onLoginSuccess,
+  onGoToRegister,
+}: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,41 +29,39 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
       const formData = new URLSearchParams();
       formData.append("email", email.trim());
       formData.append("password", password);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_USER}/login/sign_in`, 
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData,
-      });
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_USER}/login/sign_in`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData,
+        }
+      );
 
       const data = await res.json();
       console.log("Login response:", data);
 
       if (data.success && data.data?.token) {
-        // Lưu thông tin chung
+        // ⭐ Lưu token và info
         localStorage.setItem("token", data.data.token);
         localStorage.setItem("userId", data.data.userId.toString());
         localStorage.setItem("email", data.data.email || email);
-        localStorage.setItem("role", data.data.role_id.role_name); // Lưu role luôn
+        localStorage.setItem("role", data.data.role_name);
 
-        // Xác định trang cần redirect
-        let redirectTo = "/"; // mặc định về trang chủ
-
-        // Gọi callback (đóng modal, cập nhật header, v.v.)
+        // ⭐ Gọi callback cho component cha
         onLoginSuccess?.();
 
-        // Refresh để header nhận biết đã login
-        router.refresh();
+        // ⭐ Đóng modal
+        onClose();
 
-        // Đợi một chút cho animation rồi redirect
-        setTimeout(() => {
-          onClose();
-          router.push(redirectTo); // Đây là điểm quan trọng: redirect đúng trang
-        }, 400);
+        // ⭐ Reload full UI để header/layout nhận token mới
+        window.location.href = "/"; // <- Quan trọng nhất
+        return;
       } else {
         setError(data.desc || "Email hoặc mật khẩu không đúng");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Login error:", err);
       setError("Không thể kết nối server. Vui lòng thử lại!");
     } finally {
@@ -70,7 +72,9 @@ export const Login = ({ onClose, onLoginSuccess, onGoToRegister }: LoginProps) =
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-teal-600">Chào mừng trở lại!</h2>
+        <h2 className="text-3xl font-bold text-teal-600">
+          Chào mừng trở lại!
+        </h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">

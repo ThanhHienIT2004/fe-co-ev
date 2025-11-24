@@ -196,12 +196,12 @@ export default function GroupDetailPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
-                        {member.member_name || "Thành viên"}
+                        {member.user.fullName || "Thành viên"}
                       </h3>
                       <p className="text-gray-600 font-mono text-sm">
                         ID: {member.user_id}
                       </p>
-                    </div>
+                    </div>  
                   </div>
 
                   <div className="flex items-center gap-6">

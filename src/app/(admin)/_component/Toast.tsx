@@ -20,8 +20,8 @@ export default function Toast({ message, type, onClose }: ToastProps) {
       <div
         className={`flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium ${
           type === 'success'
-            ? 'bg-gradient-to-r from-emerald-600 to-teal-600'
-            : 'bg-gradient-to-r from-rose-600 to-red-600'
+            ? 'bg-linear-to-r from-emerald-600 to-teal-600'
+            : 'bg-linear-to-r from-rose-600 to-red-600'
         }`}
       >
         <span>{message}</span>

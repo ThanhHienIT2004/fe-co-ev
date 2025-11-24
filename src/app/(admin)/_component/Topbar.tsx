@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Bell, Search, ChevronDown, User, Settings, File, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import NotificationBell from "@/components/Header/NotificationBell";
+// import NotificationBell from "@/components/Header/NotificationBell";
 
 interface TopbarProps {
   sidebarWidth: number;
@@ -64,7 +64,7 @@ export default function Topbar({ sidebarWidth }: TopbarProps) {
       {/* Bên phải: Thông báo + Avatar + Dropdown */}
       <div className="flex items-center gap-4">
         {/* Thông báo */}
-        <NotificationBell />
+        {/* <NotificationBell /> */}
 
         {/* User Dropdown */}
         {userEmail ? (

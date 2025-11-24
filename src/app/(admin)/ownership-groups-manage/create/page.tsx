@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateOwnershipGroup } from '@/libs/hooks/useOwnershipGroups';
 import { useRouter } from 'next/navigation';
 import { Plus, ArrowLeft, Loader2 } from 'lucide-react';
@@ -11,7 +11,12 @@ export default function CreateGroupPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [vehicleIdError, setVehicleIdError] = useState<string | null>(null);
-
+  const [id, setId] = useState<string | null>(null);
+    useEffect(() => {
+    const storedId = localStorage.getItem("userId");
+    setId(storedId);
+  }, []); 
+  
   const validateVehicleId = (value: string): boolean => {
     const num = Number(value);
     if (!value) return false;
@@ -35,13 +40,13 @@ export default function CreateGroupPage() {
       return;
     }
 
-    const vehicle_id = parseInt(vehicleIdStr, 10);
+    const vehicle_id = vehicleIdStr;
 
     try {
       await createGroup({
         group_name: formData.get('group_name') as string,
-        vehicle_id, // int  
-        created_by: 1, // Thay bằng user ID thật sau
+        vehicle_id, 
+        created_by: id as string || '404', // Thay bằng user ID thật sau
       });
       router.push('/ownership-groups-manage');
     } catch (error) {

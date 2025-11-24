@@ -20,13 +20,13 @@ import {
 } from "@/libs/hooks/useGroupMembers";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { enqueueSnackbar } from "notistack";
 
 export default function GroupDetailPage() {
   const { group_id } = useParams();
   const { group, isLoading: loadingGroup } = useOwnershipGroup(group_id as string);
   const { members, isLoading: loadingMembers, mutate } = useGroupMembers(group_id as string);
   const { deleteMember } = useDeleteGroupMember();
-  console.log('id', group_id)
   const [deleting, setDeleting] = useState<string | null>(null);
 
   if (loadingGroup || loadingMembers) {
@@ -45,6 +45,7 @@ export default function GroupDetailPage() {
       setDeleting(memberId);
       await deleteMember(memberId, group_id as string);
       await mutate(); // refetch lại danh sách thành viên
+      enqueueSnackbar("Xóa thành viên thành công!", { variant: "success" });
     } finally {
       setDeleting(null);
     }

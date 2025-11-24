@@ -7,7 +7,7 @@ import { Shield } from "lucide-react";
 export default function AdminProfilesHeader({ total }: { total: number }) {
   return (
     <div className="bg-teal-50/80 backdrop-blur-sm border-b border-teal-100 sticky top-0 z-40">
-      <div className="mx-auto max-w-7xl px-6 py-6">
+      <div className="mx-auto max-w-7xl px-1 py-1">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-black bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">

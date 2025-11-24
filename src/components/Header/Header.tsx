@@ -69,7 +69,7 @@ export const Header = () => {
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
     { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
-    { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
+    { href: "/booking-list", label: "Danh sách lịch đặt xe", icon: Calendar },
     { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/history", label: "Lịch sử", icon: History },

@@ -1,13 +1,18 @@
 // src/types/payment.type.ts
+export type PaymentStatus = 'pending' | 'completed' | 'failed';
+export type PaymentGateway = 'MOMO' | 'VNPAY';
+
 export interface Payment {
   paymentId: number;
   groupId: string;
   userId: string;
   fundId: number;
   amount: string;
-  gateway: 'MOMO' | 'VNPAY';
+  gateway: PaymentGateway;
   gatewayOrderId: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: PaymentStatus;
   gatewayResponse?: string;
   paymentDate?: string;
+  createdAt: string;
+  updatedAt: string;
 }

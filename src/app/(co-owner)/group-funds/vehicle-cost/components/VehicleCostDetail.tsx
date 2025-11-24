@@ -12,7 +12,6 @@ interface Props {
 
 export default function VehicleCostDetail({ cost, groupId }: Props) {
   const router = useRouter();
-  // CHỈ DÙNG updateStatus & payWithMomo → KHÔNG GỌI fetchAll
   const { updateStatus, payWithMomo } = useVehicleCost(groupId);
 
   const handlePayWithFund = async () => {

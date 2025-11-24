@@ -4,11 +4,12 @@ import { useVehicleCost } from '@/libs/hooks/useVehicleCost';
 import { useRouter } from 'next/navigation';
 
 interface Props {
+  groupId: number;
   onSuccess?: () => void;
 }
 
-export default function VehicleCostForm({ onSuccess }: Props) {
-  const { create } = useVehicleCost();
+export default function VehicleCostForm({ groupId, onSuccess }: Props) {
+  const { create } = useVehicleCost(String(groupId));
   const router = useRouter();
   const [form, setForm] = useState({
     costName: '',
@@ -18,25 +19,29 @@ export default function VehicleCostForm({ onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.costName || !form.amount) return alert('Vui lòng nhập đầy đủ');
-    setLoading(true);
-    try {
-      await create({
-        groupId: '1',
-        fundId: 1,
-        costName: form.costName,
-        amount: form.amount,
-        vehicleId: form.vehicleId || undefined,
-      });
-      onSuccess?.();
-      router.push('/group-funds/vehicle-cost');
-    } catch (err: any) {
-      alert(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  if (!form.costName || !form.amount) return alert('Vui lòng nhập đầy đủ');
+  setLoading(true);
+
+  const vehicleIdNumber = form.vehicleId ? Number(form.vehicleId) : 0;
+
+  try {
+    await create({
+      groupId,         
+      fundId: 1,    
+      costName: form.costName,     
+      amount: Number(form.amount), 
+      vehicleId: vehicleIdNumber, 
+    });
+    onSuccess?.();
+    router.push('/group-funds/vehicle-cost');
+  } catch (err: any) {
+    alert(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

@@ -15,7 +15,9 @@ export default function FundList({ funds, loading }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {funds.map(fund => (
-        <FundCard key={fund.fundId} fund={fund} />
+        <FundCard key={fund.fundId} fund={fund} onDelete={function (id: number): void {
+          throw new Error('Function not implemented.');
+        } } groupId={0} />
       ))}
     </div>
   );

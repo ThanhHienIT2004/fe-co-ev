@@ -1,22 +1,21 @@
-// src/types/vehiclecost.type.ts
 export interface VehicleCost {
   costId: number;
-  groupId: string;
+  groupId: number;
+  vehicleId?: number | string;
   fundId?: number;
-  vehicleId?: string;
   costName: string;
-  amount: string;
+  amount: number;
   status: 'pending' | 'paid' | 'cancelled';
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export interface CreateCostRequest {
-  groupId: string;
+  groupId: number;
   fundId?: number;
-  vehicleId?: string;
+  vehicleId?: number;
   costName: string;
-  amount: string;
+  amount: number;
 }
 
 export interface UpdateStatusRequest {

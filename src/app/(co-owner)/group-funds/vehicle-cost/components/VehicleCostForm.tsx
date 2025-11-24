@@ -3,41 +3,44 @@ import { useState } from 'react';
 import { useVehicleCost } from '@/libs/hooks/useVehicleCost';
 import { useGroupFund } from '@/libs/hooks/useGroupFund';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // ← ĐÃ THÊM IMPORT
+import Link from 'next/link';
 
 interface Props {
   groupId: string;
 }
 
 export default function VehicleCostForm({ groupId }: Props) {
+  const router = useRouter();
   const { create, loading } = useVehicleCost(groupId);
   const { funds } = useGroupFund(groupId);
-  const router = useRouter();
 
   const [form, setForm] = useState({
     costName: '',
     amount: '',
-    fundId: '',
+    fundId: '', 
     vehicleId: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!form.costName.trim()) return alert('Vui lòng nhập tên chi phí');
     if (!form.amount || Number(form.amount) <= 0) return alert('Số tiền phải lớn hơn 0');
 
     try {
       await create({
-        groupId,
+        groupId: Number(groupId),
         costName: form.costName.trim(),
-        amount: form.amount,
+        amount: Number(form.amount),
         fundId: form.fundId ? Number(form.fundId) : undefined,
-        vehicleId: form.vehicleId || undefined,
+        vehicleId: form.vehicleId ? Number(form.vehicleId) : undefined,
       });
+
       alert('Thêm chi phí thành công!');
-      router.push('/group-funds/vehicle-cost');
+      router.push(`/group-funds/vehicle-cost?groupId=${groupId}`);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Thêm chi phí thất bại');
+      alert(err.response?.data?.message || err.message || 'Thêm chi phí thất bại');
+      console.error('Create cost error:', err.response?.data || err.message || err);
     }
   };
 
@@ -48,8 +51,8 @@ export default function VehicleCostForm({ groupId }: Props) {
         <input
           type="text"
           value={form.costName}
-          onChange={(e) => setForm({ ...form, costName: e.target.value })}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          onChange={e => setForm({ ...form, costName: e.target.value })}
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 transition"
           placeholder="Xăng, cầu đường, sửa xe..."
           required
         />
@@ -60,8 +63,8 @@ export default function VehicleCostForm({ groupId }: Props) {
         <input
           type="text"
           value={form.amount}
-          onChange={(e) => setForm({ ...form, amount: e.target.value.replace(/\D/g, '') })}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+          onChange={e => setForm({ ...form, amount: e.target.value.replace(/\D/g, '') })}
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 transition"
           placeholder="500000"
         />
         <p className="text-xs text-gray-500 mt-1">
@@ -74,8 +77,8 @@ export default function VehicleCostForm({ groupId }: Props) {
           <label className="block text-sm font-medium text-gray-700 mb-2">Quỹ (tùy chọn)</label>
           <select
             value={form.fundId}
-            onChange={(e) => setForm({ ...form, fundId: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            onChange={e => setForm({ ...form, fundId: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 transition"
           >
             <option value="">Không dùng quỹ</option>
             {funds.map(f => (
@@ -91,9 +94,9 @@ export default function VehicleCostForm({ groupId }: Props) {
           <input
             type="text"
             value={form.vehicleId}
-            onChange={(e) => setForm({ ...form, vehicleId: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            placeholder="VD: 51H-12345"
+            onChange={e => setForm({ ...form, vehicleId: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 transition"
+            placeholder="Nhập ID xe (VD: 1)"
           />
         </div>
       </div>
@@ -102,7 +105,7 @@ export default function VehicleCostForm({ groupId }: Props) {
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-medium hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-medium hover:shadow-lg disabled:opacity-70 transition-all"
         >
           {loading ? 'Đang thêm...' : 'Thêm chi phí'}
         </button>

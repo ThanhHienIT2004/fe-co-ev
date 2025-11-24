@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { AlertLog } from "@/types/alert.type";
 
-const API_URL = "http://localhost:5001";
+const API_URL = "http://localhost:8085";
 
 export const useAlerts = (user_id?: number) => {
   const [data, setData] = useState<AlertLog[]>([]);

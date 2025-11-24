@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
-// import NotificationBell from "./NotificationBell";
+import NotificationBell from "./NotificationBell";
 
 export const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -136,7 +136,7 @@ export const Header = () => {
 
             {/* Nếu user đã login */}
             {/* 🔔 Notification Bell REAL */}
-                  {/* <NotificationBell /> */}
+                  <NotificationBell />
             {userEmail ? (
               <div className="relative" ref={dropdownRef}>
                 <button

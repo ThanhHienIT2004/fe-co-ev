@@ -11,7 +11,9 @@ import { DarkModeToggle } from "./_components/DarkModeToggle";
 import { StatsCard } from "./_components/StatsCard";
 import { TopGroupsBar } from "./_components/TopGroupsBar";
 import { VehicleStatusPie } from "./_components/VehicleStatusPie";
-import { MonthlyStatChart } from "./_components/MontlyStatsChart";
+import { BookingStatsChart } from "./_components/BookingStatsChart";
+import { ConflictStatsChart } from "./_components/ConflictStatsChart";
+import { UsageStatsChart } from "./_components/UsageStatsChart";
 import { YearDistanceChart } from "./_components/YearDistanceChart";
 
 export default function AdminDashboardPage() {
@@ -39,7 +41,17 @@ export default function AdminDashboardPage() {
             <div className="lg:col-span-8"><ContractLineChart /></div>
             <div className="lg:col-span-4"><VehicleStatusPie /></div>
             <div className="lg:col-span-7"><TopGroupsBar /></div>
-            <div className="lg:col-span-5"><MonthlyStatChart title={""} apiMonthly={""} apiTotal={""} /></div>
+            <div className="lg:col-span-5">
+              <BookingStatsChart />
+            </div>
+
+            <div className="lg:col-span-5">
+              <ConflictStatsChart />
+            </div>
+
+            <div className="lg:col-span-5">
+              <UsageStatsChart />
+            </div>
             <div className="lg:col-span-5"><YearDistanceChart /></div>
           </div>.
 

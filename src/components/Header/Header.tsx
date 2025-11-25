@@ -17,7 +17,9 @@ import {
   CircleDollarSign,
   ChevronDown,
   File,
-  Info
+  Info,
+  List,
+  Car
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
@@ -69,7 +71,9 @@ export const Header = () => {
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
     { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
-    { href: "/booking-list", label: "Danh sách lịch đặt xe", icon: Calendar },
+    { href: "/booking-list", label: "Theo dõi lịch đặt xe", icon: List },
+    { href: "/vehicles-schedule", label: "Lịch xe điện", icon: Calendar },
+    { href: "/usage-records", label: "Sử dụng xe", icon: Car },
     { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/history", label: "Lịch sử", icon: History },

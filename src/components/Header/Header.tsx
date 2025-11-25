@@ -72,7 +72,6 @@ export const Header = () => {
     { href: "/", label: "Trang chủ", icon: Home },
     { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/booking-list", label: "Theo dõi lịch đặt xe", icon: List },
-    { href: "/vehicles-schedule", label: "Lịch xe điện", icon: Calendar },
     { href: "/usage-records", label: "Sử dụng xe", icon: Car },
     { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },

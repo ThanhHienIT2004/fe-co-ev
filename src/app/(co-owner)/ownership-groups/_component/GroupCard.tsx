@@ -83,11 +83,11 @@ export default function GroupCard({ group, isPending }: Props) {
             Xem chi tiết
           </Link>
           <div className="flex gap-3">
-          <Link
-            href={`/booking/${group.vehicle?.vehicle_id}`}
+            <Link
+            href={`/vehicle-schedule/${group.vehicle?.vehicle_id}`}
             className="px-6 py-3 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 transition shadow-lg hover:shadow-xl"
           >
-            Đặt lịch
+            Xem Lịch Chung
           </Link>
           </div>
           <div className="flex gap-3">

@@ -44,7 +44,7 @@ export default function ResetPasswordForm() {
       });
 
       setSuccess(true);
-      setTimeout(() => router.push("/login"), 3000);
+      setTimeout(() => router.push("http://localhost:3000"), 3000);
     } catch (err: any) {
       setError(err.response?.data?.message || "Liên kết đã hết hạn hoặc không hợp lệ");
     } finally {

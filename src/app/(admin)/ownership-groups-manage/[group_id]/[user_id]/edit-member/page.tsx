@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useGroupMembers, useUpdateGroupMember } from "@/libs/hooks/useGroupMembers";
-import EditMemberForm from "@/app/(co-owner)/ownership-groups/_component/EditMemberForm";
+import EditMemberForm from "../../../_components/EditMemberForm";
 
 export default function EditGroupMemberPage() {
   const { user_id, group_id } = useParams();
@@ -16,7 +16,7 @@ export default function EditGroupMemberPage() {
 
   const { members, isLoading } = useGroupMembers(groupId as string);
   const member = members?.find((m) => m.user_id === userId);
-  const { updateMember } = useUpdateGroupMember();  // <-- QUAN TRỌNG
+  const { updateMember } = useUpdateGroupMember();
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -79,6 +79,7 @@ export default function EditGroupMemberPage() {
 
           <EditMemberForm
             member={member}
+            members={members || []}
             groupId={group_id as string}
             onClose={() => router.push(`/ownership-groups-manage/${group_id}`)}
             onSubmit={handleSubmit}  // <-- thêm dòng này

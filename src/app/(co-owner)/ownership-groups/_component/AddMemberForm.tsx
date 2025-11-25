@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 
 interface AddMemberFormProps {
   groupId: string;
-  groupId: string;
   onSuccess?: () => void;
 }
 
@@ -86,7 +85,7 @@ export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps
       setContractFile(null);
 
       onSuccess?.();
-      setTimeout(() => router.push("/ownership-groups-manage"), 1500);
+      setTimeout(() => router.push("/ownership-groups"), 1500);
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || "Thêm thất bại";
       setErrorMsg(Array.isArray(msg) ? msg.join(", ") : msg);
@@ -143,7 +142,7 @@ export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps
           <label className="block text-sm font-bold text-gray-700 mb-2">Tỷ lệ sở hữu (%)</label>
           <input
             type="number"
-            min="0"
+            min="10"
             max="100"
             step="0.01"
             value={ownershipRatio}

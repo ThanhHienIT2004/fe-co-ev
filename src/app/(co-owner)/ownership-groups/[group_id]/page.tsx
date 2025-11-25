@@ -20,6 +20,7 @@ import {
 } from "@/libs/hooks/useGroupMembers";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { enqueueSnackbar } from "notistack";
 
 export default function GroupDetailPage() {
   const { group_id } = useParams();
@@ -39,7 +40,7 @@ export default function GroupDetailPage() {
     if (!myMember) return;
 
     if (myMember.group_role === "Owner") {
-      alert("Chủ nhóm không thể rời khỏi nhóm.");
+      enqueueSnackbar("Chủ nhóm không thể rời khỏi nhóm.!", { variant: "error" });
       return;
     }
 
@@ -53,8 +54,6 @@ export default function GroupDetailPage() {
       setDeleting(null);
     }
   };
-
-  console.log('id',currentUserId )
 
   if (loadingGroup || loadingMembers) {
     return <LoadingSkeleton />;``
@@ -71,7 +70,7 @@ export default function GroupDetailPage() {
 
     try {  
       if (myMember.group_role === "Owner") {
-        alert("Chủ nhóm không thể rời khỏi nhóm.");
+        enqueueSnackbar("Chủ nhóm không thể rời khỏi nhóm.!", { variant: "error" });
         return;
       }
       setDeleting(memberId);
@@ -192,7 +191,7 @@ export default function GroupDetailPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <div className="w-16 h-16 bg-linear-to-br from-teal-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-black text-xl">
-                      {member.member_name?.[0] || "U"}
+                      {member.user.fullName?.[0] || "U"}
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
@@ -226,7 +225,9 @@ export default function GroupDetailPage() {
 
                     {/* Hành động */}
                     <div className="flex gap-3">
-                      {/* Nút chỉnh sửa - dẫn đến trang riêng */}
+                      {myMember?.group_role === "admin" && (
+                        <>                      
+                        {/* Nút chỉnh sửa - dẫn đến trang riêng */}
                       <Link
                         href={`/ownership-groups/${group_id}/${member.user_id}/edit-member`}
                         className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition inline-flex items-center justify-center"
@@ -246,10 +247,12 @@ export default function GroupDetailPage() {
                           <Trash2 className="w-5 h-5" />
                         )}
                       </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
             ))}
           </div>
         )}

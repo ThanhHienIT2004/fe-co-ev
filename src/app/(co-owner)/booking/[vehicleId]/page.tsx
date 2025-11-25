@@ -12,23 +12,54 @@ export default function BookNowPage() {
     ? Number(vehicleIdParam[0])
     : Number(vehicleIdParam || 0);
 
-  // --- Lấy userId từ localStorage ---
+  // --- UserId từ localStorage ---
   const [userId, setUserId] = useState<number | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem("userId");
-
     if (stored) {
       const id = Number(stored);
-      // Nếu id hợp lệ (không phải NaN)
       setUserId(isNaN(id) ? null : id);
-    } else {
-      setUserId(null);
     }
-
-    setLoadingUser(false); // kết thúc trạng thái loading
+    setLoadingUser(false);
   }, []);
+
+  // --- Available / Used days ---
+  const [availableDays, setAvailableDays] = useState<number | null>(null);
+  const [usedDays, setUsedDays] = useState<number | null>(null);
+  const [loadingDays, setLoadingDays] = useState(true);
+
+  useEffect(() => {
+    if (!userId || !vehicleId) return;
+
+    const fetchDays = async () => {
+      try {
+        setLoadingDays(true);
+        // --- Lấy available days ---
+        const res1 = await fetch(
+          `http://localhost:8085/admin/group-members/${vehicleId}/${userId}/available-days`
+        );
+        const data1 = await res1.json();
+        setAvailableDays(data1?.available_days ?? 0);
+
+        // --- Lấy used days ---
+        const year = new Date().getFullYear();
+        const month = new Date().getMonth() + 1;
+        const res2 = await fetch(
+          `http://localhost:8085/booking/usage/user/${userId}/month?vehicle_id=${vehicleId}&year=${year}&month=${month}`
+        );
+        const data2 = await res2.json();
+        setUsedDays(data2?.total_used_days ?? 0);
+      } catch (err) {
+        console.error("❌ Lỗi load days:", err);
+      } finally {
+        setLoadingDays(false);
+      }
+    };
+
+    fetchDays();
+  }, [userId, vehicleId]);
 
   // --- Form state ---
   const [formData, setFormData] = useState<CreateBookingDto & { pickup?: string }>({
@@ -66,6 +97,12 @@ export default function BookNowPage() {
 
     if (!userId) {
       setError("Bạn chưa đăng nhập.");
+      setLoading(false);
+      return;
+    }
+
+    if (availableDays !== null && usedDays !== null && usedDays >= availableDays) {
+      setError("Bạn đã không còn lượt sử dụng trong tháng này.");
       setLoading(false);
       return;
     }
@@ -131,6 +168,29 @@ export default function BookNowPage() {
           <p className="text-gray-500 mt-2">
             Đặt xe trực tiếp từ nhà cung cấp đã được xác minh
           </p>
+        </div>
+
+        {/* --- Available/Used Days --- */}
+        <div className="bg-blue-50 p-4 rounded-lg mb-8">
+          {loadingDays ? (
+            <p className="text-blue-700">Đang tải số ngày khả dụng...</p>
+          ) : (
+            <div className="space-y-1 text-blue-900">
+              <p>
+                <strong>Ngày được phép sử dụng:</strong> {availableDays ?? 0}
+              </p>
+              <p>
+                <strong>Ngày đã sử dụng tháng này:</strong> {usedDays ?? 0}
+              </p>
+              {availableDays !== null &&
+                usedDays !== null &&
+                usedDays >= availableDays && (
+                  <p className="text-red-600 font-semibold mt-1">
+                    Bạn đã không còn lượt sử dụng trong tháng này.
+                  </p>
+                )}
+            </div>
+          )}
         </div>
 
         {userId === null && (
@@ -205,12 +265,22 @@ export default function BookNowPage() {
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
+          {/* Nút submit */}
           <div className="flex justify-center">
             <button
               type="submit"
-              disabled={loading || userId === null}
+              disabled={
+                loading ||
+                userId === null ||
+                (availableDays !== null &&
+                  usedDays !== null &&
+                  usedDays >= availableDays)
+              }
               className={`font-semibold px-16 py-3 rounded-lg text-white transition-all ${
-                loading
+                loading ||
+                (availableDays !== null &&
+                  usedDays !== null &&
+                  usedDays >= availableDays)
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-[#36b6cf] hover:bg-[#2ea3ba]"
               }`}

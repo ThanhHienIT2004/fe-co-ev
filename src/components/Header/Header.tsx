@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/app/(auth)/component/AuthModal";
-// import NotificationBell from "./NotificationBell";
+import NotificationBell from "./NotificationBell";
 
 export const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -69,7 +69,7 @@ export const Header = () => {
   const navItems = [
     { href: "/", label: "Trang chủ", icon: Home },
     { href: "/ownership-groups", label: "Nhóm đồng sở hữu", icon: Users },
-    { href: "/booking", label: "Đặt lịch hẹn xe", icon: Calendar },
+    { href: "/booking-list", label: "Danh sách lịch đặt xe", icon: Calendar },
     { href: "/group-funds", label: "Chi phí", icon: CircleDollarSign },
     { href: "/services", label: "Dịch vụ xe", icon: HandHelping },
     { href: "/history", label: "Lịch sử", icon: History },
@@ -136,7 +136,7 @@ export const Header = () => {
 
             {/* Nếu user đã login */}
             {/* 🔔 Notification Bell REAL */}
-                  {/* <NotificationBell /> */}
+                  <NotificationBell />
             {userEmail ? (
               <div className="relative" ref={dropdownRef}>
                 <button

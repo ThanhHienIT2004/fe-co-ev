@@ -46,7 +46,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     { href: "/profiles-manage", label: "Hồ sơ", icon: FileText }, 
     { href: "/vehicles-manage", label: "Xe điện", icon: Car },
     { href: "/ownership-groups-manage", label: "Nhóm đồng sở hữu", icon: Users },
-    { href: "/appointments", label: "Đặt lịch hẹn", icon: Calendar },
+    { href: "/appointments", label: "Danh sách đặt lịch xe", icon: Calendar },
     { href: "/e-contracts-manage", label: "Hợp đồng", icon: ReceiptText },
     { href: "/conflicts", label: "Xung đột", icon: Flame },
     { href: "/cost", label: "Chi phí dịch vụ", icon: CircleDollarSign },

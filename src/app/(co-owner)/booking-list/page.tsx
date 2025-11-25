@@ -3,89 +3,190 @@
 import React, { useEffect, useState } from "react";
 import { useBookings } from "@/libs/hooks/useBooking";
 import { BookingStatus } from "@/types/booking.type";
-import { Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, Calendar, Car, Clock, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 
 export default function BookingOwnerPage() {
   const [userId, setUserId] = useState<number | null>(null);
 
-  // 🔐 Lấy user_id từ localStorage
   useEffect(() => {
     const stored = localStorage.getItem("userId");
     setUserId(stored ? Number(stored) : null);
   }, []);
 
-  // ❗ Chỉ gọi hook nếu userId đã có
   const { bookings, isLoading, error } = useBookings(userId ?? 0);
 
+  const getStatusConfig = (status: BookingStatus) => {
+    switch (status) {
+      case BookingStatus.APPROVED:
+        return { label: "Đã duyệt", color: "emerald", icon: CheckCircle2 };
+      case BookingStatus.PENDING:
+        return { label: "Chờ duyệt", color: "amber", icon: AlertCircle };
+      case BookingStatus.REJECTED:
+        return { label: "Bị từ chối", color: "red", icon: XCircle };
+      case BookingStatus.CANCELLED:
+        return { label: "Đã hủy", color: "gray", icon: XCircle };
+      default:
+        return { label: status, color: "slate", icon: AlertCircle };
+    }
+  };
+
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-semibold mb-6">Danh sách Booking của bạn</h1>
+    <div className="min-h-screen bg-teal-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* Tiêu đề */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-10"
+        >
+          <h1 className="text-3xl sm:text-5xl font-bold text-teal-700 tracking-tight mb-3">
+            Lịch Sử Đặt Xe Của Bạn
+          </h1>
+          <p className="text-teal-600 text-lg">Quản lý và theo dõi tất cả booking</p>
+        </motion.div>
 
-      {/* Loading nếu chưa load userId */}
-      {userId === null && (
-        <div className="flex justify-center py-10">
-          <Loader2 className="animate-spin" size={24} />
-        </div>
-      )}
+        {/* Chưa có userId */}
+        {userId === null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-teal-500" />
+            <p className="mt-4 text-lg text-gray-600">Đang xác thực tài khoản...</p>
+          </motion.div>
+        )}
 
-      {/* Loading khi fetch booking */}
-      {userId !== null && isLoading && (
-        <div className="flex justify-center py-10">
-          <Loader2 className="animate-spin" size={24} />
-        </div>
-      )}
+        {/* Loading */}
+        {userId !== null && isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-teal-500" />
+            <p className="mt-4 text-lg text-teal-600 font-medium">Đang tải booking của bạn...</p>
+          </motion.div>
+        )}
 
-      {/* Hiển thị lỗi nếu có */}
-      {error && (
-        <p className="text-red-500 text-center py-6">
-          Lỗi tải dữ liệu: {(error as unknown as Error).message}
-        </p>
-      )}
+        {/* Lỗi */}
+        {error && (
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-red-50 border border-red-200 rounded-2xl p-8 text-center"
+          >
+            <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
+            <p className="text-red-600 text-xl font-semibold">
+              Không thể tải dữ liệu booking
+            </p>
+            <p className="text-red-500 mt-2">Vui lòng thử lại sau</p>
+          </motion.div>
+        )}
 
-      {/* Không có booking */}
-      {userId !== null && !isLoading && !error && bookings.length === 0 && (
-        <p className="text-gray-500 text-center py-6">Bạn chưa có booking nào</p>
-      )}
+        {/* Không có booking */}
+        {userId !== null && !isLoading && !error && bookings.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center"
+          >
+            <Car className="mx-auto h-20 w-20 text-gray-300 mb-6" />
+            <p className="text-xl font-semibold text-gray-600">
+              Bạn chưa đặt xe lần nào
+            </p>
+            <p className="text-gray-500 mt-2">
+              Khám phá danh sách xe và đặt ngay hôm nay!
+            </p>
+          </motion.div>
+        )}
 
-      {/* Hiển thị bảng booking */}
-      {userId !== null && !isLoading && !error && bookings.length > 0 && (
-        <div className="overflow-x-auto bg-white shadow-md rounded-xl p-4">
-          <table className="min-w-full table-auto border border-gray-200">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">ID Booking</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Vehicle</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Trạng thái</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Ngày bắt đầu</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Ngày kết thúc</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map(booking => (
-                <tr key={booking.booking_id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2 text-sm text-gray-700">{booking.booking_id}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{booking.vehicle_id}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {booking.booking_status === BookingStatus.APPROVED ? (
-                        <span className="text-green-600 font-medium">Approved</span>
-                    ) : booking.booking_status === BookingStatus.PENDING ? (
-                        <span className="text-yellow-500 font-medium">Pending</span>
-                    ) : (
-                        <span className="text-red-500 font-medium">{booking.booking_status}</span>
-                    )}
-                    </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {new Date(booking.start_date).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {new Date(booking.end_date).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+        {/* Danh sách booking - dạng Card đẹp */}
+        {userId !== null && !isLoading && !error && bookings.length > 0 && (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {bookings.map((booking, idx) => {
+              const status = getStatusConfig(booking.booking_status);
+              const StatusIcon = status.icon;
+
+              return (
+                <motion.div
+                  key={booking.booking_id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.08 }}
+                  className="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group"
+                >
+                  {/* Header với màu trạng thái */}
+                  <div className={`h-2 bg-gradient-to-r from-${status.color}-500 to-${status.color}-600`} />
+
+                  <div className="p-6">
+                    {/* ID + Trạng thái */}
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">Booking ID</p>
+                        <p className="text-lg font-bold text-teal-700 font-mono">
+                          #{booking.booking_id}
+                        </p>
+                      </div>
+                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-${status.color}-100 text-${status.color}-700`}>
+                        <StatusIcon className="w-4 h-4" />
+                        <span className="text-sm font-bold">{status.label}</span>
+                      </div>
+                    </div>
+
+                    {/* Xe */}
+                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                      <div className="p-3 bg-teal-100 rounded-xl">
+                        <Car className="w-6 h-6 text-teal-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Xe đã đặt</p>
+                        <p className="font-bold text-gray-800">Xe ID: {booking.vehicle_id}</p>
+                      </div>
+                    </div>
+
+                    {/* Thời gian */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Calendar className="w-5 h-5 text-teal-600" />
+                        <div>
+                          <p className="text-xs text-gray-500">Bắt đầu</p>
+                          <p className="font-semibold text-gray-800">
+                            {new Date(booking.start_date).toLocaleString("vi-VN", {
+                              weekday: "short",
+                              day: "2-digit",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <Clock className="w-5 h-5 text-cyan-600" />
+                        <div>
+                          <p className="text-xs text-gray-500">Kết thúc</p>
+                          <p className="font-semibold text-gray-800">
+                            {new Date(booking.end_date).toLocaleString("vi-VN", {
+                              weekday: "short",
+                              day: "2-digit",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Car } from "lucide-react";
 
 interface VehicleTimelineDay {
@@ -15,36 +15,72 @@ interface VehicleTimeline {
   timeline: VehicleTimelineDay[];
 }
 
+/* =============================
+   🟢 Format ngày LOCAL (không UTC)
+   ============================= */
+function formatLocalDate(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/* =======================================
+   🟢 Lấy thứ Hai của tuần hiện tại (timezone chuẩn)
+   ======================================= */
+function getMonday(d: Date) {
+  const date = new Date(d);
+  const day = date.getDay(); // 0 = CN, 1 = Thứ 2
+  const diff = day === 0 ? -6 : 1 - day;
+  date.setDate(date.getDate() + diff);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
 export default function VehiclesSchedulePage() {
   const [vehicles, setVehicles] = useState<VehicleTimeline[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [currentWeekStart, setCurrentWeekStart] = useState(() => {
-    const now = new Date();
-    const dayOfWeek = now.getDay();
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-    monday.setHours(0, 0, 0, 0);
-    return monday;
-  });
+  /* =============================
+     🟢 currentWeekStart luôn đúng timezone
+     ============================= */
+  const [currentWeekStart, setCurrentWeekStart] = useState(() => getMonday(new Date()));
 
-  const weekDays = [...Array(7)].map((_, i) => {
+  /* =============================
+     🟢 Tính 7 ngày của tuần hiện tại (không lệch)
+     ============================= */
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(currentWeekStart);
     d.setDate(currentWeekStart.getDate() + i);
+
     return {
-      date: d.toISOString().slice(0, 10),
-      label: d.toLocaleDateString("vi-VN", { weekday: "short", day: "numeric", month: "short" }),
-      full: d.toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
+      date: formatLocalDate(d),
+      label: d.toLocaleDateString("vi-VN", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      }),
+      full: d.toLocaleDateString("vi-VN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
     };
   });
 
+  /* =============================
+     🟢 Fetch API theo local date (KHÔNG UTC)
+     ============================= */
   useEffect(() => {
     const fetchVehicles = async () => {
       setLoading(true);
       setError("");
+
       try {
-        const startDate = currentWeekStart.toISOString().slice(0, 10);
+        const startDate = formatLocalDate(currentWeekStart);
+
         const res = await fetch(
           `http://localhost:8085/booking/vehicles/timeline?startDate=${startDate}`,
           { cache: "no-store" }
@@ -54,7 +90,7 @@ export default function VehiclesSchedulePage() {
 
         const data = await res.json();
         setVehicles(data.vehicles || []);
-      } catch (err) {
+      } catch {
         setError("Lỗi kết nối server. Vui lòng thử lại sau.");
       } finally {
         setLoading(false);
@@ -64,18 +100,24 @@ export default function VehiclesSchedulePage() {
     fetchVehicles();
   }, [currentWeekStart]);
 
+  /* =============================
+     🟢 Chuyển tuần
+     ============================= */
   const prevWeek = () => {
     const prev = new Date(currentWeekStart);
     prev.setDate(prev.getDate() - 7);
-    setCurrentWeekStart(prev);
+    setCurrentWeekStart(getMonday(prev));
   };
 
   const nextWeek = () => {
     const next = new Date(currentWeekStart);
     next.setDate(next.getDate() + 7);
-    setCurrentWeekStart(next);
+    setCurrentWeekStart(getMonday(next));
   };
 
+  /* =============================
+     🟢 Kết hợp dữ liệu xe + ngày trong tuần
+     ============================= */
   const schedule = weekDays.map((day) => ({
     ...day,
     vehicles: vehicles.map((v) => {
@@ -84,6 +126,9 @@ export default function VehiclesSchedulePage() {
     }),
   }));
 
+  /* =============================
+     🟢 UI Render
+     ============================= */
   return (
     <div className="min-h-screen bg-teal-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -167,7 +212,9 @@ export default function VehiclesSchedulePage() {
               >
                 {/* Day Header */}
                 <div className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white p-4 text-center">
-                  <p className="text-xs font-light opacity-90">{dayIdx + 2 === 8 ? "CN" : `Thứ ${dayIdx + 2}`}</p>
+                  <p className="text-xs font-light opacity-90">
+                    {dayIdx + 2 === 8 ? "CN" : `Thứ ${dayIdx + 2}`}
+                  </p>
                   <p className="text-2xl font-bold">{day.date.slice(8)}</p>
                   <p className="text-xs font-medium mt-1">{day.label.split(" ")[0]}</p>
                 </div>

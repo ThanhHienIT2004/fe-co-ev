@@ -17,17 +17,18 @@ const formatDate = (dateString: string | null | undefined) => {
 };
 
 export const ProfileAvatar = ({ fullName, createdAt }: Props) => (
-  <div className="bg-linear-to-r from-teal-500 to-cyan-500 px-8 py-4 text-center text-white relative">
-    <div className="absolute inset-x-0 top-0 h-2 bg-linear-to-r from-teal-400 via-cyan-400 to-teal-400"></div>
-    
-    <div className="inline-flex items-center justify-center size-24 rounded-full bg-white/20 backdrop-blur-md border-8 border-white/30 shadow-2xl">
-      <User className="w-12 h-12 text-white" />
+  <div className="bg-linear-to-r from-teal-500 to-cyan-500 px-6 py-3 text-center text-white relative">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-teal-400 via-cyan-400 to-teal-400"></div>
+
+    <div className="inline-flex items-center justify-center size-20 rounded-full bg-white/20 backdrop-blur-sm border-4 border-white/30 shadow-xl">
+      <User className="w-9 h-9 text-white" />
     </div>
-    
-    <h2 className="text-4xl md:text-5xl font-black mt-8">
+
+    <h2 className="text-2xl md:text-3xl font-bold mt-4">
       {fullName || "Chưa đặt tên"}
     </h2>
-    <p className="text-xl text-teal-100 mt-3">
+
+    <p className="text-base text-teal-100 mt-1">
       Thành viên từ {formatDate(createdAt)}
     </p>
   </div>

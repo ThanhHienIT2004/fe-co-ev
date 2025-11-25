@@ -22,7 +22,7 @@ export default function AdminProfilesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-white">
+    <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-white">
       <AdminProfilesHeader total={profiles.length} />
 
       <div className="mx-auto max-w-7xl px-6 py-8">

@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useGroupMembers, useUpdateGroupMember } from "@/libs/hooks/useGroupMembers";
 import EditMemberForm from "../../../_component/EditMemberForm";
+import { enqueueSnackbar } from "notistack";
 
 export default function EditGroupMemberPage() {
   const { user_id, group_id } = useParams();
@@ -16,7 +17,7 @@ export default function EditGroupMemberPage() {
 
   const { members, isLoading } = useGroupMembers(groupId as string);
   const member = members?.find((m) => m.user_id === userId);
-  const { updateMember } = useUpdateGroupMember();  // <-- QUAN TRỌNG
+  const { updateMember } = useUpdateGroupMember();
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -40,11 +41,10 @@ export default function EditGroupMemberPage() {
         userId: member.user_id,  // number
         data,
       });
-
-      toast.success("Cập nhật thành viên thành công!");
+      enqueueSnackbar("Cập nhật thành viên thành công!", { variant: "success" });
       router.push(`/ownership-groups/${group_id}`);
     } catch (error) {
-      toast.error("Lỗi khi cập nhật thành viên!");
+      enqueueSnackbar("Lỗi khi cập nhật thành viên!", { variant: "error" });
     }
   };
 
@@ -79,9 +79,10 @@ export default function EditGroupMemberPage() {
 
           <EditMemberForm
             member={member}
+            members={members || []}
             groupId={group_id as string}
             onClose={() => router.push(`/ownership-groups/${group_id}`)}
-            onSubmit={handleSubmit}  // <-- thêm dòng này
+            onSubmit={handleSubmit}
           />
         </div>
 

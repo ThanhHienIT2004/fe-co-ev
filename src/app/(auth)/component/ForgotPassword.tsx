@@ -60,7 +60,6 @@ export const ForgotPassword = ({
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-teal-700">Khôi phục mật khẩu</h2>
         <p className="text-sm text-gray-600 mt-1">
           Nhập email để nhận liên kết đặt lại mật khẩu
         </p>

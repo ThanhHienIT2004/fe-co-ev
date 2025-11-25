@@ -23,7 +23,7 @@ import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
 
 export default function GroupDetailPage() {
-  const { group_id } = useParams();
+
   const { group, isLoading: loadingGroup } = useOwnershipGroup(group_id as string);
   const { members, isLoading: loadingMembers, mutate } = useGroupMembers(group_id as string);
   const { deleteMember } = useDeleteGroupMember();

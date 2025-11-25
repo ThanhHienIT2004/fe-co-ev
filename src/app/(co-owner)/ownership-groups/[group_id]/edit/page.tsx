@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { useOwnershipGroup, useUpdateOwnershipGroup } from "@/libs/hooks/useOwnershipGroups";
 import { toast } from 'react-hot-toast';
 import OwnershipGroupForm from "../../_component/OwnershipGroupForm";
+import { enqueueSnackbar } from "notistack";
 
 export default function EditOwnershipGroupPage() {
   const { group_id } = useParams();
@@ -27,10 +28,10 @@ export default function EditOwnershipGroupPage() {
   const handleSubmit = async (data: any) => {
     try {
       await updateGroup({ groupId: group_id as string, data });
-      toast.success("Cập nhật nhóm thành công!");
+      enqueueSnackbar("Cập nhật nhóm thành công!", { variant: "success" });
       router.push("/ownership-groups");
     } catch (error) {
-      toast.error("Lỗi khi cập nhật nhóm!");
+      enqueueSnackbar("Lỗi khi cập nhật nhóm!", { variant: "error" });
     }
   };
 

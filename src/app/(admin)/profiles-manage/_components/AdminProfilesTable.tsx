@@ -9,7 +9,6 @@ import { formatDate } from "./ProfileDetailModal";
 export default function AdminProfilesTable({
   profiles,
   onSelect,          // Xem chi tiết
-  onEdit,            // Thêm callback mới để mở form chỉnh sửa
 }: {
   profiles: any[];
   onSelect: (p: any) => void;
@@ -101,10 +100,10 @@ export default function AdminProfilesTable({
                         <Eye className="w-4 h-4" />
                         Xem chi tiết
                       </button>
-
-                      {/* Nút Sửa (mới) */}
                       <button
-                        onClick={() => onEdit(profile)}
+                        onClick={() => {
+                          window.location.href = `/profiles-manage/admin-edit/${profile.userId}`;
+                        }}
                         className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
                         title="Chỉnh sửa thông tin & ảnh đại diện"
                       >

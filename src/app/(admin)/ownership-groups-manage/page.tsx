@@ -1,18 +1,14 @@
-// app/admin/ownership-groups/page.tsx
 "use client";
 import { useOwnershipGroups, useDeleteOwnershipGroup } from '@/libs/hooks/useOwnershipGroups';
 import EmptyState from './_components/EmptyState';
 import ErrorState from './_components/ErrorState';
-import FloatingActionButton from './_components/FloatingActionButton';
 import GroupCard from './_components/GroupCard';
 import GroupCardSkeleton from './_components/GroupCardSkeleton';
 import OwnershipGroupsHero from './_components/OwnershipGroupsHero';
-import { useGroupMemberCount } from '@/libs/hooks/useGroupMembers';
-import { useParams } from 'next/navigation';
 
 export default function OwnershipGroupsPage() {
   const { groups, isLoading, error } = useOwnershipGroups();
-  const { deleteGroup, isPending } = useDeleteOwnershipGroup();
+  const { deleteGroup } = useDeleteOwnershipGroup(); // chỉ lấy deleteGroup
 
   if (isLoading) {
     return (
@@ -38,13 +34,12 @@ export default function OwnershipGroupsPage() {
         {groups.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {groups.map((group) => (
               <GroupCard
                 key={group.group_id}
                 group={group}
-                onDelete={deleteGroup}
-                isPending={isPending}
+                onDelete={() => deleteGroup(group.group_id)} // gọi với groupId
               />
             ))}
           </div>

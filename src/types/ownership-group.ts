@@ -2,7 +2,7 @@ import { Vehicle } from "./vehicles.type";
 
 // types/ownership-group.ts
 export interface CreateOwnershipGroupDto {
-  group_name: number;
+  group_name: string;
   vehicle_id: string;
   created_by: string;
 }

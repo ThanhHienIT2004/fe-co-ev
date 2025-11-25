@@ -1,9 +1,7 @@
 // src/hooks/useAdminProfiles.ts
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { AdminProfileResponse } from "@/types/service-tasks.type";
-
-const API_BASE = "http://localhost:8080/user/profiles";
+import { AdminProfileResponse } from "@/types/profile";
 
 export const useAdminProfiles = () => {
   const [profiles, setProfiles] = useState<AdminProfileResponse[]>([]);
@@ -15,7 +13,7 @@ export const useAdminProfiles = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get<AdminProfileResponse[]>(`${API_BASE}/admin`);
+      const res = await axios.get<AdminProfileResponse[]>(`${process.env.NEXT_PUBLIC_API_USER}/profiles/admin`);
       setProfiles(res.data);
     } catch (err: any) {
       setError(err.response?.data || "Lỗi tải danh sách người dùng");

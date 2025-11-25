@@ -3,70 +3,116 @@
 import VehicleForm from '@/app/(admin)/_component/VehicleForm';
 import { useUpdateVehicle, useVehicle } from '@/libs/hooks/useVehicles';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Car } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import SubmitLoading from '@/components/Loading/SubmitLoading';
+import { enqueueSnackbar } from 'notistack';
 
 export default function EditVehiclePage() {
   const { id } = useParams();
-  const { data: vehicle, isLoading } = useVehicle(id as string);
-  const { mutate: updateVehicle } = useUpdateVehicle();
+  const { data: vehicle, isLoading: isFetching } = useVehicle(id as string);
+  const {updateVehicle } = useUpdateVehicle();
   const router = useRouter();
 
-  if (isLoading) {
+  // State loading khi đang submit
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (data: any) => {
+    setIsSubmitting(true);
+    try {
+      await updateVehicle(id as string, data);
+      router.push('/vehicles-manage');
+      enqueueSnackbar("Cập nhật xe thành công!", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar("Cập nhật xe thất bại!", { variant: "error" });
+    } finally {
+      setIsSubmitting(false); // Quan trọng: luôn tắt loading
+    }
+  };
+
+  // Loading khi fetch dữ liệu xe
+  if (isFetching) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+      <div className="flex items-center justify-center py-32">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-teal-600 mx-auto mb-6"></div>
+          <p className="text-gray-600 font-medium">Đang tải thông tin xe...</p>
+        </div>
       </div>
     );
   }
 
-  const handleSubmit = async (data: any) => {
-    await updateVehicle(id as string, data);
-    router.push('/vehicles-manage');
-  };
+  if (!vehicle) {
+    return (
+      <div className="text-center py-32">
+        <Car className="w-20 h-20 text-gray-400 mx-auto mb-6" />
+        <p className="text-xl font-medium text-gray-700">Không tìm thấy xe</p>
+        <Link href="/vehicles-manage" className="text-teal-600 hover:underline mt-4 inline-block">
+          ← Quay lại danh sách
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* HEADER + NÚT QUAY LẠI */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link
-            href="/vehicles-manage"
-            className="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-50"
-          >
-            <ArrowLeft className="w-5 h-5 text-teal-600 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium text-gray-700">Quay lại danh sách</span>
-          </Link>
-          <h1 className="text-3xl font-black text-gray-800 tracking-tight">Chỉnh sửa xe</h1>
-        </div>
+    <>
+      {/* Loading toàn màn hình khi đang cập nhật */}
+      {isSubmitting && <SubmitLoading />}
 
-        {/* FORM CARD - ĐẸP & CHUYÊN NGHIỆP */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-              <span className="text-teal-600 font-bold text-lg">ID</span>
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* HEADER + NÚT QUAY LẠI */}
+          <div className="flex items-center gap-5 mb-10">
+            <Link
+              href="/vehicles-manage"
+              className="group flex items-center gap-3 bg-white px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50 border border-gray-100"
+            >
+              <ArrowLeft className="w-6 h-6 text-teal-600 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-semibold text-gray-700">Quay lại danh sách</span>
+            </Link>
+            <div className="flex items-center gap-4">
+              <Car className="w-10 h-10 text-teal-600" />
+              <h1 className="text-4xl font-black text-gray-800 tracking-tight">Chỉnh sửa xe</h1>
             </div>
-            <code className="text-sm font-mono text-teal-600 bg-teal-50 px-3 py-1 rounded-lg">
-              {vehicle?.vehicle_id}
-            </code>
           </div>
 
-          <VehicleForm
-            defaultValues={{
-              vehicle_name: vehicle?.vehicle_name || '',
-              license_plate: vehicle?.license_plate || '',
-              description: vehicle?.description || '',
-            }}
-            onSubmit={handleSubmit}
-            submitText="Cập nhật xe"
-          />
-        </div>
+          {/* CARD FORM - SIÊU ĐẸP */}
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-teal-100 overflow-hidden">
+            {/* Header trong card */}
+            <div className="flex items-center gap-4 mb-10">
+              <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <span className="text-white font-black text-2xl">ID</span>
+              </div>
+              <div>
+                <code className="text-lg font-mono text-teal-600 bg-teal-50 px-4 py-2 rounded-xl font-bold">
+                  {vehicle.vehicle_id}
+                </code>
+                <p className="text-sm text-gray-500 mt-2">Mã định danh xe trong hệ thống</p>
+              </div>
+            </div>
 
-        {/* FOOTER NOTE */}
-        <p className="text-center text-sm text-gray-500 mt-8">
-          Cập nhật thông tin xe và nhấn <span className="font-semibold text-teal-600">Cập nhật xe</span> để lưu
-        </p>
+            {/* Form */}
+            <VehicleForm
+              defaultValues={{
+                vehicle_name: vehicle.vehicle_name || '',
+                license_plate: vehicle.license_plate || '',
+                description: vehicle.description || '',
+              }}
+              onSubmit={handleSubmit}
+              submitText="Cập nhật xe"
+            />
+          </div>
+
+          {/* GHI CHÚ */}
+          <div className="mt-10 text-center bg-white/70 backdrop-blur-sm rounded-2xl py-6 px-8 shadow-lg border border-teal-100">
+            <p className="text-sm text-gray-700">
+              Cập nhật thông tin xe và nhấn{' '}
+              <span className="font-bold text-teal-600">Cập nhật xe</span> để lưu thay đổi.
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

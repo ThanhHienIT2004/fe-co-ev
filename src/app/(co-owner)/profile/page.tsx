@@ -39,7 +39,7 @@ export default function UserProfilePage() {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:8080/user/profiles/${userId}`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_USER}/profiles/${userId}`);
         setProfile(res.data);
         setFormData({
           fullName: res.data.fullName || "",
@@ -61,7 +61,7 @@ export default function UserProfilePage() {
     if (!profile) return;
     try {
       setSaving(true);
-      await axios.put(`http://localhost:8080/user/profiles/${userId}`, formData);
+      await axios.put(`${process.env.NEXT_PUBLIC_API_USER}/profiles/${userId}`, formData);
       setProfile({ ...profile, ...formData });
       setEditing(false);
       toast.success("Cập nhật thành công!");

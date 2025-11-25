@@ -89,17 +89,24 @@
     return { updateGroup };
   };
 
-  // DELETE - Xóa nhóm (optimistic + mượt)
+  // DELETE - Xóa nhóm
   export const useDeleteOwnershipGroup = () => {
     const { mutate } = useSWRConfig();
 
     const deleteGroup = async (groupId: string) => {
+      // Optimistic update: xóa ngay khỏi UI
+      mutate(
+        '/ownership-groups',
+        (groups: OwnershipGroupResponseDto[] = []) =>
+          groups.filter(g => g.group_id !== groupId),
+        false
+      );
+
+      // Gọi API xóa nhóm
       await api.delete(`/ownership-groups/${groupId}`);
 
-      // Xóa ngay lập tức khỏi UI (optimistic)
-      mutate('/ownership-groups', (groups: OwnershipGroupResponseDto[] = []) =>
-        groups.filter(g => g.group_id !== groupId), false
-      );
+      // Refetch chính xác từ server
+      mutate('/ownership-groups');
     };
 
     return { deleteGroup };

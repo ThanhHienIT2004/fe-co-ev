@@ -1,6 +1,5 @@
 // hooks/useServiceTasks.ts
 import useSWR, { useSWRConfig } from 'swr';
-import { ServiceTask } from '@/types/service-tasks.type';
 import api from '../apis/admin-and-staff';
 
 const fetcher = (url: string) => api.get(url).then(res => res.data);

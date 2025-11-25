@@ -5,14 +5,18 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useOwnershipGroup, useUpdateOwnershipGroup } from "@/libs/hooks/useOwnershipGroups";
 import OwnershipGroupForm from "../../_components/OwnershipGroupForm";
-import { toast } from 'react-hot-toast';
+import { useSnackbar } from "notistack";
 
 export default function EditOwnershipGroupPage() {
   const { group_id } = useParams();
   const router = useRouter();
 
+  // Snackbar
+  const { enqueueSnackbar } = useSnackbar();
+
   // Lấy chi tiết nhóm
   const { group, isLoading } = useOwnershipGroup(group_id as string);
+
   // Hook cập nhật nhóm
   const { updateGroup } = useUpdateOwnershipGroup();
 
@@ -27,15 +31,17 @@ export default function EditOwnershipGroupPage() {
   const handleSubmit = async (data: any) => {
     try {
       await updateGroup({ groupId: group_id as string, data });
-      toast.success("Cập nhật nhóm thành công!");
+
+      enqueueSnackbar("Cập nhật nhóm thành công!", { variant: "success" });
+
       router.push("/ownership-groups-manage");
     } catch (error) {
-      toast.error("Lỗi khi cập nhật nhóm!");
+      enqueueSnackbar("Lỗi khi cập nhật nhóm!", { variant: "error" });
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">

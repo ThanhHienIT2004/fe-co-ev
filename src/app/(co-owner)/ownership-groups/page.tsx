@@ -13,7 +13,8 @@ import { mutate } from 'swr';
 
 export default function VehiclesPage() {
   const { data: vehicles } = useVehicles();
-    const [id, setId] = useState<string | null>(null);
+  
+  const [id, setId] = useState<string | null>(null);
     useEffect(() => {
     const storedId = localStorage.getItem("userId");
     setId(storedId);

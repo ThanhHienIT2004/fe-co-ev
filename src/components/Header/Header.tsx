@@ -50,6 +50,7 @@ export const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
     localStorage.removeItem("email");
+    localStorage.removeItem("role");
     setUserEmail(null);
     setDropdownOpen(false);
     window.location.href = "/";

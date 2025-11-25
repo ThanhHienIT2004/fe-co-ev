@@ -1,7 +1,8 @@
 // src/hooks/useAdminProfiles.ts
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { AdminProfileResponse } from "@/types/profile";
+import { AdminProfileResponse, Profile, UpdateProfileData } from "@/types/profile";
+import { enqueueSnackbar } from "notistack";
 
 export const useAdminProfiles = () => {
   const [profiles, setProfiles] = useState<AdminProfileResponse[]>([]);
@@ -41,5 +42,54 @@ export const useAdminProfiles = () => {
     searchTerm,
     setSearchTerm,
     refetch: fetchProfiles,
+  };
+
+  
+};
+export const useUpdateAdminProfile = (refetch?: () => void) => {
+  const [loading, setLoading] = useState(false);
+
+  const updateProfile = async (userId: number, data: UpdateProfileData) => {
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+
+      if (data.fullName) formData.append("fullName", data.fullName);
+      if (data.phoneNumber) formData.append("phoneNumber", data.phoneNumber);
+      if (data.address) formData.append("address", data.address);
+      if (data.driverLicenseNumber) formData.append("driverLicenseNumber", data.driverLicenseNumber);
+      if (data.driverLicenseExpiry) formData.append("driverLicenseExpiry", data.driverLicenseExpiry);
+
+      if (data.licenseFile instanceof File) {
+        formData.append("licenseFile", data.licenseFile);
+      }
+
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_USER}/profiles/${userId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      enqueueSnackbar("Cập nhật hồ sơ thành công!", { variant: "success" });
+
+      if (refetch) refetch();
+
+      return res.data;
+    } catch (error: any) {
+      enqueueSnackbar(error.response?.data || "Cập nhật thất bại!", {
+        variant: "error",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    updateProfile,
+    loading,
   };
 };

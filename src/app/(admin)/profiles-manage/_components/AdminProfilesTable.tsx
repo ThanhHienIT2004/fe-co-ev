@@ -9,7 +9,6 @@ import { formatDate } from "./ProfileDetailModal";
 export default function AdminProfilesTable({
   profiles,
   onSelect,          // Xem chi tiết
-  onEdit,            // Thêm callback mới để mở form chỉnh sửa
 }: {
   profiles: any[];
   onSelect: (p: any) => void;

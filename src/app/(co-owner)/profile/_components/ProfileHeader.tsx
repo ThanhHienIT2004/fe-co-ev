@@ -7,7 +7,7 @@ export const ProfileHeader = () => (
       animate={{ y: 0, opacity: 1 }}
       className="text-center text-white"
     >
-      <h1 className="text-5xl md:text-6xl font-black mb-4">
+      <h1 className="text-2xl md:text-6xl font-black mb-4">
         Hồ sơ cá nhân
       </h1>
       <p className="text-xl md:text-2xl text-teal-50">

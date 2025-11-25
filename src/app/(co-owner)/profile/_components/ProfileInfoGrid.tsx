@@ -23,137 +23,130 @@ const formatDate = (date: string | null) => {
 };
 
 export const ProfileInfoGrid = ({ profile, editing, formData, onChange }: Props) => (
-  <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-    {/* Cột trái */}
-    <div className="space-y-10">
-      <div>
-        <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold">
-          <Mail className="w-7 h-7 text-teal-500" />
-          Email
-        </label>
-        <p className="mt-3 text-2xl font-bold text-gray-800 pl-11">{profile.email}</p>
-      </div>
+  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    {/* LEFT */}
+    <div className="space-y-6">
+      <Field
+        icon={<Mail className="w-5 h-5 text-teal-500" />}
+        label="Email"
+        content={profile.email}
+      />
 
-      <div>
-        <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold">
-          <User className="w-7 h-7 text-teal-500" />
-          Họ và tên
-        </label>
-        {editing ? (
-          <input
-            type="text"
-            value={formData.fullName}
-            onChange={(e) => onChange("fullName", e.target.value)}
-            className="mt-3 w-full px-6 py-4 text-xl border-2 border-teal-200 rounded-2xl focus:ring-4 focus:ring-teal-300 focus:border-teal-500 outline-none transition pl-11"
-            placeholder="Nhập họ tên đầy đủ"
-          />
-        ) : (
-          <p className="mt-3 text-2xl font-bold text-gray-800 pl-11">
-            {profile.fullName || "Chưa cập nhật"}
-          </p>
-        )}
-      </div>
+      <EditableField
+        icon={<User className="w-5 h-5 text-teal-500" />}
+        label="Họ và tên"
+        editing={editing}
+        value={formData.fullName}
+        placeholder="Nhập họ tên"
+        display={profile.fullName}
+        onChange={(v: string) => onChange("fullName", v)}
+      />
 
-      <div>
-        <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold">
-          <Phone className="w-7 h-7 text-teal-500" />
-          Số điện thoại
-        </label>
-        {editing ? (
-          <input
-            type="text"
-            value={formData.phoneNumber}
-            onChange={(e) => onChange("phoneNumber", e.target.value)}
-            className="mt-3 w-full px-6 py-4 text-xl border-2 border-teal-200 rounded-2xl focus:ring-4 focus:ring-teal-300 focus:border-teal-500 outline-none transition pl-11"
-            placeholder="090xxxxxxx"
-          />
-        ) : (
-          <p className="mt-3 text-2xl font-bold text-gray-800 pl-11">
-            {profile.phoneNumber || "Chưa cập nhật"}
-          </p>
-        )}
-      </div>
+      <EditableField
+        icon={<Phone className="w-5 h-5 text-teal-500" />}
+        label="Số điện thoại"
+        editing={editing}
+        value={formData.phoneNumber}
+        placeholder="090xxxxxxx"
+        display={profile.phoneNumber}
+        onChange={(v: string) => onChange("phoneNumber", v)}
+      />
 
-      <div>
-        <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold">
-          <MapPin className="w-7 h-7 text-teal-500" />
-          Địa chỉ thường trú
-        </label>
-        {editing ? (
-          <input
-            type="text"
-            value={formData.address}
-            onChange={(e) => onChange("address", e.target.value)}
-            className="mt-3 w-full px-6 py-4 text-xl border-2 border-teal-200 rounded-2xl focus:ring-4 focus:ring-teal-300 focus:border-teal-500 outline-none transition pl-11"
-            placeholder="Ví dụ: 123 Đường Láng, Hà Nội"
-          />
-        ) : (
-          <p className="mt-3 text-2xl font-bold text-gray-800 pl-11">
-            {profile.address || "Chưa cập nhật"}
-          </p>
-        )}
-      </div>
+      <EditableField
+        icon={<MapPin className="w-5 h-5 text-teal-500" />}
+        label="Địa chỉ thường trú"
+        editing={editing}
+        value={formData.address}
+        placeholder="Ví dụ: 123 Đường A, Hà Nội"
+        display={profile.address}
+        onChange={(v: string) => onChange("address", v)}
+      />
     </div>
 
-    {/* Cột phải */}
-    <div className="space-y-10">
-      <div>
-        <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold">
-          <IdCard className="w-7 h-7 text-teal-500" />
-          Số giấy phép lái xe
-        </label>
-        {editing ? (
-          <input
-            type="text"
-            value={formData.driverLicenseNumber}
-            onChange={(e) => onChange("driverLicenseNumber", e.target.value)}
-            className="mt-3 w-full px-6 py-4 text-xl border-2 border-teal-200 rounded-2xl focus:ring-4 focus:ring-teal-300 focus:border-teal-500 outline-none transition"
-            placeholder="Ví dụ: 123456789012"
-          />
-        ) : (
-          <p className="mt-3 text-2xl font-bold text-gray-800">
-            {profile.driverLicenseNumber || "Chưa cập nhật"}
-          </p>
-        )}
-      </div>
+    {/* RIGHT */}
+    <div className="space-y-6">
+      <EditableField
+        icon={<IdCard className="w-5 h-5 text-teal-500" />}
+        label="Số GPLX"
+        editing={editing}
+        value={formData.driverLicenseNumber}
+        placeholder="123456789"
+        display={profile.driverLicenseNumber}
+        onChange={(v: string) => onChange("driverLicenseNumber", v)}
+      />
 
-      <div>
-        <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold">
-          <Calendar className="w-7 h-7 text-teal-500" />
-          Ngày hết hạn GPLX
-        </label>
-        {editing ? (
-          <input
-            type="date"
-            value={formData.driverLicenseExpiry}
-            onChange={(e) => onChange("driverLicenseExpiry", e.target.value)}
-            className="mt-3 w-full px-6 py-4 text-xl border-2 border-teal-200 rounded-2xl focus:ring-4 focus:ring-teal-300 focus:border-teal-500 outline-none transition"
-          />
-        ) : (
-          <p className="mt-3 text-2xl font-bold text-gray-800">
-            {profile.driverLicenseExpiry ? formatDate(profile.driverLicenseExpiry) : "Chưa cập nhật"}
-          </p>
-        )}
-      </div>
+      <EditableField
+        icon={<Calendar className="w-5 h-5 text-teal-500" />}
+        label="Ngày hết hạn GPLX"
+        editing={editing}
+        inputType="date"
+        value={formData.driverLicenseExpiry}
+        display={
+          profile.driverLicenseExpiry
+            ? formatDate(profile.driverLicenseExpiry)
+            : "Chưa cập nhật"
+        }
+        onChange={(v: string) => onChange("driverLicenseExpiry", v)}
+      />
 
       {profile.licenseImageUrl && (
-        <div className="mt-8">
-          <label className="flex items-center gap-4 text-gray-700 text-lg font-semibold mb-4">
-            <Camera className="w-7 h-7 text-teal-500" />
-            Ảnh giấy phép lái xe
-          </label>
-          <div className="relative group">
-            <img
-              src={profile.licenseImageUrl}
-              alt="GPLX"
-              className="w-full rounded-3xl border-8 border-teal-100 shadow-2xl transition group-hover:scale-[1.02]"
-            />
-            <div className="absolute inset-0 bg-black/20 rounded-3xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-              <Camera className="w-16 h-16 text-white" />
-            </div>
-          </div>
+        <div className="space-y-2">
+          <Label icon={<Camera className="w-5 h-5 text-teal-500" />} text="Ảnh GPLX" />
+          <img
+            src={profile.licenseImageUrl}
+            alt="GPLX"
+            className="w-48 rounded-xl border-4 border-teal-100 shadow-md"
+          />
         </div>
       )}
     </div>
+  </div>
+);
+
+/** Small reusable text label */
+const Label = ({ icon, text }: any) => (
+  <label className="flex items-center gap-2 text-gray-700 font-semibold text-base">
+    {icon}
+    {text}
+  </label>
+);
+
+/** Field (display only) */
+const Field = ({ icon, label, content }: any) => (
+  <div>
+    <Label icon={icon} text={label} />
+    <p className="mt-1 text-lg font-semibold text-gray-800 pl-7">
+      {content || "Chưa cập nhật"}
+    </p>
+  </div>
+);
+
+/** Editable input field */
+const EditableField = ({
+  icon,
+  label,
+  editing,
+  value,
+  placeholder,
+  display,
+  onChange,
+  inputType = "text",
+}: any) => (
+  <div>
+    <Label icon={icon} text={label} />
+    {editing ? (
+      <input
+        type={inputType}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full px-4 py-2.5 text-base border border-teal-300 rounded-xl 
+                   focus:ring-2 focus:ring-teal-400 outline-none transition pl-7"
+        placeholder={placeholder}
+      />
+    ) : (
+      <p className="mt-1 text-lg font-semibold text-gray-800 pl-7">
+        {display || "Chưa cập nhật"}
+      </p>
+    )}
   </div>
 );

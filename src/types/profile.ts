@@ -52,3 +52,12 @@ export interface AdminProfileResponse {
   createdAt: string;
   updatedAt: string;
 }
+// src/types/profile.ts
+export interface UpdateProfileData {
+  fullName?: string;
+  phoneNumber?: string;
+  address?: string;
+  driverLicenseNumber?: string;
+  driverLicenseExpiry?: string;
+  licenseFile?: File | null;
+}

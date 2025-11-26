@@ -23,7 +23,7 @@ import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
 
 export default function GroupDetailPage() {
-
+  const {group_id} = useParams();
   const { group, isLoading: loadingGroup } = useOwnershipGroup(group_id as string);
   const { members, isLoading: loadingMembers, mutate } = useGroupMembers(group_id as string);
   const { deleteMember } = useDeleteGroupMember();
@@ -68,7 +68,7 @@ export default function GroupDetailPage() {
 
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h1 className="text-5xl lg:text-6xl font-black tracking-tight">
+              <h1 className="text-2xl lg:text-4xl font-black tracking-tight">
                 {group.group_name}
               </h1>
               <p className="text-2xl mt-4 opacity-95 flex items-center gap-3">

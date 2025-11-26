@@ -15,9 +15,7 @@ export default function FundCard({ fund, onDelete, groupId }: FundCardProps) {
       <div className="p-6">
         <div className="flex justify-between items-start mb-3">
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-gray-900 truncate pr-2">
-              {fund.fundName}
-            </h3>
+            <h3 className="text-lg font-bold text-gray-900 truncate pr-2">{fund.fundName}</h3>
             <p className="text-sm text-gray-500 mt-1">
               ID: {fund.fundId} • {format(new Date(fund.createdAt), 'dd/MM/yyyy')}
             </p>

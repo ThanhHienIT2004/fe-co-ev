@@ -40,7 +40,8 @@ export default function AdminProfilesPage() {
           <>
             <AdminProfilesTable 
             profiles={paginatedProfiles} 
-            onSelect={setSelectedProfile} />
+            onSelect={setSelectedProfile} 
+            />
 
             {totalPages > 1 && (
               <PaginationControls

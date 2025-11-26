@@ -12,7 +12,6 @@ export default function AdminProfilesTable({
 }: {
   profiles: any[];
   onSelect: (p: any) => void;
-  onEdit: (p: any) => void;   // <-- Thêm prop này
 }) {
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-teal-100 overflow-hidden">

@@ -1,4 +1,4 @@
-## 🧠 Backend
+## 🧠 Backendddd
 
 Backend của hệ thống được xây dựng theo **kiến trúc Microservice**, kết hợp giữa **NestJS** và **Java Spring Boot**, đảm bảo khả năng mở rộng, bảo trì dễ dàng và hiệu năng cao.  
 Mỗi service phụ trách một domain độc lập, giao tiếp thông qua **API Gateway** và được quản lý thống nhất bằng **Docker Compose**.

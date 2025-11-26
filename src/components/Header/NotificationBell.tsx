@@ -40,6 +40,7 @@ export default function NotificationBell() {
 
         const alertsData = await alertsRes.json();
         const conflictsData = await conflictsRes.json();
+        const alertsDataArray = Array.isArray(alertsData) ? alertsData : [];
         const conflictsArray = Array.isArray(conflictsData) ? conflictsData : conflictsData.data || [];
 
         const usageData = await usageRes.json();
@@ -55,7 +56,7 @@ export default function NotificationBell() {
 
         if (!cancelled) {
           let merged: Notification[] = [
-            ...alertsData.map((a: any) => ({
+            ...alertsDataArray.map((a: any) => ({
               type: "alert",
               id: a.alert_id,
               message: a.message,

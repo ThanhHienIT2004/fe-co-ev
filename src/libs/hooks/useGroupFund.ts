@@ -1,33 +1,37 @@
 // src/libs/hooks/useGroupFund.ts
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/libs/apis/funds';
-import type {
-  GroupFund,
-  CreateFundRequest,
-} from '@/types/groupfund.type';
+import type { GroupFund, CreateFundRequest } from '@/types/groupfund.type';
 
-export const useGroupFund = (groupId?: string) => {  // ĐỔI TỪ number → string
+export const useGroupFund = (groupId?: string) => {
   const [funds, setFunds] = useState<GroupFund[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchAll = useCallback(async () => {
-    if (!groupId) {
-      setFunds([]);
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await api.get<GroupFund[]>('/funds', {
-        params: { groupId }, // vẫn gửi string → backend sẽ xử lý
-      });
-      setFunds(res.data);
-    } catch (err) {
-      console.error('Lỗi lấy danh sách quỹ:', err);
-      setFunds([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [groupId]);
+  if (!groupId) {
+    setFunds([]);
+    return;
+  }
+
+  const groupIdNum = Number(groupId);
+  if (isNaN(groupIdNum)) {
+    console.error('groupId không hợp lệ');
+    setFunds([]);
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const res = await api.get<GroupFund[]>(`/funds/group/${groupIdNum}`);
+    setFunds(res.data);
+  } catch (err) {
+    console.error('Lỗi lấy danh sách quỹ:', err);
+    setFunds([]);
+  } finally {
+    setLoading(false);
+  }
+}, [groupId]);
+
 
   const getById = async (id: number): Promise<GroupFund> => {
     const res = await api.get<GroupFund>(`/funds/${id}`);

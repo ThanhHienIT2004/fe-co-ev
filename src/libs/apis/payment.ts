@@ -7,8 +7,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const userId = localStorage.getItem('userId') || '1';
-  const groupId = '1';
+  const userId = localStorage.getItem('userId') || '3';
+  const groupId = '2';
 
   config.headers['userId'] = userId;
 

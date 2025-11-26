@@ -78,15 +78,15 @@ export default function AboutUs() {
               </div>
             </div>
 
-            <div className="order-1 lg:order-2">
+            <div className="order-2 lg:order-2">
               <div className="bg-linear-to-br from-teal-100 to-cyan-100 dark:from-teal-900 dark:to-cyan-900 rounded-3xl p-8 shadow-2xl">
                 <img 
-                  src="/images/about-team-photo.jpg" 
+                  src="/images/about-us.png" 
                   alt="Đội ngũ sáng lập" 
-                  className="rounded-2xl shadow-xl w-full object-cover h-96"
+                  className="shadow-xl w-full h-96"
                 />
                 <p className="text-center mt-6 text-gray-700 dark:text-gray-300 font-medium">
-                  4 người bạn sáng lập – Tháng 6/2022, quán cà phê quận 7
+                  4 người bạn sáng lập – Tháng 11/2025, quán cà phê 24H, Ghò Vấp, TP.HCM, Việt Nam
                 </p>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function AboutUs() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
             {[
-              { name: "Nguyễn Minh Quân", role: "CEO & Đồng sáng lập", desc: "8 năm kinh nghiệm fintech, cựu ZaloPay", img: "/public/images/images-default.jpg" },
+              { name: "Võ Tá Duy", role: "CEO & Đồng sáng lập", desc: "8 năm kinh nghiệm fintech, cựu ZaloPay", img: "/public/images/Duy.png  " },
               { name: "Trần Anh Tuấn", role: "CTO & Đồng sáng lập", desc: "Chuyên gia blockchain, từng làm tại Axie Infinity", img: "/team/tuan.jpg" },
               { name: "Lê Thị Mai Anh", role: "COO & Đồng sáng lập", desc: "Quản lý vận hành 10 năm, cựu Shopee", img: "/team/maianh.jpg" },
               { name: "Phạm Hoàng Nam", role: "CPO & Đồng sáng lập", desc: "Thiết kế sản phẩm, từng dẫn dắt MoMo redesign", img: "/team/nam.jpg" },

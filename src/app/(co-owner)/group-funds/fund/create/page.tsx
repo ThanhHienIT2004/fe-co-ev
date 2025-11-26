@@ -1,145 +1,176 @@
-// src/app/(co-owner)/group-funds/[groupId]/fund/create/page.tsx
-
+// app/group-funds/fund/create/page.tsx
 'use client';
 
-import { useState } from 'react';
-import { useGroupFund } from '@/libs/hooks/useGroupFund';
-import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Loader2, Wallet } from 'lucide-react';
+import { useGroupFund } from '@/libs/hooks/useGroupFund';
+import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+
+interface GroupInfo {
+  groupId: number;
+  groupName: string;
+  ownerId: number;
+  vehiclePlate?: string;
+}
 
 export default function CreateFundPage() {
   const router = useRouter();
-  const params = useParams();
-  const groupId = params.groupId as string;
+  const searchParams = useSearchParams();
+  const groupIdFromUrl = searchParams.get('groupId');
 
-  if (!groupId) {
-    router.replace('/groups');
-    return null;
-  }
+  // Nếu không có groupId trong URL thì lấy từ localStorage (đã lưu ở trang danh sách)
+  
+  const storedGroup = typeof window !== 'undefined' ? localStorage.getItem('selectedGroup') : null;
+  const groupInfo: GroupInfo | null = storedGroup ? JSON.parse(storedGroup) : null;
 
-  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
-  if (!userId) {
-    alert('Không tìm thấy userId! Vui lòng đăng nhập lại.');
-    router.replace('/');
-    return null;
-  }
+  const groupId = groupIdFromUrl || groupInfo?.groupId?.toString() || '';
 
-  const { create, loading } = useGroupFund(groupId);
+  // Giả sử userId hiện tại bạn đang hard-code hoặc lấy từ auth (ví dụ 1)
+  // Thay đổi theo hệ thống auth thực tế của bạn
+  const currentUserId = 1;
 
-  const [form, setForm] = useState({
-    fundName: '',
-    initialBalance: '',
-  });
+  const { create } = useGroupFund(groupId);
+
+  const [fundName, setFundName] = useState('');
+  const [initialBalance, setInitialBalance] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fundName.trim()) return alert('Vui lòng nhập tên quỹ!');
+
+    if (!groupId) {
+      setError('Không tìm thấy thông tin nhóm. Vui lòng quay lại danh sách quỹ.');
+      return;
+    }
+
+    if (!fundName.trim()) {
+      setError('Vui lòng nhập tên quỹ');
+      return;
+    }
+
+    const balanceNum = parseFloat(initialBalance.replace(/,/g, '')) || 0;
+
+    setLoading(true);
+    setError('');
 
     try {
-      await create(
-        form.fundName.trim(),
-        form.initialBalance ? Number(form.initialBalance) : 0,
-        Number(userId)
-      );
+      await create(fundName.trim(), balanceNum, currentUserId);
 
+      // Thành công → quay về danh sách
       alert('Tạo quỹ thành công!');
-      router.push(`/group-funds/${groupId}/fund`); // URL đẹp hơn
+      router.push(`/group-funds?groupId=${groupId}`);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Tạo quỹ thất bại!');
+      console.error(err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          'Tạo quỹ thất bại, vui lòng thử lại'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  const formatMoney = (num: string) => {
-    return num ? Number(num).toLocaleString('vi-VN') + 'đ' : '';
+  // Format số tiền khi nhập
+  const formatCurrency = (value: string) => {
+    const num = value.replace(/\D/g, '');
+    if (!num) return '';
+    return Number(num).toLocaleString('vi-VN');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-green-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-
+      <div className="max-w-2xl mx-auto">
+        {/* Back button */}
         <Link
-          href={`/group-funds/${groupId}/fund`}
-          className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium mb-6"
+          href={`/group-funds?groupId=${groupId}`}
+          className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 mb-8 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           Quay lại danh sách quỹ
         </Link>
 
-        <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <Wallet className="w-9 h-9" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Tạo Quỹ Mới</h1>
-              <p className="text-gray-600">
-                Nhóm ID: <strong className="text-indigo-700">{groupId}</strong> • 
-                Người tạo: <strong className="text-emerald-700">User {userId}</strong>
-              </p>
-            </div>
-          </div>
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Tạo quỹ mới
+          </h1>
+          {groupInfo && (
+            <p className="text-lg text-gray-600">
+              Nhóm: <span className="font-semibold text-indigo-700">{groupInfo.groupName}</span>
+              {groupInfo.vehiclePlate && (
+                <span className="ml-3 text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">
+                  {groupInfo.vehiclePlate}
+                </span>
+              )}
+            </p>
+          )}
 
-          {/* Form giống hệt file cũ */}
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            {/* Tên quỹ */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tên quỹ <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={form.fundName}
-                onChange={(e) => setForm({ ...form, fundName: e.target.value })}
-                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition text-lg"
-                placeholder="VD: Quỹ đi Đà Lạt, Quỹ bảo trì xe..."
-                maxLength={100}
-                required
+                value={fundName}
+                onChange={(e) => setFundName(e.target.value)}
+                placeholder="Ví dụ: Quỹ bảo trì xe, Quỹ du lịch nhóm..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                disabled={loading}
               />
-              <p className="text-xs text-gray-500 mt-2">{form.fundName.length}/100 ký tự</p>
             </div>
 
+            {/* Số dư ban đầu */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                Số dư ban đầu (tùy chọn)
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Số dư ban đầu (₫)
               </label>
               <input
                 type="text"
-                inputMode="numeric"
-                value={form.initialBalance}
-                onChange={(e) => setForm({ ...form, initialBalance: e.target.value.replace(/\D/g, '') })}
-                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition text-lg font-mono"
+                value={initialBalance}
+                onChange={(e) => setInitialBalance(formatCurrency(e.target.value))}
                 placeholder="0"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                disabled={loading}
               />
-              {form.initialBalance && (
-                <div className="mt-4 p-5 bg-green-50 border border-green-200 rounded-2xl">
-                  <p className="text-green-800 font-bold text-xl">
-                    Khởi tạo: {formatMoney(form.initialBalance)}
-                  </p>
-                </div>
-              )}
+              <p className="mt-2 text-sm text-gray-500">
+                Để trống hoặc 0 nếu quỹ bắt đầu từ số dư 0
+              </p>
             </div>
 
-            <div className="flex gap-4 pt-6">
+            {/* Thông báo lỗi */}
+            {error && (
+              <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Nút submit */}
+            <div className="flex gap-4 pt-4">
               <button
                 type="submit"
-                disabled={loading || !form.fundName.trim()}
-                className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-5 rounded-2xl font-bold text-lg hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl flex items-center justify-center gap-3"
+                disabled={loading || !fundName.trim()}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                     Đang tạo...
                   </>
                 ) : (
-                  'Tạo quỹ ngay'
+                  'Tạo quỹ mới'
                 )}
               </button>
 
               <Link
-                href={`/group-funds/${groupId}/fund`}
-                className="px-8 py-5 bg-gray-100 text-gray-700 rounded-2xl font-semibold hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                href={`/group-funds?groupId=${groupId}`}
+                className="px-8 py-3.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition"
               >
-                <ArrowLeft className="w-5 h-5" />
                 Hủy
               </Link>
             </div>

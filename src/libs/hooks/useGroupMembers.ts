@@ -6,7 +6,7 @@ import api from '../apis/admin-and-staff';
 const fetcher = (url: string) => api.get(url).then(res => res.data);
 
 // === LẤY DANH SÁCH THÀNH VIÊN ===
-export const useGroupMembers = (groupId: number) => {
+export const useGroupMembers = (groupId: string) => {
   const { data, error, isLoading, mutate } = useSWR<any[]>(
     groupId ? `/group-members/group/${groupId}` : null,
     fetcher,
@@ -26,7 +26,7 @@ export const useCreateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
   const createMember = async (
-    group_id: number,
+    group_id: string,
     data: {
       user_id: number;
       group_role?: string;
@@ -51,32 +51,36 @@ export const useCreateGroupMember = () => {
 };
 
 
-// === CẬP NHẬT THÀNH VIÊN ===
 export const useUpdateGroupMember = () => {
   const { mutate } = useSWRConfig();
 
   const updateMember = async ({
-    memberId,
-    groupId,
+    groupId,  // number | string
+    userId,   // number
     data,
   }: {
-    memberId: number;
-    groupId: number;
+    groupId: string | number;
+    userId: number;
     data: { group_role?: string; ownership_ratio?: number };
   }) => {
-    const res = await api.put(`/group-members/${memberId}`, data);
+    // gọi PUT /group-members/:group_id/:user_id
+    const res = await api.put(`/group-members/${groupId}/${userId}`, data);
+
+    // invalidate cache danh sách member của group
     mutate(`/group-members/group/${groupId}`);
+
     return res.data;
   };
 
   return { updateMember };
 };
 
+
 // === XÓA THÀNH VIÊN ===
 export const useDeleteGroupMember = () => {
   const { mutate } = useSWRConfig();
 
-  const deleteMember = async (memberId: number, groupId: number) => {
+  const deleteMember = async (memberId: string, groupId: string) => {
     await api.delete(`/group-members/${memberId}`);
     mutate(`/group-members/group/${groupId}`);
   };
@@ -85,7 +89,7 @@ export const useDeleteGroupMember = () => {
 };
 
 // === ĐẾM SỐ LƯỢNG ===
-export const useGroupMemberCount = (groupId: number) => {
+export const useGroupMemberCount = (groupId: string) => {
   const { data, error, isLoading } = useSWR<any[]>(
     groupId ? `/group-members/group/${groupId}` : null,
     fetcher

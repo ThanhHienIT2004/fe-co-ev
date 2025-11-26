@@ -1,14 +1,13 @@
-// src/libs/apis/api.ts
 import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:8082/payment',
   timeout: 10000,
 });
-
 api.interceptors.request.use((config) => {
-  const userId = localStorage.getItem('userId') || '1';
-  const groupId = '1';
+  // Lấy userId và groupId từ localStorage hoặc query (nếu có)
+  const userId = localStorage.getItem('userId') || '3';
+  const groupId = localStorage.getItem('groupId') || '2';
 
   config.headers['userId'] = userId;
 

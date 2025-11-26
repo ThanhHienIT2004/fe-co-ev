@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { bookingApi } from "@/libs/apis/booking";
 import { CreateBookingDto } from "@/types/booking.type";
+import { enqueueSnackbar } from "notistack";
+import { useRouter } from "next/navigation";
 
 export default function BookNowPage() {
   const params = useParams();
+  const router = useRouter();
   const vehicleIdParam = params?.vehicleId;
   const vehicleId = Array.isArray(vehicleIdParam)
     ? Number(vehicleIdParam[0])
@@ -174,7 +177,7 @@ export default function BookNowPage() {
       };
 
       await bookingApi.create(payload);
-      alert("Đặt xe thành công!");
+      enqueueSnackbar("Đặt xe thành công!", { variant: "success" });
 
       setFormData((prev) => ({
         ...prev,
@@ -202,6 +205,13 @@ export default function BookNowPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-6 flex flex-col items-center">
       <div className="w-full max-w-5xl bg-white shadow-md rounded-2xl p-10">
+        {/* Button Quay lại */}
+        <button
+          onClick={() => router.back()}
+          className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg"
+        >
+          ← Quay lại
+        </button>
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-800">Đặt Xe Ngay</h1>

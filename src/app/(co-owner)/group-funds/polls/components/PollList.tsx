@@ -3,8 +3,9 @@ import { useEffect } from 'react';
 import { usePoll } from '@/libs/hooks/usePoll';
 import PollCard from './PollCard';
 
-export default function PollList() {
-  const { polls, loading, fetchAll, close, deletePoll } = usePoll();
+// Nhận groupId từ component cha
+export default function PollList({ groupId }: { groupId: string | number }) {
+  const { polls, loading, fetchAll, close, deletePoll } = usePoll(groupId); // truyền vào đây
 
   useEffect(() => {
     fetchAll();

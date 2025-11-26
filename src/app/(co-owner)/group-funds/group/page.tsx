@@ -1,4 +1,5 @@
-// pages/groups.tsx
+// pages/groups.tsx (hoặc app/groups/page.tsx)
+
 'use client';
 
 import { useUserGroups } from '@/libs/hooks/useUserGroups';
@@ -8,6 +9,21 @@ import { Car, UsersRound, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function GroupsPage() {
   const { groups, loading, error } = useUserGroups();
+
+  // Thêm hàm này – chỉ lưu group + vehicleId vào localStorage
+  const handleGroupClick = (group: any) => {
+    const selectedGroup = {
+      groupId: group.groupId,
+      groupName: group.groupName,
+      ownerId: group.ownerId,
+      vehicleId: group.vehicleId || null, // chính là cái bạn cần
+    };
+
+    localStorage.setItem('selectedGroup', JSON.stringify(selectedGroup));
+
+    // Optional: phát sự kiện để các component khác biết (header, form, v.v.)
+    window.dispatchEvent(new Event('selectedGroupChanged'));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-gray-100">
@@ -64,13 +80,14 @@ export default function GroupsPage() {
           </div>
         )}
 
-        {/* Groups Grid */}
+        {/* Groups Grid – chỉ thêm onClick */}
         {!loading && groups.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
             {groups.map((group) => (
               <Link
                 key={group.groupId}
                 href={`/group-funds?groupId=${group.groupId}`}
+                onClick={() => handleGroupClick(group)} // ← Chỉ thêm dòng này thôi!
                 className="group block transform transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl"
               >
                 <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden h-full flex flex-col hover:border-indigo-200 transition-colors">
@@ -114,7 +131,7 @@ export default function GroupsPage() {
                       </div>
                       <div className="opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all">
                         <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg">
-                          →
+                          Right Arrow
                         </div>
                       </div>
                     </div>
@@ -138,5 +155,3 @@ export default function GroupsPage() {
     </div>
   );
 }
-
-

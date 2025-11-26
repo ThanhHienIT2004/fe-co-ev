@@ -1,100 +1,99 @@
 // src/libs/hooks/useVehicleCost.ts
-import { useState, useEffect, useCallback } from 'react';
-import type {
-  VehicleCost,
-  CreateCostRequest,
-  UpdateStatusRequest,
-  MomoPaymentResponse,
-} from '@/types/vehiclecost.type';
-import api from '../apis/payment';
 
-export const useVehicleCost = (groupId: string, userId: number = 1) => {
+import { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+
+export interface VehicleCost {
+  costId: number;
+  groupId: number;
+  userId: number;
+  vehicleId: number;
+  costName: string;
+  amount: number;
+  status: 'pending' | 'paid';
+  createdAt: string;
+  createdBy?: string;
+}
+
+// Params cho kiểu gọi mới
+interface UseVehicleCostParams {
+  groupId: string | null;
+  vehicleId?: string | number | null;
+}
+
+// Overload để hỗ trợ cả kiểu cũ (chỉ groupId) và kiểu mới (object)
+type UseVehicleCostArg = UseVehicleCostParams | string | null;
+
+export const useVehicleCost = (arg: UseVehicleCostArg = null) => {
+  // Chuẩn hóa về 2 biến groupId + vehicleId
+  let groupId: string | null = null;
+  let vehicleId: string | number | null = null;
+
+  if (typeof arg === 'object' && arg !== null) {
+    groupId = arg.groupId;
+    vehicleId = 'vehicleId' in arg ? arg.vehicleId ?? null : null;
+  } else {
+    groupId = arg as string | null;
+  }
+
   const [costs, setCosts] = useState<VehicleCost[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAll = useCallback(async () => {
+    if (!groupId || groupId === '' || isNaN(Number(groupId))) {
+      setCosts([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
+    setError(null);
+
     try {
-      const res = await api.get<VehicleCost[]>('/costs', { 
-        params: { groupId } 
-      });
-      setCosts(res.data);
-    } catch (err) {
-      console.error(err);
+      const params: any = { groupId: Number(groupId) };
+      if (vehicleId !== null && vehicleId !== undefined && vehicleId !== '') {
+        params.vehicleId = Number(vehicleId);
+      }
+
+      const res = await axios.get('http://localhost:8082/payment/costs', { params });
+      const rawData = res.data?.data || res.data || [];
+
+      if (!Array.isArray(rawData)) {
+        setCosts([]);
+        return;
+      }
+
+      const normalizedData: VehicleCost[] = rawData.map((item: any) => ({
+        costId: Number(item.costId),
+        groupId: Number(item.groupId),
+        userId: Number(item.userId),
+        vehicleId: Number(item.vehicleId ?? 0),
+        costName: item.costName || 'Không tên',
+        amount: Number(item.amount || 0),
+        status: item.status === 'paid' ? 'paid' : 'pending',
+        createdAt: item.createdAt || new Date().toISOString(),
+        createdBy: item.createdBy,
+      }));
+
+      setCosts(normalizedData);
+    } catch (err: any) {
+      console.error('Lỗi tải chi phí:', err);
+      setError('Không thể tải dữ liệu chi phí');
       setCosts([]);
     } finally {
       setLoading(false);
     }
-  }, [groupId]);
+  }, [groupId, vehicleId]);
 
-  const getById = useCallback(async (id: number) => {
-    const res = await api.get<VehicleCost>(`/costs/${id}`, {
-      params: { groupId }
-    });
-    return res.data;
-  }, [groupId]);
-
-  const create = async (data: CreateCostRequest) => {
-    setLoading(true);
-    try {
-      const payload = {
-        ...data,
-        amount: Number(data.amount),
-        fundId: data.fundId ?? null,
-        vehicleId: data.vehicleId ?? null,
-      };
-      const res = await api.post<VehicleCost>('/costs', payload, {
-        headers: { userId: userId.toString() },
-      });
-      setCosts(prev => [...prev, res.data]);
-      return res.data;
-    } catch (err: any) {
-      console.error('Create cost error:', err.response?.data || err.message || err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateStatus = async (id: number, status: 'paid' | 'pending' | 'cancelled') => {
-    const res = await api.patch<VehicleCost>(`/costs/${id}/status`, 
-      { status } as UpdateStatusRequest,
-      { headers: { userId: userId.toString() } }
-    );
-    setCosts(prev => prev.map(c => (c.costId === id ? res.data : c)));
-    return res.data;
-  };
-
-  const payWithMomo = async (id: number, gateway: 'MOMO' | 'VNPAY') => {
-    const res = await api.post<MomoPaymentResponse>(`/costs/${id}/pay`, { gateway });
-    return res.data;
-  };
-
-  const deleteCost = async (id: number) => {
-    await api.delete(`/costs/${id}`);
-    setCosts(prev => prev.filter(c => c.costId !== id));
-  };
-
-  const updateCost = async (id: number, data: Partial<CreateCostRequest>) => {
-  const res = await api.patch<VehicleCost>(`/costs/${id}`, data);
-  setCosts(prev => prev.map(c => c.costId === id ? res.data : c));
-  return res.data;
-};
-
-  // TỰ ĐỘNG TẢI KHI groupId THAY ĐỔI
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
 
-  return { 
-    costs, 
-    loading, 
-    fetchAll, 
-    getById, 
-    create, 
-    updateStatus, 
-    payWithMomo, 
-    deleteCost, 
-    updateCost
+  return {
+    costs,
+    loading,
+    error,
+    fetchAll,
   };
 };

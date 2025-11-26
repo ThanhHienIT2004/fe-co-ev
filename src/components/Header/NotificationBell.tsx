@@ -5,7 +5,7 @@ import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Notification = {
-  type: "alert" | "conflict";
+  type: "alert" | "conflict" | "usage";
   id: number;
   message: string;
   created_at: string;
@@ -25,24 +25,36 @@ export default function NotificationBell() {
   }, []);
 
   // --- Fetch notifications 1 lần ---
-  useEffect(() => {
+ useEffect(() => {
     if (userId === null) return;
 
     let cancelled = false;
 
     async function fetchNotifications() {
       try {
-        const [alertsRes, conflictsRes] = await Promise.all([
+        const [alertsRes, conflictsRes, usageRes] = await Promise.all([
           fetch(`http://localhost:8085/booking/alerts/user/${userId}`),
-          fetch(`http://localhost:8085/booking/conflict-log/user_id/${userId}`)
+          fetch(`http://localhost:8085/booking/conflict-log/user_id/${userId}`),
+          fetch(`http://localhost:8085/booking/usage/get-all?user_id=${userId}`)
         ]);
 
         const alertsData = await alertsRes.json();
         const conflictsData = await conflictsRes.json();
         const conflictsArray = Array.isArray(conflictsData) ? conflictsData : conflictsData.data || [];
 
+        const usageData = await usageRes.json();
+        const usageArray = Array.isArray(usageData) ? usageData : [];
+
+        // 👉 Lấy 1 usage mới nhất (nếu có)
+        let latestUsage = null;
+        if (usageArray.length > 0) {
+          latestUsage = usageArray.reduce((prev, current) =>
+            new Date(prev.record_time) > new Date(current.record_time) ? prev : current
+          );
+        }
+
         if (!cancelled) {
-          const merged: Notification[] = [
+          let merged: Notification[] = [
             ...alertsData.map((a: any) => ({
               type: "alert",
               id: a.alert_id,
@@ -57,15 +69,25 @@ export default function NotificationBell() {
             }))
           ];
 
+          // 👉 Thêm thông báo usage nếu có dữ liệu
+          if (latestUsage) {
+            merged.push({
+              type: "usage",
+              id: latestUsage.usage_id,
+              message: `Phiên sử dụng xe của bạn đã được tạo từ ${latestUsage.start_date} đến ${latestUsage.end_date}`,
+              created_at: latestUsage.record_time
+            });
+          }
+
           setNotifications(merged);
         }
+
       } catch (err) {
         console.error(err);
       }
     }
 
     fetchNotifications();
-
     return () => { cancelled = true };
   }, [userId]);
 
@@ -124,25 +146,52 @@ export default function NotificationBell() {
             </div>
 
             <div className="p-3 space-y-3 max-h-96 overflow-y-auto">
-              {latestNotification.map(n => (
-                <div key={n.id} className="border-b last:border-b-0">
-                  <div className="flex justify-between items-start p-2">
+              {latestNotification.map(n => {
+              const baseStyle =
+                "p-2 rounded-lg border mb-2 transition-colors";
+
+              const typeStyle =
+                n.type === "alert"
+                  ? "bg-yellow-50 border-yellow-200"
+                  : n.type === "conflict"
+                  ? "bg-red-50 border-red-200"
+                  : "bg-gradient-to-r from-teal-500 to-cyan-500 border-none text-white shadow-md"; // usage highlight
+
+              const buttonStyle =
+                n.type === "usage"
+                  ? "bg-white/20 hover:bg-white/30 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-700";
+
+              return (
+                <div key={n.id} className={`${baseStyle} ${typeStyle}`}>
+                  <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-sm font-medium">{n.message}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {n.type === "alert" ? "Alert" : "Conflict"}
+                      <p className="text-sm font-semibold">{n.message}</p>
+                      <p className={`text-xs mt-0.5 ${
+                        n.type === "usage" ? "text-white/80" : "text-gray-500"
+                      }`}>
+                        {n.type === "alert"
+                          ? "Alert"
+                          : n.type === "conflict"
+                          ? "Conflict"
+                          : "Usage"}
                       </p>
                     </div>
+
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleView(n.id)}
-                        className="text-xs px-2 py-1 bg-blue-200 hover:bg-blue-300 rounded"
+                        className={`text-xs px-2 py-1 rounded ${buttonStyle}`}
                       >
                         Xem
                       </button>
                       <button
                         onClick={() => handleDismiss(n.id)}
-                        className="text-xs px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                        className={`text-xs px-2 py-1 rounded ${
+                          n.type === "usage"
+                            ? "bg-white/20 hover:bg-white/30 text-white"
+                            : "bg-gray-200 hover:bg-gray-300"
+                        }`}
                       >
                         Xóa
                       </button>
@@ -150,15 +199,27 @@ export default function NotificationBell() {
                   </div>
 
                   {viewingId === n.id && (
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-b-md text-sm text-gray-700 dark:text-gray-200 space-y-1">
+                    <div
+                      className={`mt-2 p-3 rounded-lg text-sm ${
+                        n.type === "usage"
+                          ? "bg-white/10 text-white"
+                          : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                      }`}
+                    >
                       <p><span className="font-semibold">ID:</span> {n.id}</p>
                       <p><span className="font-semibold">Message:</span> {n.message}</p>
-                      {n.created_at && <p><span className="font-semibold">Ngày tạo:</span> {new Date(n.created_at).toLocaleString()}</p>}
+                      {n.created_at && (
+                        <p>
+                          <span className="font-semibold">Ngày tạo:</span>{" "}
+                          {new Date(n.created_at).toLocaleString()}
+                        </p>
+                      )}
                       <p><span className="font-semibold">Loại:</span> {n.type}</p>
                     </div>
                   )}
                 </div>
-              ))}
+              );
+            })}
             </div>
           </motion.div>
         )}

@@ -17,7 +17,7 @@ export const conflictApi = {
 
   // Lấy tất cả conflict
   getAll: async (): Promise<ConflictLog[]> => {
-    const res = await fetch(`${API_URL}/booking/conflict-log`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/booking/conflict-log/get-all`, { cache: 'no-store' });
     return res.json();
   },
 

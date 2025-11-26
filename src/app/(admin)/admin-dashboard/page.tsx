@@ -15,13 +15,18 @@ import { BookingStatsChart } from "./_components/BookingStatsChart";
 import { ConflictStatsChart } from "./_components/ConflictStatsChart";
 import { UsageStatsChart } from "./_components/UsageStatsChart";
 import { YearDistanceChart } from "./_components/YearDistanceChart";
+import { useEContracts } from "@/libs/hooks/useEContracts";
+import { useUsers } from "@/libs/hooks/useUser";
 
 export default function AdminDashboardPage() {
   const { data: vehicles = [], isLoading: loadingVehicles } = useVehicles();
   const { groups = [], isLoading: loadingGroups } = useOwnershipGroups();
-
+  const { contracts = [], isLoading: loadingEContracts } = useEContracts();
+  const { users = []} = useUsers();
   const totalVehicles = vehicles.length;
   const totalGroups = groups.length;
+  const totalContracts = contracts.length;
+  const totalUsers = users.length;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-white dark:from-gray-900 dark:to-gray-950">
@@ -31,10 +36,10 @@ export default function AdminDashboardPage() {
         <div className="max-w-7xl mx-auto">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <StatsCard label="Tổng hợp đồng đã ký" value="1.512" change="+278 tháng này" color="from-teal-500 to-teal-600" />
+            <StatsCard label="Tổng hợp đồng hiện tại" value={loadingEContracts ? "..." : totalContracts.toString()}change="+278 tháng này" color="from-teal-500 to-teal-600" />
             <StatsCard label="Xe đang hoạt động" value={loadingVehicles ? "..." : totalVehicles.toString()} change="92% khả dụng" color="from-cyan-500 to-cyan-600" />
             <StatsCard label="Nhóm đồng sở hữu" value={loadingGroups ? "..." : totalGroups.toString()} change="+3 nhóm mới" color="from-emerald-500 to-emerald-600" />
-            <StatsCard label="Lượt đặt xe hôm nay" value="189" change="+42% so với hôm qua" color="from-sky-500 to-sky-600" />
+            <StatsCard label="Số người dùng hiện tại" value={ totalUsers.toString()} change="+42% so với hôm qua" color="from-sky-500 to-sky-600" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

@@ -61,7 +61,7 @@ export default function AboutUs() {
             <div className="order-2 lg:order-1">
               <div className="space-y-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                 <p>
-                  Năm 2022, 4 người bạn tại Sài Gòn cùng muốn sở hữu một chiếc <strong>VinFast VF e34</strong> để đi làm và đi chơi cuối tuần.
+                  Năm 2025, 5 người bạn tại Sài Gòn cùng muốn sở hữu một chiếc <strong>VinFast VF e34</strong> để đi làm và đi chơi cuối tuần.
                 </p>
                 <p>
                   Nhưng giá xe quá cao so với thu nhập của mỗi người. Họ thử mua chung – và nhận ra: 
@@ -72,7 +72,7 @@ export default function AboutUs() {
                   và quyết định chia sẻ nó cho tất cả mọi người.
                 </p>
                 <p>
-                  Từ một nhóm 4 người bạn, đến nay chúng tôi đã giúp hơn <strong>2.800 người</strong> tại 63 tỉnh thành 
+                  Từ một nhóm 5 người bạn, đến nay chúng tôi đã giúp hơn <strong>2.800 người</strong> tại 63 tỉnh thành 
                   cùng nhau sở hữu hơn <strong>680 chiếc xe điện</strong>.
                 </p>
               </div>
@@ -86,7 +86,7 @@ export default function AboutUs() {
                   className="shadow-xl w-full h-96"
                 />
                 <p className="text-center mt-6 text-gray-700 dark:text-gray-300 font-medium">
-                  4 người bạn sáng lập – Tháng 11/2025, quán cà phê 24H, Ghò Vấp, TP.HCM, Việt Nam
+                  5 người bạn sáng lập – Tháng 11/2025, quán cà phê 24H, Ghò Vấp, TP.HCM, Việt Nam
                 </p>
               </div>
             </div>
@@ -125,19 +125,26 @@ export default function AboutUs() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Đội Ngũ Sáng Lập</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">Những người đang thay đổi cách Việt Nam sở hữu xe</p>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              Những người đang thay đổi cách Việt Nam sở hữu xe
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
             {[
-              { name: "Võ Tá Duy", role: "CEO & Đồng sáng lập", desc: "8 năm kinh nghiệm fintech, cựu ZaloPay", img: "/public/images/Duy.png  " },
-              { name: "Trần Anh Tuấn", role: "CTO & Đồng sáng lập", desc: "Chuyên gia blockchain, từng làm tại Axie Infinity", img: "/team/tuan.jpg" },
-              { name: "Lê Thị Mai Anh", role: "COO & Đồng sáng lập", desc: "Quản lý vận hành 10 năm, cựu Shopee", img: "/team/maianh.jpg" },
-              { name: "Phạm Hoàng Nam", role: "CPO & Đồng sáng lập", desc: "Thiết kế sản phẩm, từng dẫn dắt MoMo redesign", img: "/team/nam.jpg" },
+              { name: "Võ Tá Duy", role: "CEO & Đồng sáng lập", desc: "Có kinh nghiệm làm be và fe", img: "/images/Duy.png" },
+              { name: "Trần Nguyễn Thành Hiển", role: "CEO & Đồng sáng lập", desc: "Có kinh nghiệm làm be và fe", img: "/images/Hien.png" },
+              { name: "Đặng Minh Tiến", role: "CEO & Đồng sáng lập", desc: "Có kinh nghiệm làm be và fe", img: "/images/Tien.png" },
+              { name: "Võ Quốc Tuấn", role: "CEO & Đồng sáng lập", desc: "Có kinh nghiệm làm be và fe", img: "/images/Tuan.png" },
+              { name: "Phạm Gia Khôi", role: "CEO & Đồng sáng lập", desc: "Có kinh nghiệm làm be và fe", img: "/images/Khoi.png" },
             ].map((member) => (
               <div key={member.name} className="group text-center">
                 <div className="relative overflow-hidden rounded-3xl mb-6">
-                  <div className="bg-gray-200 border-2 border-dashed rounded-3xl w-full h-80" />
+                  <img 
+                    src={member.img} 
+                    alt={member.name} 
+                    className="w-full h-80 object-cover rounded-3xl shadow-lg"
+                  />
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6">
                     <p className="text-white font-semibold">{member.role}</p>
                   </div>
@@ -150,6 +157,7 @@ export default function AboutUs() {
           </div>
         </div>
       </section>
+
 
       {/* FINAL CTA */}
       <section className="py-24 bg-linear-to-r from-teal-600 to-cyan-600">

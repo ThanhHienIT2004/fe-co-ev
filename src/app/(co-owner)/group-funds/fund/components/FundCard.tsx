@@ -2,6 +2,7 @@
 import { GroupFund } from '@/types/groupfund.type';
 import Link from 'next/link';
 import { format } from 'date-fns';
+const API_BASE = 'http://localhost:8082/payment';
 
 interface FundCardProps {
   fund: GroupFund;

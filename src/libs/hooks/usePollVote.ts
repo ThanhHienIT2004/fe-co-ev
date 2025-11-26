@@ -1,7 +1,7 @@
-// File: src/libs/hooks/usePollVote.ts
+// src/libs/hooks/usePollVote.ts
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import api from '@/libs/apis/api';
 import { PollVote } from '@/types/pollvote.type';
 
@@ -13,62 +13,86 @@ interface VoteResult {
 }
 
 export const usePollVote = () => {
-  const [votes, setVotes] = useState<PollVote[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Không cần state votes ở đây nữa → tránh re-render liên tục ở trang chi tiết
+  // const [votes, setVotes] = useState<PollVote[]>([]);
+  // const [loading, setLoading] = useState(false);
 
+  /**
+   * Lấy danh sách vote theo pollId
+   */
   const fetchByPoll = useCallback(async (pollId: number): Promise<PollVote[]> => {
-    setLoading(true);
     try {
-      const res = await api.get<PollVote[]>(`/poll-votes/poll/${pollId}`);
-      setVotes(res.data);
-      return res.data;
-    } catch (err) {
-      console.error('Lấy danh sách vote thất bại:', err);
+      const res = await api.get<PollVote[]>(`payment/poll-votes/poll/${pollId}`);
+      return res.data ?? [];
+    } catch (err: any) {
+      console.error('Lấy danh sách vote thất bại:', err.response?.data || err.message);
       return [];
-    } finally {
-      setLoading(false);
     }
   }, []);
 
+  /**
+   * Gửi phiếu bầu
+   */
   const vote = useCallback(
-    async (pollId: number, voteValue: 'yes' | 'no' | 'abstain', userId: number, groupId: number) => {
-      console.log(userId, groupId, voteValue)
+    async (
+      pollId: number,
+      voteValue: 'yes' | 'no' | 'abstain',
+      userId: number,
+      groupId: number
+    ): Promise<PollVote> => {
       try {
         const res = await api.post<PollVote>(
           `/poll-votes/poll/${pollId}`,
-          null,
+          null, // body = null
           {
             params: { voteValue, groupId },
             headers: { userId: userId.toString() },
           }
         );
 
-        const newVote = res.data;
-        setVotes((prev) => {
-          const filtered = prev.filter((v) => v.userId !== newVote.userId);
-          return [...filtered, newVote];
-        });
-
-        return newVote;
+        return res.data;
       } catch (err: any) {
-        throw err;
+        const msg = err.response?.data?.message || 'Bầu chọn thất bại. Vui lòng thử lại.';
+        throw new Error(msg);
       }
     },
     []
   );
 
-  const getResult = useCallback((votesList: PollVote[] = votes): VoteResult => {
-    const result: VoteResult = { yes: 0, no: 0, abstain: 0, total: votesList.length };
+  /**
+   * Tính kết quả từ danh sách vote
+   * Dùng được với bất kỳ mảng votes nào (từ state component hoặc từ fetch)
+   */
+  const getResult = useCallback((votesList: PollVote[] = []): VoteResult => {
+    const result: VoteResult = {
+      yes: 0,
+      no: 0,
+      abstain: 0,
+      total: votesList.length,
+    };
 
-    votesList.forEach((v) => {
-      const value = (v.voteValue || '');
-      if (value === 'yes') result.yes++;
-      else if (value === 'no') result.no++;
-      else if (value === 'abstain') result.abstain++;
-    });
+    for (const v of votesList) {
+      switch (v.voteValue) {
+        case 'yes':
+          result.yes++;
+          break;
+        case 'no':
+          result.no++;
+          break;
+        case 'abstain':
+          result.abstain++;
+          break;
+      }
+    }
 
     return result;
-  }, [votes]);
+  }, []);
 
-  return { votes, loading, fetchByPoll, vote, getResult };
+  return {
+    // votes,        → bỏ đi, không cần nữa
+    // loading,      → bỏ đi
+    fetchByPoll,
+    vote,
+    getResult,
+  };
 };

@@ -1,7 +1,8 @@
 export interface VehicleCost {
   costId: number;
   groupId: number;
-  vehicleId?: number | string;
+  userId? :number;
+  vehicleId?: number;
   fundId?: number;
   costName: string;
   amount: number;
@@ -10,12 +11,14 @@ export interface VehicleCost {
   updatedAt?: string;
 }
 
-export interface CreateCostRequest {
-  groupId: number;
-  fundId?: number;
-  vehicleId?: number;
-  costName: string;
+interface CreateCostRequest {
+  title: string;        // ← BACKEND YÊU CẦU title
   amount: number;
+  vehicleId?: number | string;
+  description: string;
+  costDate: string;
+  groupId: number;
+  status: 'pending' | 'paid' | 'cancelled';
 }
 
 export interface UpdateStatusRequest {

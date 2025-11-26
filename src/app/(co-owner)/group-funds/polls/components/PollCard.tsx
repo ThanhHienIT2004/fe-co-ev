@@ -28,12 +28,12 @@ export default function PollCard({ poll, onClose, onDelete }: Props) {
         {expires && <p className="text-red-600 text-xs">Hết hạn: {format(expires, 'dd/MM HH:mm')}</p>}
       </div>
       <div className="flex gap-2">
-        <Link
-          href={`/group-funds/polls/${poll.pollId}`}
-          className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm text-center hover:bg-blue-700"
-        >
-          Xem
-        </Link>
+        <Link href={`/group-funds/polls/${poll.pollId}`} legacyBehavior>
+  <a className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm text-center hover:bg-blue-700">
+    Xem
+  </a>
+</Link>
+
         {isActive && onClose && (
           <button onClick={() => onClose(poll.pollId)} className="px-3 py-2 bg-yellow-100 text-yellow-700 rounded text-sm hover:bg-yellow-200">Đóng</button>
         )}

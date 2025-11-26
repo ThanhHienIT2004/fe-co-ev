@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Car, Zap, Users, Shield, Phone, Mail, MapPin, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
+import { Car, Zap, Users, Shield, Phone, Mail, MapPin, ChevronRight, Sparkles, ArrowRight} from "lucide-react";
 import EVCoOwnershipSection from "@/components/Sections/EVCoOwnershipSection";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "EVSharing - Đồng Sở Hữu Xe Điện Thông Minh",
@@ -36,13 +37,15 @@ export default function HomePage() {
             {/* Nút chính – gradient giống hệt header */}
             <button className="group bg-linear-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-bold text-lg px-12 py-5 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3">
               <Car className="w-6 h-6" />
-              Đặt Lịch Lái Thử Miễn Phí
+              Tham gia nhóm đồng sở hữu hoàn toàn Miễn Phí
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
             </button>
-
-            <button className="border-4 border-white/30 hover:bg-white hover:text-cyan-600 font-bold text-lg px-12 py-5 rounded-full transition-all backdrop-blur-sm">
-              Xem Bảng Giá Chi Tiết
-            </button>
+            
+            <Link href="/about-us">
+              <button className="border-4 border-white/30 hover:bg-white hover:text-cyan-600 font-bold text-lg px-12 py-5 rounded-full transition-all backdrop-blur-sm">
+                Xem Thông Tin Chi Tiết Về Website
+              </button>
+            </Link>
           </div>
         </div>
         <ChevronRight className="absolute bottom-8 left-1/2 -translate-x-1/2 w-10 h-10 rotate-90 animate-bounce text-white/70" />

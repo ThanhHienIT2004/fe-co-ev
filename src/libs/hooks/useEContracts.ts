@@ -67,3 +67,40 @@ export const useUserContracts = (userId: string) => {
     mutate,
   };
 };
+
+export const useContractStats = () => {
+  const { data, error, isLoading } = useSWR("/e-contracts", fetcher);
+
+  const stats = (() => {
+    if (!data) return [];
+
+    // Group và đếm
+    const monthly: Record<string, { signed: number; pending: number; rejected: number }> = {};
+
+    data.forEach((c: any) => {
+      const date = new Date(c.created_at);
+      const month = date.getMonth() + 1;  // 1 → 12
+      const key = `Th${month}`;
+
+      if (!monthly[key]) {
+        monthly[key] = { signed: 0, pending: 0, rejected: 0 };
+      }
+
+      if (c.signature_status === "signed") monthly[key].signed++;
+      if (c.signature_status === "pending") monthly[key].pending++;
+      if (c.signature_status === "rejected") monthly[key].rejected++;
+    });
+
+    // Convert object → mảng Recharts cần
+    return Object.keys(monthly).map((m) => ({
+      month: m,
+      ...monthly[m]
+    }));
+  })();
+
+  return {
+    stats,
+    isLoading,
+    error
+  };
+};

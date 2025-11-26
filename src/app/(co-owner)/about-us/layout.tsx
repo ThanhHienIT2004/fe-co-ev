@@ -10,9 +10,7 @@ export default function AboutUsPage({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-      <HeroBanner />
-
+      <Header />  
       <main className="grow max-w-7xl mx-auto w-full px-4 py-8">
         {children}
       </main>

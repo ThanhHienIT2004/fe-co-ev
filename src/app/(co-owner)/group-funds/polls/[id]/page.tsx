@@ -19,7 +19,8 @@ const voteConfig =
 type VoteValue = 'yes' | 'no' | 'abstain';
 
 export default function PollDetailPage() {
-const { getById, close } = usePoll(undefined);
+  
+  const { getById, close } = usePoll();
   const { vote, getResult, fetchByPoll } = usePollVote();
   const { id } = useParams();
   const router = useRouter();
@@ -111,7 +112,7 @@ const { getById, close } = usePoll(undefined);
   };
 
   // Tính trạng thái bình chọn
-  const isOpen = poll?.status === 'OPEN';
+  const isOpen = poll?.status === 'active';
   const expiresAt = poll?.expiresAt ? new Date(poll.expiresAt) : null;
   const isExpired = expiresAt ? expiresAt < new Date() : false;
   const canVote = isOpen && !isExpired && !myVote;

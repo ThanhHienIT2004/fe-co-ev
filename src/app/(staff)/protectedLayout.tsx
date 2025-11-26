@@ -1,10 +1,10 @@
 "use client";
 
+import useLocalAuthStaff from "@/libs/hooks/auth/useLocalAuthStaff";
 import { ReactNode } from "react";
-import useLocalAuth from "@/libs/hooks/auth/useLocalAuth";
 
 const ProtectedLayout = ({ children }: { children: ReactNode }) => {
-    const { token, loading } = useLocalAuth();
+    const { token, loading } = useLocalAuthStaff();
 
     if (loading) return <div></div>;
 

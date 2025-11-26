@@ -14,9 +14,9 @@ import {
   Flame,
   CreditCard,
   CircleDollarSign,
-  HandHelping,
   Vote,
   FileText, 
+  History,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,6 +47,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     { href: "/vehicles-manage", label: "Xe điện", icon: Car },
     { href: "/ownership-groups-manage", label: "Nhóm đồng sở hữu", icon: Users },
     { href: "/appointments", label: "Danh sách đặt lịch xe", icon: Calendar },
+    { href: "/co-owners-history", label: "Lịch sử sử dụng xe", icon: History},
+    { href: "digital-signatures", label: "Check-in / Check-out", icon: User },
     { href: "/e-contracts-manage", label: "Hợp đồng", icon: ReceiptText },
     { href: "/conflicts", label: "Xung đột", icon: Flame },
     { href: "/cost", label: "Chi phí dịch vụ", icon: CircleDollarSign },

@@ -2,9 +2,7 @@
 
 export enum ResolutionStatus {
   UNRESOLVED = "unresolved",
-  IN_PROGRESS = "in_progress",
-  RESOLVED = "resolved",
-  REJECTED = "rejected",
+  RESOLVED = "resolved"
 }
 
 // Dữ liệu 1 conflict log
@@ -21,8 +19,9 @@ export interface ConflictLog {
 // Dùng để tạo conflict mới
 export interface CreateConflictDto {
   conflict_id?: number; // có thể để BE tự tạo
+  user_id: number;
   booking_id: number;
-  description?: string;
+  description: string;
 }
 
 // Dùng để cập nhật trạng thái conflict

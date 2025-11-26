@@ -29,6 +29,7 @@ export default function BookNowPage() {
   const [availableDays, setAvailableDays] = useState<number | null>(null);
   const [usedDays, setUsedDays] = useState<number | null>(null);
   const [loadingDays, setLoadingDays] = useState(true);
+  const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     if (!userId || !vehicleId) return;
@@ -256,12 +257,12 @@ export default function BookNowPage() {
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <label className="block text-sm font-semibold mb-2">Ngày bắt đầu *</label>
-              <input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required className="w-full border rounded-lg px-3 py-2" />
+              <input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required min={today} className="w-full border rounded-lg px-3 py-2" />
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2">Ngày kết thúc *</label>
-              <input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required min={formData.start_date} className="w-full border rounded-lg px-3 py-2" />
+              <input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required min={formData.start_date || today} className="w-full border rounded-lg px-3 py-2" />
             </div>
           </div>
 

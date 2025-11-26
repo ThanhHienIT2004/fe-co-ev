@@ -1,30 +1,42 @@
 // lib/hooks/useConflictAdmin.ts
 import useSWR, { mutate } from 'swr';
-import { ConflictLog, CreateConflictDto, UpdateConflictStatusDto } from '@/types/conflict.type';
-import { conflictApi } from '@/libs/apis/conflict';
+import { ConflictLog, CreateConflictDto, ResolutionStatus } from '@/types/conflict.type';
+
+const BASE_URL = "http://localhost:8085/booking/conflict-log";
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export function useConflictAdmin() {
-  const { data, error, isLoading } = useSWR<ConflictLog[]>('/api/proxy/conflicts', fetcher);
+  const { data, error, isLoading } = useSWR<ConflictLog[]>(`${BASE_URL}/get-all`, fetcher);
 
   // Tạo conflict mới
   const createConflict = async (data: CreateConflictDto) => {
-    await conflictApi.create(data);
-    mutate('/api/proxy/conflicts');
+    // đảm bảo gửi đủ user_id, booking_id và description
+    await fetch(`${BASE_URL}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: data.user_id,
+        booking_id: data.booking_id,
+        description: data.description || ""
+      }),
+    });
+    mutate(`${BASE_URL}/get-all`);
   };
 
-  // Cập nhật trạng thái conflict
-  const updateConflictStatus = async (conflict_id: number, data: UpdateConflictStatusDto) => {
-    await conflictApi.updateStatus(conflict_id, data);
-    mutate('/api/proxy/conflicts');
+  // Cập nhật trạng thái conflict (resolve/reject)
+  const updateConflictStatus = async (
+    conflict_id: number,
+    status: ResolutionStatus,
+    resolved_by?: number
+  ) => {
+    await fetch(`${BASE_URL}/${conflict_id}/status`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status, resolved_by }),
+    });
+    mutate(`${BASE_URL}/get-all`);
   };
-
-  // Xóa conflict (nếu bạn muốn thêm sau)
-  // const deleteConflict = async (conflict_id: string) => {
-  //   await conflictApi.delete(conflict_id);
-  //   mutate('/api/proxy/conflicts');
-  // };
 
   return {
     conflicts: data || [],
@@ -32,6 +44,5 @@ export function useConflictAdmin() {
     error,
     createConflict,
     updateConflictStatus,
-    // deleteConflict,
   };
 }

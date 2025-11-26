@@ -90,17 +90,38 @@ export default function BookNowPage() {
   const [aiSuggestion, setAiSuggestion] = useState("");
 
   const handleGetAiSuggestion = async () => {
+    if (!userId) return;
+
     setAiLoading(true);
+    setAiSuggestion(""); // reset trước khi fetch
 
-    // ❗ MOCK DATA — bạn gắn API thật vào đây
-    setTimeout(() => {
-      setAiSuggestion(
-        "Gợi ý: Bạn nên đặt xe từ 08:00 ngày 12/12 đến 20:00 ngày 13/12. Đây là khung thời gian ít xung đột và tối ưu nhất dựa trên lịch sử sử dụng của các thành viên."
-      );
+    try {
+      const res = await fetch("http://localhost:8085/past/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          daysrange: 10,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Không thể lấy gợi ý từ AI. Vui lòng thử lại.");
+      }
+
+      const data = await res.json();
+      // Giả sử API trả về { suggestion: "..." }
+      setAiSuggestion(data.suggestion || "AI chưa trả về gợi ý.");
+    } catch (err: any) {
+      console.error("❌ Lỗi fetch AI:", err);
+      setAiSuggestion(err.message || "Đã có lỗi xảy ra khi lấy gợi ý AI.");
+    } finally {
       setAiLoading(false);
-    }, 1500);
+    }
   };
-
+  
   // --- Submit booking ---
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

@@ -171,12 +171,6 @@ export default function AdminUsagePage() {
                             >
                               Cập nhật
                             </button>
-                            <button
-                              onClick={() => deleteUsage(u.usage_id)}
-                              className="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition-all duration-200 hover:scale-105"
-                            >
-                              Xóa
-                            </button>
                           </div>
                         </td>
                       </motion.tr>

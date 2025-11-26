@@ -106,14 +106,14 @@ export default function GroupCard({ group, onDelete, isPending }: Props) {
           <div className="flex items-center justify-between pt-0.5 border-t border-gray-100">
             <div className="flex gap-3">
               <Link
-                href={`/ownership-groups-manage/${group.group_id}`}
+                href={`/ownership-groups-manage-staff/${group.group_id}`}
                 className="px-5 py-2.5 bg-teal-600 text-white text-sm font-bold rounded-xl hover:bg-teal-700 transition shadow-md hover:shadow-lg"
               >
                 Chi tiết
               </Link>
 
               <Link
-                href={`/ownership-groups-manage/${group.group_id}/edit`}
+                href={`/ownership-groups-manage-staff/${group.group_id}/edit`}
                 className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition shadow-md hover:shadow-lg"
                 title="Chỉnh sửa nhóm"
               >

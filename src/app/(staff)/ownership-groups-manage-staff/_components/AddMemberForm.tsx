@@ -230,7 +230,7 @@ export default function AddMemberForm({ groupId, onSuccess }: AddMemberFormProps
             )}
           </button>
           <Link
-            href="/ownership-groups-manage"
+            href="/ownership-groups-manage-staff"
             className="px-8 py-5 bg-red-300 text-white font-bold rounded-2xl hover:bg-red-400 transition shadow-xl"
           >
             Hủy

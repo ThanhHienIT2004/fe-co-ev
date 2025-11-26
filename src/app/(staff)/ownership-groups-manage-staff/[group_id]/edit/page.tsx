@@ -34,7 +34,7 @@ export default function EditOwnershipGroupPage() {
 
       enqueueSnackbar("Cập nhật nhóm thành công!", { variant: "success" });
 
-      router.push("/ownership-groups-manage");
+      router.push("/ownership-groups-manage-staff");
     } catch (error) {
       enqueueSnackbar("Lỗi khi cập nhật nhóm!", { variant: "error" });
     }
@@ -46,7 +46,7 @@ export default function EditOwnershipGroupPage() {
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">
           <Link
-            href="/ownership-groups-manage"
+            href="/ownership-groups-manage-staff"
             className="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-50"
           >
             <ArrowLeft className="w-5 h-5 text-teal-600 group-hover:-translate-x-1 transition-transform" />

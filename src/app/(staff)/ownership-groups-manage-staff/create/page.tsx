@@ -48,7 +48,7 @@ export default function CreateGroupPage() {
         vehicle_id, 
         created_by: id as string || '404', // Thay bằng user ID thật sau
       });
-      router.push('/ownership-groups-manage');
+      router.push('/ownership-groups-manage-staff');
     } catch (error) {
       alert('Tạo nhóm thất bại. Vui lòng thử lại!');
     } finally {
@@ -63,7 +63,7 @@ export default function CreateGroupPage() {
         <div className="max-w-4xl mx-auto px-6 py-12">
           <div className="flex items-center gap-6 mb-8">
             <Link
-              href="/ownership-groups-manage"
+              href="/ownership-groups-manage-staff"
               className="group flex items-center gap-3 bg-white/20 backdrop-blur-lg px-6 py-3.5 rounded-2xl hover:bg-white/30 transition-all duration-300 hover:scale-105 shadow-xl"
             >
               <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
@@ -156,7 +156,7 @@ export default function CreateGroupPage() {
 
               <button
                 type="button"
-                onClick={() => router.push('/ownership-groups-manage')}
+                onClick={() => router.push('/ownership-groups-manage-staff')}
                 className="flex-1 bg-gray-100 text-gray-800 py-5 rounded-2xl font-bold text-xl hover:bg-gray-200 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
               >
                 Hủy bỏ
@@ -168,7 +168,7 @@ export default function CreateGroupPage() {
 
       {/* FAB Mobile */}
       <Link
-        href="/ownership-groups-manage"
+        href="/ownership-groups-manage-staff"
         className="fixed bottom-8 left-8 bg-white text-teal-600 p-5 rounded-full shadow-2xl hover:shadow-teal-600/50 transition-all hover:scale-110 z-50 lg:hidden"
       >
         <ArrowLeft className="w-8 h-8" />

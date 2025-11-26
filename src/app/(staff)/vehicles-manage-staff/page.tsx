@@ -136,7 +136,7 @@ export default function VehiclesPage() {
           {/* Nút thêm xe */}
           <div className="flex justify-end mb-10">
             <Link
-              href="/vehicles-manage/create"
+              href="/vehicles-manage-staff/create"
               className="group inline-flex items-center gap-3 bg-teal-600 text-white px-7 py-4 rounded-2xl font-bold text-lg shadow-xl hover:bg-teal-700 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
@@ -210,7 +210,7 @@ export default function VehiclesPage() {
 
                       <div className="flex gap-3">
                         <Link
-                          href={`/vehicles-manage/${v.vehicle_id}/edit`}
+                          href={`/vehicles-manage-staff/${v.vehicle_id}/edit`}
                           className="p-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition shadow-md hover:shadow-lg"
                           title="Chỉnh sửa"
                         >

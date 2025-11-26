@@ -22,7 +22,7 @@ export default function EditVehiclePage() {
     setIsSubmitting(true);
     try {
       await updateVehicle(id as string, data);
-      router.push('/vehicles-manage');
+      router.push('/vehicles-manage-staff');
       enqueueSnackbar("Cập nhật xe thành công!", { variant: "success" });
     } catch (error) {
       enqueueSnackbar("Cập nhật xe thất bại!", { variant: "error" });
@@ -48,7 +48,7 @@ export default function EditVehiclePage() {
       <div className="text-center py-32">
         <Car className="w-20 h-20 text-gray-400 mx-auto mb-6" />
         <p className="text-xl font-medium text-gray-700">Không tìm thấy xe</p>
-        <Link href="/vehicles-manage" className="text-teal-600 hover:underline mt-4 inline-block">
+        <Link href="/vehicles-manage-staff" className="text-teal-600 hover:underline mt-4 inline-block">
           ← Quay lại danh sách
         </Link>
       </div>
@@ -65,7 +65,7 @@ export default function EditVehiclePage() {
           {/* HEADER + NÚT QUAY LẠI */}
           <div className="flex items-center gap-5 mb-10">
             <Link
-              href="/vehicles-manage"
+              href="/vehicles-manage-staff"
               className="group flex items-center gap-3 bg-white px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50 border border-gray-100"
             >
               <ArrowLeft className="w-6 h-6 text-teal-600 group-hover:-translate-x-1 transition-transform" />

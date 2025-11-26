@@ -24,7 +24,7 @@ export default function OwnershipGroupsHero({ groups }: Props) {
             </p>
           </div>
           <Link
-            href="/ownership-groups-manage/create"
+            href="/ownership-groups-manage-staff/create"
             className="group flex items-center gap-3 bg-white text-teal-600 font-bold px-8 py-5 rounded-2xl shadow-2xl hover:shadow-cyan-300 transition-all duration-300 hover:scale-105 hover:-translate-y-1"
           >
             <Plus className="w-7 h-7 group-hover:rotate-90 transition-transform duration-500" />

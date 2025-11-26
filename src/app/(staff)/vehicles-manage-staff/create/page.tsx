@@ -2,11 +2,11 @@
 
 import { useCreateVehicle } from '@/libs/hooks/useVehicles';
 import { useRouter } from 'next/navigation';
-import VehicleForm from '../../_component/VehicleForm';
 import { ArrowLeft, Car, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import SubmitLoading from '@/components/Loading/SubmitLoading';
+import VehicleForm from '@/app/(admin)/_component/VehicleForm';
 
 export default function CreateVehiclePage() {
   const { mutate: createVehicle} = useCreateVehicle();
@@ -19,7 +19,7 @@ const handleSubmit = async (data: any) => {
     try {
       await createVehicle(data);
       setSuccess(true);
-      setTimeout(() => router.push('/vehicles-manage'), 1200);
+      setTimeout(() => router.push('/vehicles-manage-staff'), 1200);
     } catch (error) {
       console.error("Tạo xe thất bại:", error);
       // toast.error("Có lỗi xảy ra");
@@ -46,7 +46,7 @@ const handleSubmit = async (data: any) => {
           {/* HEADER + NÚT QUAY LẠI */}
           <div className="flex items-center gap-4 mb-8">
             <Link
-              href="/vehicles-manage"
+              href="/vehicles-manage-staff"
               className="group flex items-center gap-2 bg-white px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-50 border border-gray-100"
             >
               <ArrowLeft className="w-5 h-5 text-teal-600 group-hover:-translate-x-1 transition-transform" />

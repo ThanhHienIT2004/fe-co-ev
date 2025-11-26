@@ -36,16 +36,18 @@ export default function BookNowPage() {
     const fetchDays = async () => {
       try {
         setLoadingDays(true);
-        // --- Lấy available days ---
+
+        // Lấy available days
         const res1 = await fetch(
           `http://localhost:8085/admin/group-members/${vehicleId}/${userId}/available-days`
         );
         const data1 = await res1.json();
         setAvailableDays(data1?.available_days ?? 0);
 
-        // --- Lấy used days ---
+        // Lấy used days tháng hiện tại
         const year = new Date().getFullYear();
         const month = new Date().getMonth() + 1;
+
         const res2 = await fetch(
           `http://localhost:8085/booking/usage/user/${userId}/month?vehicle_id=${vehicleId}&year=${year}&month=${month}`
         );
@@ -72,7 +74,7 @@ export default function BookNowPage() {
     pickup: "",
   });
 
-  // --- Đồng bộ userId & vehicleId ---
+  // Đồng bộ userId
   useEffect(() => {
     if (userId !== null) {
       setFormData((prev) => ({
@@ -83,6 +85,23 @@ export default function BookNowPage() {
     }
   }, [userId, vehicleId]);
 
+  // --- AI Recommendation ---
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState("");
+
+  const handleGetAiSuggestion = async () => {
+    setAiLoading(true);
+
+    // ❗ MOCK DATA — bạn gắn API thật vào đây
+    setTimeout(() => {
+      setAiSuggestion(
+        "Gợi ý: Bạn nên đặt xe từ 08:00 ngày 12/12 đến 20:00 ngày 13/12. Đây là khung thời gian ít xung đột và tối ưu nhất dựa trên lịch sử sử dụng của các thành viên."
+      );
+      setAiLoading(false);
+    }, 1500);
+  };
+
+  // --- Submit booking ---
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -132,8 +151,6 @@ export default function BookNowPage() {
         check_out_time: formData.check_out_time,
       };
 
-      console.log("Payload gửi đi:", payload);
-
       await bookingApi.create(payload);
       alert("Đặt xe thành công!");
 
@@ -151,7 +168,7 @@ export default function BookNowPage() {
     }
   };
 
-  // --- Loading user check ---
+  // --- Loading user ---
   if (loadingUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -163,124 +180,96 @@ export default function BookNowPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-6 flex flex-col items-center">
       <div className="w-full max-w-5xl bg-white shadow-md rounded-2xl p-10">
+        {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-800">Đặt Xe Ngay</h1>
-          <p className="text-gray-500 mt-2">
-            Đặt xe trực tiếp từ nhà cung cấp đã được xác minh
-          </p>
+          <p className="text-gray-500 mt-2">Đặt xe trực tiếp từ nhà cung cấp đã được xác minh</p>
         </div>
 
-        {/* --- Available/Used Days --- */}
+        {/* Available / Used Days */}
         <div className="bg-blue-50 p-4 rounded-lg mb-8">
           {loadingDays ? (
             <p className="text-blue-700">Đang tải số ngày khả dụng...</p>
           ) : (
             <div className="space-y-1 text-blue-900">
-              <p>
-                <strong>Ngày được phép sử dụng:</strong> {availableDays ?? 0}
-              </p>
-              <p>
-                <strong>Ngày đã sử dụng tháng này:</strong> {usedDays ?? 0}
-              </p>
-              {availableDays !== null &&
-                usedDays !== null &&
-                usedDays >= availableDays && (
-                  <p className="text-red-600 font-semibold mt-1">
-                    Bạn đã không còn lượt sử dụng trong tháng này.
-                  </p>
-                )}
+              <p><strong>Ngày được phép sử dụng:</strong> {availableDays ?? 0}</p>
+              <p><strong>Ngày đã sử dụng tháng này:</strong> {usedDays ?? 0}</p>
+
+              {availableDays !== null && usedDays !== null && usedDays >= availableDays && (
+                <p className="text-red-600 font-semibold mt-1">
+                  Bạn đã không còn lượt sử dụng trong tháng này.
+                </p>
+              )}
             </div>
           )}
         </div>
 
-        {userId === null && (
-          <p className="text-center text-red-600 font-semibold mb-6">
-            Bạn chưa đăng nhập — không thể đặt xe.
-          </p>
-        )}
+        {/* AI Recommendation */}
+        <div className="bg-purple-50 border border-purple-200 rounded-xl p-5 mb-8">
+          <h2 className="text-xl font-semibold text-purple-800 mb-3">
+            Gợi Ý Sử Dụng Xe (AI Recommendation)
+          </h2>
 
+          <button
+            onClick={handleGetAiSuggestion}
+            disabled={aiLoading}
+            className={`px-5 py-2 rounded-lg text-white font-semibold transition-all ${
+              aiLoading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"
+            }`}
+          >
+            {aiLoading ? "Đang tạo gợi ý..." : "Lấy gợi ý từ AI"}
+          </button>
+
+          <div className="bg-white border border-purple-300 rounded-lg p-4 mt-4 min-h-[100px] text-gray-700">
+            {aiSuggestion ? (
+              aiSuggestion
+            ) : (
+              <span className="italic text-gray-500">(AI sẽ hiển thị đề xuất lịch tại đây...)</span>
+            )}
+          </div>
+        </div>
+
+        {/* Booking Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Ngày đi / ngày về */}
+          {/* Ngày đi / về */}
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Ngày bắt đầu *
-              </label>
-              <input
-                type="date"
-                name="start_date"
-                value={formData.start_date}
-                onChange={handleChange}
-                required
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-              />
+              <label className="block text-sm font-semibold mb-2">Ngày bắt đầu *</label>
+              <input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required className="w-full border rounded-lg px-3 py-2" />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Ngày kết thúc *
-              </label>
-              <input
-                type="date"
-                name="end_date"
-                value={formData.end_date}
-                onChange={handleChange}
-                required
-                min={formData.start_date}
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-              />
+              <label className="block text-sm font-semibold mb-2">Ngày kết thúc *</label>
+              <input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required min={formData.start_date} className="w-full border rounded-lg px-3 py-2" />
             </div>
           </div>
 
           {/* Giờ check in / check out */}
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Giờ Check In *
-              </label>
-              <input
-                type="time"
-                name="check_in_time"
-                value={formData.check_in_time}
-                onChange={handleChange}
-                required
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-              />
+              <label className="block text-sm font-semibold mb-2">Giờ Check In *</label>
+              <input type="time" name="check_in_time" value={formData.check_in_time} onChange={handleChange} required className="w-full border rounded-lg px-3 py-2" />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Giờ Check Out *
-              </label>
-              <input
-                type="time"
-                name="check_out_time"
-                value={formData.check_out_time}
-                onChange={handleChange}
-                required
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-300"
-              />
+              <label className="block text-sm font-semibold mb-2">Giờ Check Out *</label>
+              <input type="time" name="check_out_time" value={formData.check_out_time} onChange={handleChange} required className="w-full border rounded-lg px-3 py-2" />
             </div>
           </div>
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-          {/* Nút submit */}
           <div className="flex justify-center">
             <button
               type="submit"
               disabled={
                 loading ||
                 userId === null ||
-                (availableDays !== null &&
-                  usedDays !== null &&
-                  usedDays >= availableDays)
+                (availableDays !== null && usedDays !== null && usedDays >= availableDays)
               }
               className={`font-semibold px-16 py-3 rounded-lg text-white transition-all ${
                 loading ||
-                (availableDays !== null &&
-                  usedDays !== null &&
-                  usedDays >= availableDays)
+                (availableDays !== null && usedDays !== null && usedDays >= availableDays)
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-[#36b6cf] hover:bg-[#2ea3ba]"
               }`}

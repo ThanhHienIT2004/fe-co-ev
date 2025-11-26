@@ -191,11 +191,11 @@ export default function GroupDetailPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <div className="w-16 h-16 bg-linear-to-br from-teal-400 to-cyan-600 rounded-full flex items-center justify-center text-white font-black text-xl">
-                      {member.user.fullName?.[0] || "U"}
+                      {member.user?.fullName?.[0] || "U"}
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
-                        {member.user.fullName || "Thành viên"}
+                        {member.user?.fullName || "Thành viên"}
                       </h3>
                       <p className="text-gray-600 font-mono text-sm">
                         ID: {member.user_id}

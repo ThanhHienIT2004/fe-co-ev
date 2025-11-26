@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Edit, Trash2, Users, Car, Calendar, Loader2 } from 'lucide-react';
+import { Edit, Trash2, Users, Car, Calendar, Loader2, Eye } from 'lucide-react';
 import { useGroupMemberCount } from '@/libs/hooks/useGroupMembers';
 
 type Props = {
@@ -75,21 +75,32 @@ export default function GroupCard({ group, isPending }: Props) {
         </div>
 
         <div className="flex justify-between items-center mt-6">
+          <div className="flex items-center gap-3">
           {/* Link dùng number */}
-          <Link
+         <Link
             href={`/ownership-groups/${group.group_id}`}
-            className="px-6 py-3 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 transition shadow-lg hover:shadow-xl"
+            className="p-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition shadow-lg hover:shadow-xl flex items-center justify-center"
           >
-            Xem chi tiết
+            <Eye size={22} />
           </Link>
-          <div className="flex gap-3">
-            <Link
-            href={`/vehicle-schedule/${group.vehicle?.vehicle_id}`}
-            className="px-6 py-3 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 transition shadow-lg hover:shadow-xl"
+          {/* Icon xem lịch chung */}
+          <Link
+            href={`/ownership-groups/vehicle-schedule/${group.vehicle?.vehicle_id}`}
+            className="w-12 h-12 flex items-center justify-center bg-teal-600 text-white rounded-full hover:bg-teal-700 transition shadow-md hover:shadow-lg"
+            title="Xem lịch chung"
           >
-            Xem Lịch Chung
+            <Calendar className="w-6 h-6" />
           </Link>
-          </div>
+
+          {/* Icon đặt xe */}
+          <Link
+            href={`/booking/${group.vehicle?.vehicle_id}`}
+            className="w-12 h-12 flex items-center justify-center bg-teal-600 text-white rounded-full hover:bg-teal-700 transition shadow-md hover:shadow-lg"
+            title="Đặt lịch"
+          >
+            <Car className="w-6 h-6" />
+          </Link>
+        </div>
           <div className="flex gap-3">
             <Link
               href={`/ownership-groups/${group.group_id}/edit`}

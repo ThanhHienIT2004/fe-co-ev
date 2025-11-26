@@ -1,4 +1,3 @@
-// src/app/(co-owner)/group-funds/fund/create/page.tsx
 'use client';
 import { useState } from 'react';
 import { useGroupFund } from '@/libs/hooks/useGroupFund';

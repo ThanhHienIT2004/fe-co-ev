@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import api from '@/libs/apis/api';
+import api from '@/libs/apis/funds';
 import { Poll, CreatePollRequest } from '@/types/poll.type';
 
-export const usePoll = () => {
+export const usePoll = (GROUP_ID: string) => {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(false);
 

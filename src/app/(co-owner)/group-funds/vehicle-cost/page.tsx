@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 
 export default function VehicleCostPage() {
   const { groupId } = useParams<{ groupId: string }>();
-  const GROUP_ID = groupId ?? 'group_001';
+  const GROUP_ID = groupId ?? '2';
 
   const { costs, loading, fetchAll } = useVehicleCost(GROUP_ID);
 

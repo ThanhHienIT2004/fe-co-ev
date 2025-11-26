@@ -10,7 +10,7 @@ export default function VehicleCostDetailPage() {
   const router = useRouter();
 
   const costId = Number(id);
-  const groupIdRef = useRef<string>(searchParams.get('groupId') ?? 'group_001');
+  const groupIdRef = useRef<string>(searchParams.get('groupId') ?? '1');
 
   const [cost, setCost] = useState<any>(null);
   const [loading, setLoading] = useState(true);

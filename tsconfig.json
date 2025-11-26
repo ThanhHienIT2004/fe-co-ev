@@ -24,6 +24,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(admin)/profiles-manage/_components"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(admin)/profiles-manage/_components", "src/libs/hooks/auth/useLocalAuthAdmin.ts"],
   "exclude": ["node_modules"]
 }

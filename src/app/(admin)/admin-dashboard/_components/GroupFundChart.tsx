@@ -8,42 +8,84 @@ interface FundData {
   fund: number;
 }
 
+interface GroupDTO {
+  groupId: number;
+}
+
 export function GroupFundChart() {
   const [data, setData] = useState<FundData[]>([]);
   const [totalFund, setTotalFund] = useState<string>("...");
   const [loading, setLoading] = useState(true);
+  const [groupId, setGroupId] = useState<number | null>(null);
+  const [groups, setGroups] = useState<GroupDTO[]>([]);
 
+  // Lấy danh sách groupId
+  const fetchGroups = async () => {
+    try {
+      const res = await fetch("http://localhost:8082/payment/ownership/getAll");
+      const list: GroupDTO[] = res.ok ? await res.json() : [];
+      setGroups(list);
+      if (list.length > 0) setGroupId(list[0].groupId); // mặc định chọn group đầu tiên
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Lấy fund theo groupId
+  const fetchFund = async (id: number) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`http://localhost:8082/payment/funds/getMoneyGroup/${id}`);
+      const list: { fundName: string; totalBalance: number }[] = res.ok ? await res.json() : [];
+
+      const formatted = list.map((item) => ({
+        group: item.fundName,
+        fund: Number(item.totalBalance),
+      }));
+
+      setData(formatted);
+
+      const total = formatted.reduce((sum, i) => sum + i.fund, 0);
+      setTotalFund(new Intl.NumberFormat("vi-VN").format(total) + " VND");
+    } catch (err) {
+      console.error(err);
+      setTotalFund("Lỗi kết nối");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Khi load lần đầu
   useEffect(() => {
-    const fetchFund = async () => {
-      try {
-
-        const res = await fetch("http://localhost:xxxx/api/group-fund-total");
-        const list: { groupName: string; totalFund: number }[] = res.ok ? await res.json() : [];
-
-        const formatted = list.map((item) => ({
-          group: item.groupName,
-          fund: Number(item.totalFund.toFixed(1)),
-        }));
-
-        setData(formatted);
-
-        const total = formatted.reduce((sum, i) => sum + i.fund, 0);
-        setTotalFund(
-          new Intl.NumberFormat("vi-VN").format(total) + " VND"
-        );
-      } catch (err) {
-        console.error(err);
-        setTotalFund("Lỗi kết nối");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFund();
+    fetchGroups();
   }, []);
+
+  // Khi groupId thay đổi
+  useEffect(() => {
+    if (groupId !== null) fetchFund(groupId);
+  }, [groupId]);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+      
+      {/* Select group ID */}
+      <div className="mb-6">
+        <label className="text-gray-700 dark:text-gray-300 font-semibold mr-2">
+          Chọn Group:
+        </label>
+        <select
+          value={groupId ?? ""}
+          onChange={(e) => setGroupId(Number(e.target.value))}
+          className="p-2 rounded-lg border dark:bg-gray-700 dark:text-white"
+        >
+          {groups.map((g) => (
+            <option key={g.groupId} value={g.groupId}>
+              Group {g.groupId}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
         Tổng GroupFund theo nhóm
       </h3>
@@ -67,7 +109,7 @@ export function GroupFundChart() {
               borderRadius: "12px",
               color: "white"
             }}
-            formatter={(value: number) => [`${value} VND`, "Quỹ nhóm"]}
+            formatter={(value: number) => [`${value.toLocaleString()} VND`, "Tổng quỹ"]}
           />
           <Bar dataKey="fund" fill="#3b82f6" radius={[10, 10, 0, 0]} />
         </BarChart>

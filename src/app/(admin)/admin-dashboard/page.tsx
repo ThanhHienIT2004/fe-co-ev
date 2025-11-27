@@ -17,7 +17,6 @@ import { UsageStatsChart } from "./_components/UsageStatsChart";
 import { YearDistanceChart } from "./_components/YearDistanceChart";
 import { useEContracts } from "@/libs/hooks/useEContracts";
 import { useUsers } from "@/libs/hooks/useUser";
-import { VehicleCostChart } from "./_components/VehicleCostChart";
 import { GroupFundChart } from "./_components/GroupFundChart";
 
 export default function AdminDashboardPage() {
@@ -58,7 +57,6 @@ export default function AdminDashboardPage() {
               <UsageStatsChart />
             </div>
             <div className="lg:col-span-5"><YearDistanceChart /></div>
-            <div className="lg:col-span-12"><VehicleCostChart /></div>
             <div className="lg:col-span-12"><GroupFundChart /></div>
           </div>.
           <div className="mt-16 text-center">

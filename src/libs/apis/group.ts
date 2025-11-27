@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Tạo instance axios riêng để dễ quản lý
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082/payment',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085/payment',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

@@ -56,7 +56,7 @@ export const useVehicleCost = (arg: UseVehicleCostArg = null) => {
         params.vehicleId = Number(vehicleId);
       }
 
-      const res = await axios.get('http://localhost:8082/payment/costs', { params });
+      const res = await axios.get('http://localhost:8085/payment/costs', { params });
       const rawData = res.data?.data || res.data || [];
 
       if (!Array.isArray(rawData)) {

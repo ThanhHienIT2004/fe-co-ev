@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import type { Poll } from '@/types/poll.type';
 
-const API_BASE = 'http://localhost:8082/payment/polls';
+const API_BASE = 'http://localhost:8085/payment/polls';
 
 const getUserIdFromStorage = (): number => {
   if (typeof window === 'undefined') return 0;

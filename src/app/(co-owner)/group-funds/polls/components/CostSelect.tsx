@@ -47,7 +47,7 @@ export default function CostSelect({
       try {
         setLoading(true);
         setError('');
-        const res = await axios.get(`http://localhost:8082/payment/costs`, {
+        const res = await axios.get(`http://localhost:8085/payment/costs`, {
           params: { groupId },
         });
         setCosts(res.data || []);

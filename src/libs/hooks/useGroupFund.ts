@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8082/payment';
+const API_BASE = 'http://localhost:8085/payment';
 
 export function useGroupFund(groupId: string | number) {
   const [funds, setFunds] = useState<any[]>([]);
@@ -45,7 +45,7 @@ const create = async (fundName: string, initialBalance: number = 0, userId: numb
 
   try {
     const res = await axios.post(
-      `http://localhost:8082/payment/funds/${groupId}/${userId}`,
+      `http://localhost:8085/payment/funds/${groupId}/${userId}`,
       payload
     );
 

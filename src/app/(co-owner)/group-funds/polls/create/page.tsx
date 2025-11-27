@@ -58,7 +58,7 @@ export default function CreatePollPage() {
 
     try {
       const response = await axios.post(
-        'http://localhost:8082/payment/polls',
+        'http://localhost:8085/payment/polls',
         {
           groupId: Number(groupId),
           description: description.trim(),

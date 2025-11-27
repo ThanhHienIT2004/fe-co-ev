@@ -30,7 +30,7 @@ export default function VehicleCostPage() {
     const fetchGroupInfo = async () => {
       try {
         setGroupLoading(true);
-        const res = await axios.get(`http://localhost:8082/payment/ownership/${groupId}`);
+        const res = await axios.get(`http://localhost:8085/payment/ownership/${groupId}`);
         const data = res.data;
         setGroupInfo(data);
 

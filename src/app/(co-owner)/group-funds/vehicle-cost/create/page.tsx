@@ -78,7 +78,7 @@ export default function CreateVehicleCostPage() {
     try {
       // ĐÚNG HOÀN TOÀN VỚI BACKEND CỦA BẠN: /costs/{groupId}/{userId}
       await axios.post(
-        `http://localhost:8082/payment/costs/${groupId}/${userId}`,
+        `http://localhost:8085/payment/costs/${groupId}/${userId}`,
         {
           costName: costName.trim(),
           amount: Number(amount),
